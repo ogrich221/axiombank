@@ -8,6 +8,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg.asset.json";
 import heroSigning from "@/assets/varenta-hero-signing.jpg.asset.json";
+import reception from "@/assets/varenta-reception-hero.jpg.asset.json";
+import counter from "@/assets/varenta-counter-hero.jpg.asset.json";
 import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
 import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
@@ -259,6 +261,41 @@ function Index() {
           </div>
         </section>
 
+        {/* Reception band */}
+        <section id="visit" className="relative isolate overflow-hidden bg-navy">
+          <img src={reception.url} alt="A visitor signing in at a VARENTA BANK reception desk while a team member hands over a badge" loading="lazy" width={1400} height={939} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_28%]" />
+          <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
+          <div className="container-x flex min-h-[58vh] items-center py-16 md:min-h-[66vh]">
+            <div className="reveal max-w-xl text-navy-foreground">
+              <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+                <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
+                  <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
+                  <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="flex flex-col leading-none">
+                  <span className="text-lg font-extrabold tracking-[0.08em]">VARENTA</span>
+                  <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
+                </span>
+              </div>
+              <p className="eyebrow mt-7 text-navy-foreground/90">Visit us</p>
+              <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Walk In and See the Difference.</h2>
+              <p className="mt-5 text-lg leading-relaxed text-navy-foreground/85">
+                Prefer a face-to-face conversation? Our team will walk you through the account, the fees and the paperwork in plain language — then help you get started the same day.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button variant="hero" size="xl" asChild>
+                  <Link to="/contact">Talk to Our Team <ArrowRight /></Link>
+                </Button>
+                <Button variant="quiet" size="xl" asChild>
+                  <Link to="/open-account">Open Your Account</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flag-stripes h-1.5" aria-hidden="true" />
+        </section>
+
         {/* FAQ */}
         <section id="faq" className="section-y">
           <div className="container-x max-w-3xl">
@@ -280,14 +317,23 @@ function Index() {
         {/* Final CTA */}
         <section className="pb-20">
           <div className="container-x">
-            <div className="relative overflow-hidden rounded-[2rem] bg-mint px-6 py-16 text-center sm:px-12 md:py-20">
-              <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 800 300" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M0 220 Q 200 140 400 200 T 800 160" fill="none" className="stroke-primary/25" strokeWidth="1.5" />
-                <path d="M0 250 Q 220 180 420 230 T 800 200" fill="none" className="stroke-primary/15" strokeWidth="1.5" />
-              </svg>
-              <div className="relative">
-                <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight text-navy">Feel Good About Your Money.</h2>
-                <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">Clearer information. More confident decisions. Banking built around you.</p>
+            <div className="relative isolate overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-12 md:py-28">
+              <img src={counter.url} alt="A customer receiving a printed receipt at a VARENTA BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_50%]" />
+              <div className="absolute inset-0 -z-10 bg-navy/82" aria-hidden="true" />
+              <div className="relative flex flex-col items-center">
+                <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+                  <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
+                    <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
+                    <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span className="flex flex-col leading-none">
+                    <span className="text-lg font-extrabold tracking-[0.08em] text-navy-foreground">VARENTA</span>
+                    <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
+                  </span>
+                </div>
+                <h2 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight text-navy-foreground">Feel Good About Your Money.</h2>
+                <p className="mx-auto mt-4 max-w-lg text-lg text-navy-foreground/85">Clearer information. More confident decisions. Banking built around you.</p>
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account</Link></Button>
                   <Button variant="quiet" size="xl" asChild><Link to="/about">Discover VARENTA</Link></Button>
