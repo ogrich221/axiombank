@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuIte
 import { Logo } from '@/components/site/Logo';
 import { AdminProvider, useAdmin } from './AdminProvider';
 import { getAdminStatus, unlockAdmin } from '@/lib/admin.functions';
-const nav = [{title:'Dashboard',to:'/admin',icon:LayoutDashboard},{title:'User Management',to:'/admin/users',icon:Users},{title:'Roles & Permissions',to:'/admin/roles',icon:ShieldCheck},{title:'Activity Logs',to:'/admin/activity',icon:History},{title:'Notifications',to:'/admin/notifications',icon:Bell},{title:'Settings',to:'/admin/settings',icon:Settings},{title:'Help & Support',to:'/admin/help',icon:CircleHelp}] as const;
+const nav = [{title:'Dashboard',to:'/admin',icon:LayoutDashboard},{title:'User Management',to:'/admin/users',icon:Users},{title:'Activity Logs',to:'/admin/activity',icon:History},{title:'Notifications',to:'/admin/notifications',icon:Bell},{title:'Settings',to:'/admin/settings',icon:Settings},{title:'Help & Support',to:'/admin/help',icon:CircleHelp}] as const;
 export function AdminLoader() { return <div className="admin-theme fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-background"><Logo/><p className="text-sm text-muted-foreground">Transparent by Design.</p><div className="h-1 w-36 overflow-hidden rounded bg-secondary"><div className="admin-loader h-full w-full bg-primary"/></div></div>; }
 export function AdminLayout() {
   const status = useServerFn(getAdminStatus); const [state,setState] = useState<'checking'|'locked'|'open'>('checking');
