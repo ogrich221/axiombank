@@ -46,7 +46,7 @@ export function Header() {
           <Button variant="ghost" className="hidden rounded-full text-navy sm:inline-flex" asChild>
             <a href="/#login">Log In</a>
           </Button>
-          <Button variant="hero" className="h-10 px-3.5 text-[0.8rem] font-semibold sm:px-4 sm:text-sm" asChild>
+          <Button variant="hero" className="hidden h-10 px-3.5 text-[0.8rem] min-[400px]:inline-flex font-semibold sm:px-4 sm:text-sm" asChild>
             <Link to="/open-account"><span className="sm:hidden">Open Account</span><span className="hidden sm:inline">Open an Account</span></Link>
           </Button>
           <button
@@ -74,6 +74,11 @@ export function Header() {
               <a href="/#login" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-muted-foreground">
                 Log In
               </a>
+            </li>
+            <li>
+              <Link to="/open-account" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-semibold text-primary">
+                Open an Account
+              </Link>
             </li>
           </ul>
         </nav>
