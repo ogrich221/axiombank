@@ -6,7 +6,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import heroBuilding from "@/assets/hero-building.jpg";
+import heroSigning from "@/assets/varenta-hero-signing.jpg.asset.json";
 import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
 import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
@@ -69,11 +69,22 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative isolate overflow-hidden">
-          <img src={heroBuilding} alt="VARENTA BANK headquarters building" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
+          <img src={heroSigning.url} alt="VARENTA BANK advisers signing account documents with a client" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_18%]" />
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[78vh] items-center py-20 md:min-h-[86vh]">
             <div className="reveal max-w-2xl text-navy-foreground">
-              <p className="eyebrow text-navy-foreground/90"><span className="mr-2 tracking-normal text-primary" aria-label="5 stars">★★★★★</span>Banking, made clear.</p>
+              <div className="flex items-center gap-3" aria-label="VARENTA BANK">
+                <svg width="44" height="44" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow-lg">
+                  <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
+                  <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="flex flex-col leading-none">
+                  <span className="text-2xl font-extrabold tracking-[0.08em]">VARENTA</span>
+                  <span className="mt-1 text-[0.65rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
+                </span>
+              </div>
+              <p className="eyebrow mt-8 text-navy-foreground/90"><span className="mr-2 tracking-normal text-primary" aria-label="5 stars">★★★★★</span>Banking, made clear.</p>
               <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] font-extrabold leading-[1.02]">
                 Your Money. Your Clarity. <span className="text-primary [text-shadow:0_2px_20px_oklch(1_0_0/25%)]">Your Future.</span>
               </h1>
