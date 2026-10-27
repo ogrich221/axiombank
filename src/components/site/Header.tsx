@@ -15,7 +15,7 @@ const languages = [
 
 const nav = [
   { label: "Personal Banking", href: "/#features" },
-  { label: "Savings", href: "/#preview" },
+  { label: "Savings", href: "/#features" },
   { label: "Cards", href: "/#features" },
   { label: "About Us", href: "/#about" },
   { label: "Help & Support", href: "/#faq" },
