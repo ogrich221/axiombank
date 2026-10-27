@@ -317,9 +317,9 @@ function Index() {
         {/* Final CTA */}
         <section className="pb-20">
           <div className="container-x">
-            <div className="relative isolate overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-12 md:py-24">
-              <img src={counter.url} alt="A customer receiving a printed receipt at a VARENTA BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_62%]" />
-              <div className="absolute inset-0 -z-10 bg-navy/88" aria-hidden="true" />
+            <div className="relative isolate overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-12 md:py-28">
+              <img src={counter.url} alt="A customer receiving a printed receipt at a VARENTA BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_50%]" />
+              <div className="absolute inset-0 -z-10 bg-navy/82" aria-hidden="true" />
               <div className="relative flex flex-col items-center">
                 <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
                   <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
@@ -328,7 +328,7 @@ function Index() {
                     <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <span className="flex flex-col leading-none">
-                    <span className="text-lg font-extrabold tracking-[0.08em]">VARENTA</span>
+                    <span className="text-lg font-extrabold tracking-[0.08em] text-navy-foreground">VARENTA</span>
                     <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
                   </span>
                 </div>
