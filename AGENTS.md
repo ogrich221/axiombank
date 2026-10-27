@@ -14,3 +14,6 @@
 - Render the card showcase with dynamically loaded Three.js inside a client effect, using semantic CSS tokens for textures and honoring reduced-motion preferences, to keep SSR safe and the display accessible.
 - Keep the admin workspace under /admin behind a server-checked shared passcode session; admin data is read and written only through passcode-gated server functions using the service client, because the admin tables have no public access policies.
 - Scope the emerald admin theme to the admin layout and its dialogs so the public bank theme remains unchanged.
+- Customer pages live under the integration-style client-gated `_authenticated` layout; all private operations additionally validate the bearer on the server and use owner-scoped access, keeping admin passcode access independent.
+- Keep customer schemas, server operations, and shared presentation outside leaf routes; do not collect transfer PINs or create financial records until authorized providers and protected authorization are connected.
+- Customer avatar uploads are cropped and re-encoded in the browser, checked on the server, and stored in an owner-only private bucket so profile photos do not become public assets.

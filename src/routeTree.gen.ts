@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -26,16 +28,29 @@ import { Route as OpenAccountRouteImport } from './routes/open-account'
 import { Route as OurApproachRouteImport } from './routes/our-approach'
 import { Route as PersonalBankingRouteImport } from './routes/personal-banking'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SavingsRouteImport } from './routes/savings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SpendingInsightsRouteImport } from './routes/spending-insights'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminHelpRouteImport } from './routes/admin.help'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
+import { Route as AuthenticatedDashboardAccountsRouteImport } from './routes/_authenticated/dashboard.accounts'
+import { Route as AuthenticatedDashboardBillsRouteImport } from './routes/_authenticated/dashboard.bills'
+import { Route as AuthenticatedDashboardCardsRouteImport } from './routes/_authenticated/dashboard.cards'
+import { Route as AuthenticatedDashboardInternationalRouteImport } from './routes/_authenticated/dashboard.international'
+import { Route as AuthenticatedDashboardNotificationsRouteImport } from './routes/_authenticated/dashboard.notifications'
+import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated/dashboard.profile'
+import { Route as AuthenticatedDashboardSecurityRouteImport } from './routes/_authenticated/dashboard.security'
+import { Route as AuthenticatedDashboardSupportRouteImport } from './routes/_authenticated/dashboard.support'
+import { Route as AuthenticatedDashboardTransactionsRouteImport } from './routes/_authenticated/dashboard.transactions'
+import { Route as AuthenticatedDashboardTransferRouteImport } from './routes/_authenticated/dashboard.transfer'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
 import { Route as AdminUsersNewRouteImport } from './routes/admin.users.new'
@@ -45,6 +60,10 @@ import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin.users.$
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -60,6 +79,11 @@ const AccessibilityRoute = AccessibilityRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardsRoute = CardsRouteImport.update({
@@ -127,6 +151,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavingsRoute = SavingsRouteImport.update({
   id: '/savings',
   path: '/savings',
@@ -146,6 +175,11 @@ const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -177,6 +211,72 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAccountsRoute =
+  AuthenticatedDashboardAccountsRouteImport.update({
+    id: '/accounts',
+    path: '/accounts',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBillsRoute =
+  AuthenticatedDashboardBillsRouteImport.update({
+    id: '/bills',
+    path: '/bills',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardCardsRoute =
+  AuthenticatedDashboardCardsRouteImport.update({
+    id: '/cards',
+    path: '/cards',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardInternationalRoute =
+  AuthenticatedDashboardInternationalRouteImport.update({
+    id: '/international',
+    path: '/international',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardNotificationsRoute =
+  AuthenticatedDashboardNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardProfileRoute =
+  AuthenticatedDashboardProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSecurityRoute =
+  AuthenticatedDashboardSecurityRouteImport.update({
+    id: '/security',
+    path: '/security',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSupportRoute =
+  AuthenticatedDashboardSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardTransactionsRoute =
+  AuthenticatedDashboardTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardTransferRoute =
+  AuthenticatedDashboardTransferRouteImport.update({
+    id: '/transfer',
+    path: '/transfer',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -208,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/cards': typeof CardsRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -221,18 +322,31 @@ export interface FileRoutesByFullPath {
   '/our-approach': typeof OurApproachRoute
   '/personal-banking': typeof PersonalBankingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/savings': typeof SavingsRoute
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
   '/terms': typeof TermsRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/admin/activity': typeof AdminActivityRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
+  '/dashboard/bills': typeof AuthenticatedDashboardBillsRoute
+  '/dashboard/cards': typeof AuthenticatedDashboardCardsRoute
+  '/dashboard/international': typeof AuthenticatedDashboardInternationalRoute
+  '/dashboard/notifications': typeof AuthenticatedDashboardNotificationsRoute
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/dashboard/security': typeof AuthenticatedDashboardSecurityRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/dashboard/transactions': typeof AuthenticatedDashboardTransactionsRoute
+  '/dashboard/transfer': typeof AuthenticatedDashboardTransferRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRouteWithChildren
   '/admin/users/new': typeof AdminUsersNewRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/admin/users/$userId/': typeof AdminUsersUserIdIndexRoute
@@ -241,6 +355,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/auth': typeof AuthRoute
   '/cards': typeof CardsRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -254,6 +369,7 @@ export interface FileRoutesByTo {
   '/our-approach': typeof OurApproachRoute
   '/personal-banking': typeof PersonalBankingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/savings': typeof SavingsRoute
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
@@ -263,7 +379,18 @@ export interface FileRoutesByTo {
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin': typeof AdminIndexRoute
+  '/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
+  '/dashboard/bills': typeof AuthenticatedDashboardBillsRoute
+  '/dashboard/cards': typeof AuthenticatedDashboardCardsRoute
+  '/dashboard/international': typeof AuthenticatedDashboardInternationalRoute
+  '/dashboard/notifications': typeof AuthenticatedDashboardNotificationsRoute
+  '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/dashboard/security': typeof AuthenticatedDashboardSecurityRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/dashboard/transactions': typeof AuthenticatedDashboardTransactionsRoute
+  '/dashboard/transfer': typeof AuthenticatedDashboardTransferRoute
   '/admin/users/new': typeof AdminUsersNewRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/admin/users': typeof AdminUsersIndexRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/admin/users/$userId': typeof AdminUsersUserIdIndexRoute
@@ -271,9 +398,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
   '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/cards': typeof CardsRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -287,18 +416,31 @@ export interface FileRoutesById {
   '/our-approach': typeof OurApproachRoute
   '/personal-banking': typeof PersonalBankingRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/savings': typeof SavingsRoute
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/admin/activity': typeof AdminActivityRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/_authenticated/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
+  '/_authenticated/dashboard/bills': typeof AuthenticatedDashboardBillsRoute
+  '/_authenticated/dashboard/cards': typeof AuthenticatedDashboardCardsRoute
+  '/_authenticated/dashboard/international': typeof AuthenticatedDashboardInternationalRoute
+  '/_authenticated/dashboard/notifications': typeof AuthenticatedDashboardNotificationsRoute
+  '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
+  '/_authenticated/dashboard/security': typeof AuthenticatedDashboardSecurityRoute
+  '/_authenticated/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/_authenticated/dashboard/transactions': typeof AuthenticatedDashboardTransactionsRoute
+  '/_authenticated/dashboard/transfer': typeof AuthenticatedDashboardTransferRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRouteWithChildren
   '/admin/users/new': typeof AdminUsersNewRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
   '/admin/users/$userId/': typeof AdminUsersUserIdIndexRoute
@@ -310,6 +452,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/accessibility'
     | '/admin'
+    | '/auth'
     | '/cards'
     | '/careers'
     | '/contact'
@@ -323,18 +466,31 @@ export interface FileRouteTypes {
     | '/our-approach'
     | '/personal-banking'
     | '/privacy'
+    | '/reset-password'
     | '/savings'
     | '/security'
     | '/spending-insights'
     | '/terms'
+    | '/dashboard'
     | '/admin/activity'
     | '/admin/help'
     | '/admin/notifications'
     | '/admin/settings'
     | '/admin/users'
     | '/admin/'
+    | '/dashboard/accounts'
+    | '/dashboard/bills'
+    | '/dashboard/cards'
+    | '/dashboard/international'
+    | '/dashboard/notifications'
+    | '/dashboard/profile'
+    | '/dashboard/security'
+    | '/dashboard/support'
+    | '/dashboard/transactions'
+    | '/dashboard/transfer'
     | '/admin/users/$userId'
     | '/admin/users/new'
+    | '/dashboard/'
     | '/admin/users/'
     | '/admin/users/$userId/edit'
     | '/admin/users/$userId/'
@@ -343,6 +499,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/auth'
     | '/cards'
     | '/careers'
     | '/contact'
@@ -356,6 +513,7 @@ export interface FileRouteTypes {
     | '/our-approach'
     | '/personal-banking'
     | '/privacy'
+    | '/reset-password'
     | '/savings'
     | '/security'
     | '/spending-insights'
@@ -365,16 +523,29 @@ export interface FileRouteTypes {
     | '/admin/notifications'
     | '/admin/settings'
     | '/admin'
+    | '/dashboard/accounts'
+    | '/dashboard/bills'
+    | '/dashboard/cards'
+    | '/dashboard/international'
+    | '/dashboard/notifications'
+    | '/dashboard/profile'
+    | '/dashboard/security'
+    | '/dashboard/support'
+    | '/dashboard/transactions'
+    | '/dashboard/transfer'
     | '/admin/users/new'
+    | '/dashboard'
     | '/admin/users'
     | '/admin/users/$userId/edit'
     | '/admin/users/$userId'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
     | '/accessibility'
     | '/admin'
+    | '/auth'
     | '/cards'
     | '/careers'
     | '/contact'
@@ -388,18 +559,31 @@ export interface FileRouteTypes {
     | '/our-approach'
     | '/personal-banking'
     | '/privacy'
+    | '/reset-password'
     | '/savings'
     | '/security'
     | '/spending-insights'
     | '/terms'
+    | '/_authenticated/dashboard'
     | '/admin/activity'
     | '/admin/help'
     | '/admin/notifications'
     | '/admin/settings'
     | '/admin/users'
     | '/admin/'
+    | '/_authenticated/dashboard/accounts'
+    | '/_authenticated/dashboard/bills'
+    | '/_authenticated/dashboard/cards'
+    | '/_authenticated/dashboard/international'
+    | '/_authenticated/dashboard/notifications'
+    | '/_authenticated/dashboard/profile'
+    | '/_authenticated/dashboard/security'
+    | '/_authenticated/dashboard/support'
+    | '/_authenticated/dashboard/transactions'
+    | '/_authenticated/dashboard/transfer'
     | '/admin/users/$userId'
     | '/admin/users/new'
+    | '/_authenticated/dashboard/'
     | '/admin/users/'
     | '/admin/users/$userId/edit'
     | '/admin/users/$userId/'
@@ -407,9 +591,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AccessibilityRoute: typeof AccessibilityRoute
   AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CardsRoute: typeof CardsRoute
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
@@ -423,6 +609,7 @@ export interface RootRouteChildren {
   OurApproachRoute: typeof OurApproachRoute
   PersonalBankingRoute: typeof PersonalBankingRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SavingsRoute: typeof SavingsRoute
   SecurityRoute: typeof SecurityRoute
   SpendingInsightsRoute: typeof SpendingInsightsRoute
@@ -436,6 +623,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -457,6 +651,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cards': {
@@ -550,6 +751,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/savings': {
       id: '/savings'
       path: '/savings'
@@ -577,6 +785,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -620,6 +835,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/accounts': {
+      id: '/_authenticated/dashboard/accounts'
+      path: '/accounts'
+      fullPath: '/dashboard/accounts'
+      preLoaderRoute: typeof AuthenticatedDashboardAccountsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bills': {
+      id: '/_authenticated/dashboard/bills'
+      path: '/bills'
+      fullPath: '/dashboard/bills'
+      preLoaderRoute: typeof AuthenticatedDashboardBillsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/cards': {
+      id: '/_authenticated/dashboard/cards'
+      path: '/cards'
+      fullPath: '/dashboard/cards'
+      preLoaderRoute: typeof AuthenticatedDashboardCardsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/international': {
+      id: '/_authenticated/dashboard/international'
+      path: '/international'
+      fullPath: '/dashboard/international'
+      preLoaderRoute: typeof AuthenticatedDashboardInternationalRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/notifications': {
+      id: '/_authenticated/dashboard/notifications'
+      path: '/notifications'
+      fullPath: '/dashboard/notifications'
+      preLoaderRoute: typeof AuthenticatedDashboardNotificationsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/profile': {
+      id: '/_authenticated/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof AuthenticatedDashboardProfileRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/security': {
+      id: '/_authenticated/dashboard/security'
+      path: '/security'
+      fullPath: '/dashboard/security'
+      preLoaderRoute: typeof AuthenticatedDashboardSecurityRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/support': {
+      id: '/_authenticated/dashboard/support'
+      path: '/support'
+      fullPath: '/dashboard/support'
+      preLoaderRoute: typeof AuthenticatedDashboardSupportRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/transactions': {
+      id: '/_authenticated/dashboard/transactions'
+      path: '/transactions'
+      fullPath: '/dashboard/transactions'
+      preLoaderRoute: typeof AuthenticatedDashboardTransactionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/transfer': {
+      id: '/_authenticated/dashboard/transfer'
+      path: '/transfer'
+      fullPath: '/dashboard/transfer'
+      preLoaderRoute: typeof AuthenticatedDashboardTransferRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/admin/users/': {
       id: '/admin/users/'
       path: '/'
@@ -657,6 +949,54 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedDashboardRouteChildren {
+  AuthenticatedDashboardAccountsRoute: typeof AuthenticatedDashboardAccountsRoute
+  AuthenticatedDashboardBillsRoute: typeof AuthenticatedDashboardBillsRoute
+  AuthenticatedDashboardCardsRoute: typeof AuthenticatedDashboardCardsRoute
+  AuthenticatedDashboardInternationalRoute: typeof AuthenticatedDashboardInternationalRoute
+  AuthenticatedDashboardNotificationsRoute: typeof AuthenticatedDashboardNotificationsRoute
+  AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
+  AuthenticatedDashboardSecurityRoute: typeof AuthenticatedDashboardSecurityRoute
+  AuthenticatedDashboardSupportRoute: typeof AuthenticatedDashboardSupportRoute
+  AuthenticatedDashboardTransactionsRoute: typeof AuthenticatedDashboardTransactionsRoute
+  AuthenticatedDashboardTransferRoute: typeof AuthenticatedDashboardTransferRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+}
+
+const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
+  {
+    AuthenticatedDashboardAccountsRoute: AuthenticatedDashboardAccountsRoute,
+    AuthenticatedDashboardBillsRoute: AuthenticatedDashboardBillsRoute,
+    AuthenticatedDashboardCardsRoute: AuthenticatedDashboardCardsRoute,
+    AuthenticatedDashboardInternationalRoute:
+      AuthenticatedDashboardInternationalRoute,
+    AuthenticatedDashboardNotificationsRoute:
+      AuthenticatedDashboardNotificationsRoute,
+    AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
+    AuthenticatedDashboardSecurityRoute: AuthenticatedDashboardSecurityRoute,
+    AuthenticatedDashboardSupportRoute: AuthenticatedDashboardSupportRoute,
+    AuthenticatedDashboardTransactionsRoute:
+      AuthenticatedDashboardTransactionsRoute,
+    AuthenticatedDashboardTransferRoute: AuthenticatedDashboardTransferRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
+  }
+
+const AuthenticatedDashboardRouteWithChildren =
+  AuthenticatedDashboardRoute._addFileChildren(
+    AuthenticatedDashboardRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface AdminUsersUserIdRouteChildren {
   AdminUsersUserIdEditRoute: typeof AdminUsersUserIdEditRoute
@@ -709,9 +1049,11 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AccessibilityRoute: AccessibilityRoute,
   AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
   CardsRoute: CardsRoute,
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,
@@ -725,6 +1067,7 @@ const rootRouteChildren: RootRouteChildren = {
   OurApproachRoute: OurApproachRoute,
   PersonalBankingRoute: PersonalBankingRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SavingsRoute: SavingsRoute,
   SecurityRoute: SecurityRoute,
   SpendingInsightsRoute: SpendingInsightsRoute,

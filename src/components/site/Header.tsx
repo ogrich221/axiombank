@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 const languages = [
   ["en", "English"], ["es", "Español"], ["fr", "Français"], ["pt", "Português"], ["de", "Deutsch"], ["it", "Italiano"],
@@ -23,6 +25,7 @@ const nav = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { data: signedIn } = useQuery({ queryKey: ['customer-session'], queryFn: async () => { const { data } = await supabase.auth.getUser(); return Boolean(data.user); }, staleTime: 30000 });
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="container-x flex h-16 items-center justify-between gap-2 md:h-[72px]">
@@ -44,7 +47,7 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-1">
           <Button variant="ghost" className="hidden rounded-full text-navy sm:inline-flex" asChild>
-            <Link to="/login">Log In</Link>
+            <Link to={signedIn ? '/dashboard' : '/login'}>{signedIn ? 'My account' : 'Log In'}</Link>
           </Button>
           <Button variant="hero" className="hidden h-10 px-3.5 text-[0.8rem] min-[400px]:inline-flex font-semibold sm:px-4 sm:text-sm" asChild>
             <Link to="/open-account"><span className="sm:hidden">Open Account</span><span className="hidden sm:inline">Open an Account</span></Link>
@@ -73,8 +76,8 @@ export function Header() {
               </li>
             ))}
             <li>
-              <Link to="/login" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-muted-foreground">
-                Log In
+              <Link to={signedIn ? '/dashboard' : '/login'} onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-muted-foreground">
+                {signedIn ? 'My account' : 'Log In'}
               </Link>
             </li>
             <li>
