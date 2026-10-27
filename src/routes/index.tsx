@@ -8,8 +8,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg";
 import { BankingPreview } from "@/components/site/BankingPreview";
-import branchDesk from "@/assets/vantera-bank-branch-operations.png.asset.json";
-import branchPhoto from "@/assets/vantera-bank-branch-portrait.png.asset.json";
+import branchDesk from "@/assets/varenta-branch-operations.png.asset.json";
+import branchPhoto from "@/assets/varenta-branch-portrait.png.asset.json";
 
 
 export const Route = createFileRoute("/")({
