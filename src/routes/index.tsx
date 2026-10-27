@@ -79,8 +79,8 @@ function Index() {
               <div className="flex items-center gap-3" aria-label="AXIOM BANK">
                 <svg width="44" height="44" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow-lg">
                   <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
-                  <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
-                  <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M11.6 18h8.8" className="stroke-primary" strokeWidth="2.6" strokeLinecap="round" />
+                  <path d="M9 24L16 7.5L23 24" fill="none" className="stroke-navy" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="flex flex-col leading-none">
                   <span className="text-2xl font-extrabold tracking-[0.08em]">AXIOM</span>
@@ -270,8 +270,8 @@ function Index() {
               <div className="flex items-center gap-2.5" aria-label="AXIOM BANK">
                 <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
                   <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
-                  <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
-                  <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M11.6 18h8.8" className="stroke-primary" strokeWidth="2.6" strokeLinecap="round" />
+                  <path d="M9 24L16 7.5L23 24" fill="none" className="stroke-navy" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="flex flex-col leading-none">
                   <span className="text-lg font-extrabold tracking-[0.08em]">AXIOM</span>
@@ -324,8 +324,8 @@ function Index() {
                 <div className="flex items-center gap-2.5" aria-label="AXIOM BANK">
                   <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
                     <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
-                    <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
-                    <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M11.6 18h8.8" className="stroke-primary" strokeWidth="2.6" strokeLinecap="round" />
+                    <path d="M9 24L16 7.5L23 24" fill="none" className="stroke-navy" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <span className="flex flex-col leading-none">
                     <span className="text-lg font-extrabold tracking-[0.08em] text-navy-foreground">AXIOM</span>
