@@ -8,7 +8,7 @@ type GateSession = { unlocked?: boolean };
 function sessionConfig() {
   const password = process.env['SESSION_SECRET'];
   if (!password) throw new Error('SESSION_SECRET is not set');
-  return { password, name: 'varenta-admin', maxAge: 60 * 60 * 8, cookie: { httpOnly: true, secure: true, sameSite: 'lax' as const, path: '/' } };
+  return { password, name: 'axiom-admin', maxAge: 60 * 60 * 8, cookie: { httpOnly: true, secure: true, sameSite: 'lax' as const, path: '/' } };
 }
 
 async function digest(value: string) { return new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))); }

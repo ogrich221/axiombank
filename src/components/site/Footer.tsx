@@ -32,7 +32,7 @@ export function Footer() {
       </div>
       <div className="container-x border-t border-border py-6 text-xs leading-relaxed text-muted-foreground">
         <p>© {new Date().getFullYear()} AXIOM BANK, N.A. · 1200 Liberty Avenue, Suite 400, New York, NY 10001, USA · NMLS ID #2489105</p>
-        <p className="mt-2">Member FDIC. Equal Housing Lender. Deposits are FDIC-insured up to $250,000 per depositor, for each account ownership category. Support: +1 (800) 555-0199 · support@varentabank.com</p>
+        <p className="mt-2">Member FDIC. Equal Housing Lender. Deposits are FDIC-insured up to $250,000 per depositor, for each account ownership category. Support: +1 (800) 555-0199 · support@axiombank.com</p>
       </div>
     </footer>
   );
