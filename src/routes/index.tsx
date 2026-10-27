@@ -210,7 +210,7 @@ function Index() {
                 </g>
               </svg>
               <ul className="absolute inset-[8%] flex flex-col justify-center gap-[1.2%]" aria-label="Eligible countries">
-                {[3, 5, 6, 7, 8, 8, 7, 6, 4].reduce<{ rows: string[][]; i: number }>((acc, n) => { acc.rows.push(countries.slice(acc.i, acc.i + n)); acc.i += n; return acc; }, { rows: [], i: 0 }).rows.map((row, r) => (
+                {[2, 4, 5, 6, 7, 7, 7, 6, 6, 4].reduce<{ rows: string[][]; i: number }>((acc, n) => { acc.rows.push(countries.slice(acc.i, acc.i + n)); acc.i += n; return acc; }, { rows: [], i: 0 }).rows.map((row, r) => (
                   <li key={r} className="flex flex-wrap justify-center gap-x-[1.5%] gap-y-1">
                     {row.map((c) => (
                       <span key={c} className="globe-chip rounded-full px-[0.5em] py-[0.15em] text-[clamp(0.5rem,1.5vw,0.78rem)] font-medium whitespace-nowrap">{c}</span>

@@ -29,7 +29,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Logo />
           <label className="sr-only" htmlFor="lang">Language</label>
-          <select id="lang" defaultValue="en" className="h-7 max-w-[4.5rem] cursor-pointer rounded-md border border-border bg-background px-1 text-[0.65rem] font-medium text-muted-foreground sm:max-w-[6.5rem]">
+          <select id="lang" defaultValue="en" className="h-7 max-w-[4rem] cursor-pointer rounded-md border border-border bg-background px-1 text-[0.65rem] font-medium text-muted-foreground sm:max-w-[6.5rem]">
             {languages.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
         </div>
