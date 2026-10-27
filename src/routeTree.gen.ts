@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccessibilityRouteImport } from './routes/accessibility'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CardsRouteImport } from './routes/cards'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -29,6 +30,18 @@ import { Route as SavingsRouteImport } from './routes/savings'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SpendingInsightsRouteImport } from './routes/spending-insights'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
+import { Route as AdminHelpRouteImport } from './routes/admin.help'
+import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
+import { Route as AdminRolesRouteImport } from './routes/admin.roles'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
+import { Route as AdminUsersUserIdRouteImport } from './routes/admin.users.$userId'
+import { Route as AdminUsersNewRouteImport } from './routes/admin.users.new'
+import { Route as AdminUsersUserIdIndexRouteImport } from './routes/admin.users.$userId.index'
+import { Route as AdminUsersUserIdEditRouteImport } from './routes/admin.users.$userId.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,6 +56,11 @@ const AboutRoute = AboutRouteImport.update({
 const AccessibilityRoute = AccessibilityRouteImport.update({
   id: '/accessibility',
   path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardsRoute = CardsRouteImport.update({
@@ -130,11 +148,72 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHelpRoute = AdminHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminUsersRoute,
+} as any)
+const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => AdminUsersRoute,
+} as any)
+const AdminUsersNewRoute = AdminUsersNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AdminUsersRoute,
+} as any)
+const AdminUsersUserIdIndexRoute = AdminUsersUserIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminUsersUserIdRoute,
+} as any)
+const AdminUsersUserIdEditRoute = AdminUsersUserIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => AdminUsersUserIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cards': typeof CardsRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -152,6 +231,18 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
   '/terms': typeof TermsRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/help': typeof AdminHelpRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRouteWithChildren
+  '/admin/users/new': typeof AdminUsersNewRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
+  '/admin/users/$userId/': typeof AdminUsersUserIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -174,12 +265,23 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
   '/terms': typeof TermsRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/help': typeof AdminHelpRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/users/new': typeof AdminUsersNewRoute
+  '/admin/users': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/accessibility': typeof AccessibilityRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cards': typeof CardsRoute
   '/careers': typeof CareersRoute
   '/contact': typeof ContactRoute
@@ -197,6 +299,18 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/spending-insights': typeof SpendingInsightsRoute
   '/terms': typeof TermsRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/help': typeof AdminHelpRoute
+  '/admin/notifications': typeof AdminNotificationsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/admin/users/$userId': typeof AdminUsersUserIdRouteWithChildren
+  '/admin/users/new': typeof AdminUsersNewRoute
+  '/admin/users/': typeof AdminUsersIndexRoute
+  '/admin/users/$userId/edit': typeof AdminUsersUserIdEditRoute
+  '/admin/users/$userId/': typeof AdminUsersUserIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -204,6 +318,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/cards'
     | '/careers'
     | '/contact'
@@ -221,6 +336,18 @@ export interface FileRouteTypes {
     | '/security'
     | '/spending-insights'
     | '/terms'
+    | '/admin/activity'
+    | '/admin/help'
+    | '/admin/notifications'
+    | '/admin/roles'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/'
+    | '/admin/users/$userId'
+    | '/admin/users/new'
+    | '/admin/users/'
+    | '/admin/users/$userId/edit'
+    | '/admin/users/$userId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -243,11 +370,22 @@ export interface FileRouteTypes {
     | '/security'
     | '/spending-insights'
     | '/terms'
+    | '/admin/activity'
+    | '/admin/help'
+    | '/admin/notifications'
+    | '/admin/roles'
+    | '/admin/settings'
+    | '/admin'
+    | '/admin/users/new'
+    | '/admin/users'
+    | '/admin/users/$userId/edit'
+    | '/admin/users/$userId'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/accessibility'
+    | '/admin'
     | '/cards'
     | '/careers'
     | '/contact'
@@ -265,12 +403,25 @@ export interface FileRouteTypes {
     | '/security'
     | '/spending-insights'
     | '/terms'
+    | '/admin/activity'
+    | '/admin/help'
+    | '/admin/notifications'
+    | '/admin/roles'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/'
+    | '/admin/users/$userId'
+    | '/admin/users/new'
+    | '/admin/users/'
+    | '/admin/users/$userId/edit'
+    | '/admin/users/$userId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AccessibilityRoute: typeof AccessibilityRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CardsRoute: typeof CardsRoute
   CareersRoute: typeof CareersRoute
   ContactRoute: typeof ContactRoute
@@ -311,6 +462,13 @@ declare module '@tanstack/react-router' {
       path: '/accessibility'
       fullPath: '/accessibility'
       preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cards': {
@@ -432,13 +590,149 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/help': {
+      id: '/admin/help'
+      path: '/help'
+      fullPath: '/admin/help'
+      preLoaderRoute: typeof AdminHelpRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/notifications': {
+      id: '/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AdminNotificationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users/': {
+      id: '/admin/users/'
+      path: '/'
+      fullPath: '/admin/users/'
+      preLoaderRoute: typeof AdminUsersIndexRouteImport
+      parentRoute: typeof AdminUsersRoute
+    }
+    '/admin/users/$userId': {
+      id: '/admin/users/$userId'
+      path: '/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AdminUsersUserIdRouteImport
+      parentRoute: typeof AdminUsersRoute
+    }
+    '/admin/users/new': {
+      id: '/admin/users/new'
+      path: '/new'
+      fullPath: '/admin/users/new'
+      preLoaderRoute: typeof AdminUsersNewRouteImport
+      parentRoute: typeof AdminUsersRoute
+    }
+    '/admin/users/$userId/': {
+      id: '/admin/users/$userId/'
+      path: '/'
+      fullPath: '/admin/users/$userId/'
+      preLoaderRoute: typeof AdminUsersUserIdIndexRouteImport
+      parentRoute: typeof AdminUsersUserIdRoute
+    }
+    '/admin/users/$userId/edit': {
+      id: '/admin/users/$userId/edit'
+      path: '/edit'
+      fullPath: '/admin/users/$userId/edit'
+      preLoaderRoute: typeof AdminUsersUserIdEditRouteImport
+      parentRoute: typeof AdminUsersUserIdRoute
+    }
   }
 }
+
+interface AdminUsersUserIdRouteChildren {
+  AdminUsersUserIdEditRoute: typeof AdminUsersUserIdEditRoute
+  AdminUsersUserIdIndexRoute: typeof AdminUsersUserIdIndexRoute
+}
+
+const AdminUsersUserIdRouteChildren: AdminUsersUserIdRouteChildren = {
+  AdminUsersUserIdEditRoute: AdminUsersUserIdEditRoute,
+  AdminUsersUserIdIndexRoute: AdminUsersUserIdIndexRoute,
+}
+
+const AdminUsersUserIdRouteWithChildren =
+  AdminUsersUserIdRoute._addFileChildren(AdminUsersUserIdRouteChildren)
+
+interface AdminUsersRouteChildren {
+  AdminUsersUserIdRoute: typeof AdminUsersUserIdRouteWithChildren
+  AdminUsersNewRoute: typeof AdminUsersNewRoute
+  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+}
+
+const AdminUsersRouteChildren: AdminUsersRouteChildren = {
+  AdminUsersUserIdRoute: AdminUsersUserIdRouteWithChildren,
+  AdminUsersNewRoute: AdminUsersNewRoute,
+  AdminUsersIndexRoute: AdminUsersIndexRoute,
+}
+
+const AdminUsersRouteWithChildren = AdminUsersRoute._addFileChildren(
+  AdminUsersRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
+  AdminHelpRoute: typeof AdminHelpRoute
+  AdminNotificationsRoute: typeof AdminNotificationsRoute
+  AdminRolesRoute: typeof AdminRolesRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
+  AdminHelpRoute: AdminHelpRoute,
+  AdminNotificationsRoute: AdminNotificationsRoute,
+  AdminRolesRoute: AdminRolesRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRouteWithChildren,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AccessibilityRoute: AccessibilityRoute,
+  AdminRoute: AdminRouteWithChildren,
   CardsRoute: CardsRoute,
   CareersRoute: CareersRoute,
   ContactRoute: ContactRoute,

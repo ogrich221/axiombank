@@ -12,3 +12,5 @@
 - Give each public bank topic a separate TanStack leaf route, with shared editorial content and page presentation kept outside routes, so navigation and page metadata stay consistent.
 - Banking, legal, pricing, and contact content remains reviewable draft information until the bank verifies it; never treat a presentation-only page as a live banking service.
 - Render the card showcase with dynamically loaded Three.js inside a client effect, using semantic CSS tokens for textures and honoring reduced-motion preferences, to keep SSR safe and the display accessible.
+- Keep the admin workspace under /admin with shared presentation and an in-memory sample-data provider; no backend is connected, so label demo operations and never use demo roles as real authorization.
+- Scope the emerald admin theme to the admin layout and its dialogs so the public bank theme remains unchanged.

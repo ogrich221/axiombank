@@ -1,0 +1,34 @@
+import { useEffect, useState } from 'react';
+import { Link, Outlet, useRouterState } from '@tanstack/react-router';
+import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Logo } from '@/components/site/Logo';
+import { AdminProvider, useAdmin } from './AdminProvider';
+const nav = [{title:'Dashboard',to:'/admin',icon:LayoutDashboard},{title:'User Management',to:'/admin/users',icon:Users},{title:'Roles & Permissions',to:'/admin/roles',icon:ShieldCheck},{title:'Activity Logs',to:'/admin/activity',icon:History},{title:'Notifications',to:'/admin/notifications',icon:Bell},{title:'Settings',to:'/admin/settings',icon:Settings},{title:'Help & Support',to:'/admin/help',icon:CircleHelp}] as const;
+export function AdminLoader() { return <div className="admin-theme fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-background"><Logo/><p className="text-sm text-muted-foreground">Transparent by Design.</p><div className="h-1 w-36 overflow-hidden rounded bg-secondary"><div className="admin-loader h-full w-full bg-primary"/></div></div>; }
+export function AdminLayout() { return <AdminProvider><Workspace/></AdminProvider>; }
+function Workspace() {
+  const [collapsed,setCollapsed] = useState(false); const [mobile,setMobile] = useState(false); const [ready,setReady] = useState(false); const {notice,setNotice,exited,setExited,read} = useAdmin();
+  const path = useRouterState({select:s=>s.location.pathname}); const pending = useRouterState({select:s=>s.status==='pending'}); const current = nav.find(n=>n.to==='/admin' ? path==='/admin' || path==='/admin/' : path.startsWith(n.to));
+  useEffect(()=>{setReady(true);},[]); useEffect(()=>{setMobile(false);},[path]);
+  if (!ready) return <AdminLoader/>;
+  if (exited) return <div className="admin-theme flex min-h-screen flex-col items-center justify-center gap-5 bg-muted px-5 text-center"><Logo/><h1 className="text-2xl font-bold">Workspace closed</h1><p className="text-sm text-muted-foreground">No live administrator session was active.</p><Button onClick={()=>setExited(false)}>Open sample workspace</Button><Button variant="outline" asChild><Link to="/">Back to VARENTA BANK</Link></Button></div>;
+  return <div className="admin-theme flex min-h-screen bg-muted text-foreground">
+    {pending && <AdminLoader/>}
+    {mobile && <div className="fixed inset-0 z-30 bg-foreground/30 lg:hidden" onClick={()=>setMobile(false)}/>}
+    <aside className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r bg-background transition-[width,transform] ${collapsed ? 'lg:w-20' : 'lg:w-64'} w-64 ${mobile ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      <div className="flex h-20 items-center justify-between px-5">{collapsed ? <img src="/favicon.png" alt="VARENTA BANK" className="hidden size-9 lg:block"/> : <Logo/>}<Button size="icon" variant="ghost" className="lg:hidden" aria-label="Close navigation" onClick={()=>setMobile(false)}><X/></Button></div>
+      {!collapsed && <p className="px-6 pb-6 text-[11px] font-semibold uppercase text-muted-foreground">Administration</p>}
+      <nav aria-label="Admin navigation" className="flex-1 space-y-1 px-3">{nav.map(n=><Button key={n.to} variant="ghost" asChild className={`h-12 w-full justify-start ${current?.to===n.to ? 'bg-secondary text-primary' : 'text-muted-foreground'} ${collapsed ? 'lg:justify-center lg:px-0' : ''}`}><Link to={n.to} title={n.title}><n.icon/>{!collapsed && <span>{n.title}</span>}</Link></Button>)}</nav>
+      <div className="border-t p-4"><div className="flex items-center gap-3"><div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary">AD</div>{!collapsed && <div className="min-w-0"><p className="text-sm font-semibold">Alex Morgan</p><p className="text-xs text-muted-foreground">Sample administrator</p></div>}</div><Button variant="ghost" className={`mt-3 w-full ${collapsed ? 'px-0' : 'justify-start'}`} onClick={()=>setExited(true)} title="Close sample workspace"><LogOut/>{!collapsed && 'Log out'}</Button></div>
+    </aside>
+    <div className={`min-w-0 flex-1 ${collapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+      <header className="sticky top-0 z-20 flex h-20 items-center justify-between gap-3 border-b bg-background px-4 md:px-8"><div className="flex min-w-0 items-center gap-3"><Button variant="ghost" size="icon" className="hidden lg:inline-flex" title={collapsed?'Expand sidebar':'Collapse sidebar'} onClick={()=>setCollapsed(!collapsed)}>{collapsed?<PanelLeftOpen/>:<PanelLeftClose/>}</Button><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={()=>setMobile(true)}><Menu/></Button><span className="truncate text-sm text-muted-foreground">{current?.title || 'User Management'}</span></div><div className="flex items-center gap-2"><span className="hidden text-xs text-muted-foreground md:block">Sample workspace</span><Button variant="ghost" size="icon" asChild title="Notifications"><Link to="/admin/notifications" className="relative"><Bell/>{!read && <span className="absolute right-2 top-2 size-1.5 rounded-full bg-primary"/>}</Link></Button><DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" className="px-1.5" aria-label="Administrator menu"><span className="flex size-8 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary">AD</span><ChevronDown/></Button></DropdownMenuTrigger><DropdownMenuContent align="end" className="admin-theme"><DropdownMenuItem asChild><Link to="/admin/settings">Profile & settings</Link></DropdownMenuItem><DropdownMenuItem onSelect={()=>setExited(true)}>Close sample workspace</DropdownMenuItem><DropdownMenuItem asChild><Link to="/">Bank website</Link></DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></header>
+      <div className="border-b bg-warning-surface px-4 py-2.5 text-xs text-warning md:px-8">Demo mode · Sample users only. Changes last for this visit and are not saved to live banking services.</div>
+      {notice && <div role="status" className="mx-4 mt-4 flex items-center gap-3 rounded-md border bg-secondary p-3 text-sm md:mx-8"><CheckCircle2 className="size-5 shrink-0 text-primary"/><span className="flex-1">{notice}</span><Button size="icon" variant="ghost" aria-label="Dismiss notification" onClick={()=>setNotice('')}><X/></Button></div>}
+      <main className="mx-auto max-w-[1500px] p-4 md:p-8"><Outlet/></main>
+      <footer className="flex flex-wrap justify-between gap-2 px-4 py-6 text-xs text-muted-foreground md:px-8"><span>© 2026 VARENTA BANK</span><span>Transparent by Design. · Sample workspace</span></footer>
+    </div>
+  </div>;
+}
