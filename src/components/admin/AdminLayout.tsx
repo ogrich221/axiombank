@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
-import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock } from 'lucide-react';
+import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Logo } from '@/components/site/Logo';
@@ -18,9 +18,9 @@ export function AdminLayout() {
   return <AdminProvider onLocked={onLocked}><Workspace/></AdminProvider>;
 }
 function PasscodeGate({onUnlock}:{onUnlock:()=>void}) {
-  const unlock = useServerFn(unlockAdmin); const [error,setError] = useState(''); const [busy,setBusy] = useState(false);
+  const unlock = useServerFn(unlockAdmin); const [error,setError] = useState(''); const [busy,setBusy] = useState(false); const [visible,setVisible] = useState(false);
   async function submit(e: FormEvent<HTMLFormElement>) { e.preventDefault(); const passcode = String(new FormData(e.currentTarget).get('passcode') ?? ''); setBusy(true); setError(''); try { const r = await unlock({data:{passcode}}); if (r.ok) onUnlock(); else setError('Incorrect passcode.'); } catch { setError('Could not verify the passcode. Try again.'); } setBusy(false); }
-  return <div className="admin-theme flex min-h-screen items-center justify-center bg-muted px-5"><form onSubmit={submit} className="w-full max-w-sm rounded-lg border bg-background p-8"><Logo/><h1 className="mt-6 flex items-center gap-2 text-xl font-bold"><Lock className="size-5 text-primary"/>Admin access</h1><p className="mt-2 text-sm text-muted-foreground">Enter the administrator passcode to continue.</p><label className="mt-6 block text-sm font-medium">Passcode<input name="passcode" type="password" required autoFocus autoComplete="current-password" className="admin-field mt-2"/></label>{error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}<Button type="submit" className="mt-6 w-full" disabled={busy}>{busy?'Checking…':'Unlock dashboard'}</Button><Button variant="link" asChild className="mt-2 w-full"><Link to="/">Back to VARENTA BANK</Link></Button></form></div>;
+  return <div className="admin-theme flex min-h-screen items-center justify-center bg-muted px-5"><form onSubmit={submit} className="w-full max-w-sm rounded-lg border bg-background p-8"><Logo/><h1 className="mt-6 flex items-center gap-2 text-xl font-bold"><Lock className="size-5 text-primary"/>Admin access</h1><p className="mt-2 text-sm text-muted-foreground">Enter the administrator passcode to continue.</p><label className="mt-6 block text-sm font-medium">Passcode<span className="relative mt-2 block"><input name="passcode" type={visible?'text':'password'} required autoFocus autoComplete="current-password" className="admin-field pr-12"/><Button type="button" size="icon" variant="ghost" className="absolute right-1 top-0 h-10 w-10" aria-label={visible?'Hide passcode':'Show passcode'} title={visible?'Hide passcode':'Show passcode'} onClick={()=>setVisible(!visible)}>{visible?<EyeOff/>:<Eye/>}</Button></span></label>{error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}<Button type="submit" className="mt-6 w-full" disabled={busy}>{busy?'Checking…':'Unlock dashboard'}</Button><Button variant="link" asChild className="mt-2 w-full"><Link to="/">Back to VARENTA BANK</Link></Button></form></div>;
 }
 function Workspace() {
   const [collapsed,setCollapsed] = useState(false); const [mobile,setMobile] = useState(false); const {notice,setNotice,logout,read,loaded} = useAdmin();
