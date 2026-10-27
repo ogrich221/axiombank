@@ -1,0 +1,10 @@
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import { sampleUsers, sampleEvents, emptyFilters, type AdminUser, type AdminEvent, type UserFilters } from '@/lib/admin-demo';
+interface Workspace { users: AdminUser[]; events: AdminEvent[]; filters: UserFilters; setFilters: (value: UserFilters) => void; page: number; setPage: (page: number) => void; pageSize: number; setPageSize: (size: number) => void; saveUser: (user: AdminUser, action: string) => void; notice: string; setNotice: (value: string) => void; exited: boolean; setExited: (value: boolean) => void; read: boolean; setRead: (value: boolean) => void; }
+const AdminContext = createContext<Workspace | null>(null);
+export function AdminProvider({children}: {children: ReactNode}) {
+  const [users,setUsers] = useState(sampleUsers); const [events,setEvents] = useState(sampleEvents); const [filters,setFilters] = useState(emptyFilters); const [page,setPage] = useState(1); const [pageSize,setPageSize] = useState(10); const [notice,setNotice] = useState(''); const [exited,setExited] = useState(false); const [read,setRead] = useState(false);
+  function saveUser(user: AdminUser, action: string) { setUsers(old => old.some(u=>u.id===user.id) ? old.map(u=>u.id===user.id ? user : u) : [user,...old]); setEvents(old=>[{id:crypto.randomUUID(),actor:'Sample administrator',action,target:`${user.firstName} ${user.lastName}`,time:new Date().toISOString(),outcome:'Success (sample)'},...old]); setNotice(`${action} in sample workspace only. Not saved to live services.`); }
+  return <AdminContext.Provider value={{users,events,filters,setFilters,page,setPage,pageSize,setPageSize,saveUser,notice,setNotice,exited,setExited,read,setRead}}>{children}</AdminContext.Provider>;
+}
+export function useAdmin() { const value = useContext(AdminContext); if (!value) throw new Error('Admin workspace provider is missing'); return value; }
