@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg";
-import branchDesk from "@/assets/varenta-branch-operations.png.asset.json";
+import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
 import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
 
