@@ -17,9 +17,9 @@ import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VARENTA BANK — Transparent by Design" },
+      { title: "AXIOM BANK — Transparent by Design" },
       { name: "description", content: "Modern digital banking with clear fees, real-time clarity and tools that put you in control." },
-      { property: "og:title", content: "VARENTA BANK — Transparent by Design" },
+      { property: "og:title", content: "AXIOM BANK — Transparent by Design" },
       { property: "og:description", content: "Clear fees, real-time clarity and banking built around you." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -46,11 +46,11 @@ const pillars = [
   { icon: ShieldCheck, t: "Transparency at Every Step", d: "Every fee is listed in one simple schedule, shown before you confirm any transaction. We give you 30 days' notice before any change to your terms.", link: "Account terms" },
 ];
 const faqs = [
-  ["What makes VARENTA BANK different?", "We put clarity first: no monthly fees, no overdraft fees, and every charge is shown before you confirm a transaction."],
+  ["What makes AXIOM BANK different?", "We put clarity first: no monthly fees, no overdraft fees, and every charge is shown before you confirm a transaction."],
   ["Are there monthly account fees?", "No. The Everyday Account has a $0 monthly fee and no minimum balance. Full pricing is available on request from our support team."],
   ["How do I open an account?", "Apply online in about 10 minutes: enter your details, verify your identity with a government ID and a selfie, then start banking once approved — usually within 1 business day."],
-  ["How can I manage my card?", "In the VARENTA app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
-  ["How does VARENTA BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
+  ["How can I manage my card?", "In the AXIOM app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
+  ["How does AXIOM BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
   ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@varentabank.com."],
   ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the globe above for the full list."],
 ];
@@ -72,18 +72,18 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative isolate overflow-hidden">
-          <img src={heroBuilding.url} alt="VARENTA BANK headquarters building" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
+          <img src={heroBuilding.url} alt="AXIOM BANK headquarters building" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[78vh] items-center py-20 md:min-h-[86vh]">
             <div className="reveal max-w-2xl text-navy-foreground">
-              <div className="flex items-center gap-3" aria-label="VARENTA BANK">
+              <div className="flex items-center gap-3" aria-label="AXIOM BANK">
                 <svg width="44" height="44" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow-lg">
                   <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
                   <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
                   <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="flex flex-col leading-none">
-                  <span className="text-2xl font-extrabold tracking-[0.08em]">VARENTA</span>
+                  <span className="text-2xl font-extrabold tracking-[0.08em]">AXIOM</span>
                   <span className="mt-1 text-[0.65rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
                 </span>
               </div>
@@ -149,7 +149,7 @@ function Index() {
 
         {/* Agreement band */}
         <section id="agreement" className="relative isolate overflow-hidden bg-navy">
-          <img src={heroSigning.url} alt="Two clients signing VARENTA BANK account documents with an adviser beside them" loading="lazy" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_42%]" />
+          <img src={heroSigning.url} alt="Two clients signing AXIOM BANK account documents with an adviser beside them" loading="lazy" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_42%]" />
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[64vh] items-center py-16 md:min-h-[72vh]">
             <div className="reveal max-w-xl text-navy-foreground">
@@ -202,11 +202,11 @@ function Index() {
         {/* Human */}
         <section className="section-y">
           <div className="container-x grid items-center gap-12 lg:grid-cols-2">
-            <img src={branchDesk.url} alt="A VARENTA BANK banker at a branch desk with account services on screen behind him" loading="lazy" width={1536} height={1024} className="aspect-[4/3] w-full rounded-3xl object-cover object-[50%_42%] shadow-lift" />
+            <img src={branchDesk.url} alt="A AXIOM BANK banker at a branch desk with account services on screen behind him" loading="lazy" width={1536} height={1024} className="aspect-[4/3] w-full rounded-3xl object-cover object-[50%_42%] shadow-lift" />
             <div>
               <p className="eyebrow">Made for real life</p>
               <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08] text-navy">Money Is Personal. Banking Should Be Too.</h2>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">Your goals are your own. Whether you're building your savings, managing everyday expenses, or planning what's next, VARENTA BANK helps you move forward with greater confidence.</p>
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">Your goals are your own. Whether you're building your savings, managing everyday expenses, or planning what's next, AXIOM BANK helps you move forward with greater confidence.</p>
               <Button variant="navy" size="xl" className="mt-8" asChild>
                 <Link to="/open-account">Banking That Puts You First</Link>
               </Button>
@@ -263,18 +263,18 @@ function Index() {
 
         {/* Reception band */}
         <section id="visit" className="relative isolate overflow-hidden bg-navy">
-          <img src={reception.url} alt="A visitor signing in at a VARENTA BANK reception desk while a team member hands over a badge" loading="lazy" width={1400} height={939} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_28%]" />
+          <img src={reception.url} alt="A visitor signing in at a AXIOM BANK reception desk while a team member hands over a badge" loading="lazy" width={1400} height={939} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_28%]" />
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[58vh] items-center py-16 md:min-h-[66vh]">
             <div className="reveal max-w-xl text-navy-foreground">
-              <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+              <div className="flex items-center gap-2.5" aria-label="AXIOM BANK">
                 <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
                   <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
                   <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
                   <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span className="flex flex-col leading-none">
-                  <span className="text-lg font-extrabold tracking-[0.08em]">VARENTA</span>
+                  <span className="text-lg font-extrabold tracking-[0.08em]">AXIOM</span>
                   <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
                 </span>
               </div>
@@ -318,17 +318,17 @@ function Index() {
         <section className="pb-20">
           <div className="container-x">
             <div className="relative isolate overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-12 md:py-28">
-              <img src={counter.url} alt="A customer receiving a printed receipt at a VARENTA BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_50%]" />
+              <img src={counter.url} alt="A customer receiving a printed receipt at a AXIOM BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_50%]" />
               <div className="absolute inset-0 -z-10 bg-navy/82" aria-hidden="true" />
               <div className="relative flex flex-col items-center">
-                <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+                <div className="flex items-center gap-2.5" aria-label="AXIOM BANK">
                   <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
                     <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
                     <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
                     <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <span className="flex flex-col leading-none">
-                    <span className="text-lg font-extrabold tracking-[0.08em] text-navy-foreground">VARENTA</span>
+                    <span className="text-lg font-extrabold tracking-[0.08em] text-navy-foreground">AXIOM</span>
                     <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
                   </span>
                 </div>
@@ -336,7 +336,7 @@ function Index() {
                 <p className="mx-auto mt-4 max-w-lg text-lg text-navy-foreground/85">Clearer information. More confident decisions. Banking built around you.</p>
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account</Link></Button>
-                  <Button variant="quiet" size="xl" asChild><Link to="/about">Discover VARENTA</Link></Button>
+                  <Button variant="quiet" size="xl" asChild><Link to="/about">Discover AXIOM</Link></Button>
                 </div>
               </div>
             </div>
@@ -350,7 +350,7 @@ function Index() {
               <div className="reveal order-2 md:order-1">
                 <p className="eyebrow text-navy-foreground/90">Come in as you are</p>
                 <h2 className="mt-3 text-[clamp(1.9rem,5vw,3.4rem)] font-extrabold leading-[1.06]">Better Banking. <span className="text-primary">Brighter Futures.</span></h2>
-                <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every VARENTA branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
+                <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every AXIOM branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
                   <Button variant="quiet" size="xl" asChild><Link to="/contact">Talk to Our Team</Link></Button>
@@ -358,7 +358,7 @@ function Index() {
                 <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
               </div>
               <div className="reveal order-1 md:order-2">
-                <img src={branchPhoto.url} alt="A VARENTA BANK banker holding account documents inside a VARENTA BANK branch" loading="lazy" width={1305} height={1206} className="aspect-[1305/1206] w-full rounded-3xl border border-navy-foreground/15 object-cover shadow-lift" />
+                <img src={branchPhoto.url} alt="A AXIOM BANK banker holding account documents inside a AXIOM BANK branch" loading="lazy" width={1305} height={1206} className="aspect-[1305/1206] w-full rounded-3xl border border-navy-foreground/15 object-cover shadow-lift" />
               </div>
             </div>
           </div>

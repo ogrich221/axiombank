@@ -10,7 +10,7 @@ export const bankPages = {
     { title: 'Understand your return', body: 'The indicative savings rate is 4.10% annual percentage yield (APY). This is a draft rate, not a current offer. Rates may vary and must be confirmed in the account agreement before opening.', items: ['APY reflects the effect of compounding over a year', 'Variable rates can change', 'Eligibility, currency and account terms affect availability'] },
     { title: 'Keep your savings accessible', body: 'Check available funds before moving money back to your everyday account. Transfer timing, withdrawal conditions and applicable charges will be stated in your account terms.' }
   ], draft: true },
-  cards: { title: 'VARENTA Cards', category: 'Spend with confidence', description: 'Everyday payments, clear activity and card controls that put you in charge.', sections: [
+  cards: { title: 'AXIOM Cards', category: 'Spend with confidence', description: 'Everyday payments, clear activity and card controls that put you in charge.', sections: [
     { title: 'A card for everyday life', body: 'Use your eligible debit card for purchases online and in person, subject to your available balance, card limits and merchant acceptance.', items: ['Review purchases and pending authorizations', 'Manage online and international payment settings', 'Check the final amount and currency before paying'] },
     { title: 'Stay in control', body: 'Freeze a misplaced card, review recent transactions and contact support if a payment looks unfamiliar. Freezing a card may not stop transactions already authorized or recurring charges.', items: ['Freeze and unfreeze your card', 'Manage spending limits and PIN settings', 'Request help with a lost, stolen or damaged card'] },
     { title: 'Travel and cash withdrawals', body: 'Indicative pricing includes a 0% foreign card transaction fee and a $2.50 out-of-network ATM fee. ATM operators may charge separately, and currency conversion may affect the total. Confirm the fee schedule before using your card abroad.' }
@@ -20,8 +20,8 @@ export const bankPages = {
     { title: 'Make room for your priorities', body: 'Use patterns in your activity to plan a practical budget. Separate fixed commitments from flexible spending, then decide how much to set aside for savings.' },
     { title: 'Know the limits of an insight', body: 'Categories are informational and can be imperfect. Always use your account statement to verify settled transactions. Spending summaries are not investment, tax or financial advice.' }
   ] },
-  about: { title: 'About VARENTA BANK', category: 'Transparent by Design', description: 'Banking should be understandable, personal and built on trust.', image: 'building', sections: [
-    { title: 'Clarity is our starting point', body: 'VARENTA BANK is built around a simple belief: you should understand what happens to your money. Clear information, straightforward language and practical tools guide the experience.' },
+  about: { title: 'About AXIOM BANK', category: 'Transparent by Design', description: 'Banking should be understandable, personal and built on trust.', image: 'building', sections: [
+    { title: 'Clarity is our starting point', body: 'AXIOM BANK is built around a simple belief: you should understand what happens to your money. Clear information, straightforward language and practical tools guide the experience.' },
     { title: 'People behind the banking', body: 'Everyday questions deserve human answers. Our approach combines digital access with a support team that helps explain account activity, card issues and the next step in an application.' },
     { title: 'An international outlook', body: 'The proposed service covers residents of 54 countries across the Americas, Europe, Asia and Oceania. Residents of African countries are not currently eligible. Product access remains subject to verification and local requirements.' }
   ] },
@@ -30,12 +30,12 @@ export const bankPages = {
     { title: 'Make control practical', body: 'Useful tools start with everyday needs: checking activity, managing a card, setting savings goals and finding help. Simplicity means removing unnecessary friction, not removing important detail.' },
     { title: 'Treat trust as a responsibility', body: 'Security, privacy and customer support belong at the center of banking. We aim to communicate promptly about account issues and explain what you can do next.' }
   ] },
-  careers: { title: 'Careers at VARENTA', category: 'Build with purpose', description: 'Help make banking clearer, safer and more human.', image: 'desk', sections: [
+  careers: { title: 'Careers at AXIOM', category: 'Build with purpose', description: 'Help make banking clearer, safer and more human.', image: 'desk', sections: [
     { title: 'The work that matters', body: 'Our areas of focus include customer experience, engineering, product design, operations, risk and compliance. We value careful decisions, clear communication and respect for customers.' },
     { title: 'What we look for', body: 'Bring curiosity, sound judgment and a willingness to collaborate. Financial services experience may be relevant for specialist roles, while customer empathy matters across every team.' },
     { title: 'Current opportunities', body: 'No verified vacancies are published at this time. Contact the team to ask about future opportunities. Never send passport details, banking credentials or sensitive identity documents with a career inquiry.' }
   ] },
-  contact: { title: 'Contact VARENTA', category: 'Talk to our team', description: 'Reach the right place for account questions, card concerns and general inquiries.', kind: 'contact', draft: true, sections: [
+  contact: { title: 'Contact AXIOM', category: 'Talk to our team', description: 'Reach the right place for account questions, card concerns and general inquiries.', kind: 'contact', draft: true, sections: [
     { title: 'Account and card support', body: 'For a missing card or unfamiliar payment, use the official support channel once your account is active. Never share your password, full card number, PIN or a one-time security code by email.' },
     { title: 'General inquiries', body: 'Include a brief description of your question and the best way to reach you. For a payment question, avoid sending sensitive account information in an ordinary email.' },
     { title: 'Complaints and follow-up', body: 'Tell the team what happened, when it happened and the outcome you are seeking. Keep any reference number so you can follow up. Regulatory escalation details must be confirmed in the final account agreement.' }
@@ -47,7 +47,7 @@ export const bankPages = {
     { title: 'Unexpected activity', body: 'Review the merchant name and date. If you still do not recognize a payment, contact support immediately and keep a record of the transaction. Do not wait for another suspicious transaction.' }
   ] },
   faq: { title: 'Frequently Asked Questions', category: 'Answers, without the guesswork', description: 'The essentials about accounts, eligibility, fees and support.', kind: 'help', sections: [
-    { title: 'What makes VARENTA different?', body: 'Our focus is clear information, practical tools and a banking experience designed around everyday needs.' },
+    { title: 'What makes AXIOM different?', body: 'Our focus is clear information, practical tools and a banking experience designed around everyday needs.' },
     { title: 'Is there a monthly account fee?', body: 'The indicative Everyday Account monthly fee is $0, with no minimum balance and no overdraft fee. Other charges can apply; review the separate fee schedule.' },
     { title: 'Who can apply?', body: 'Residents of the 54 countries listed on the homepage can apply, subject to identity verification, local requirements and approval. African countries are not currently eligible.' },
     { title: 'How long does an application take?', body: 'The proposed application takes about 10 minutes, with an indicative review period of one business day. Additional checks may take longer. These timings are not a guarantee.' },
@@ -88,12 +88,12 @@ export const bankPages = {
     { title: 'Browser controls', body: 'Your browser can clear cookies and site data or block storage. Doing so may remove settings or affect functionality. For information about personal data, review the privacy policy.' }
   ] },
   disclosures: { title: 'Regulatory Disclosures', category: 'Important information', description: 'Verify the legal entity, licensing and deposit protection before making a financial decision.', draft: true, sections: [
-    { title: 'Bank identity and licensing', body: 'The displayed VARENTA BANK, N.A. name, New York address and NMLS ID #2489105 are unverified placeholders. They must not be treated as evidence of registration, authorization or a regulated banking relationship.' },
+    { title: 'Bank identity and licensing', body: 'The displayed AXIOM BANK, N.A. name, New York address and NMLS ID #2489105 are unverified placeholders. They must not be treated as evidence of registration, authorization or a regulated banking relationship.' },
     { title: 'Deposit protection', body: 'References on this site to FDIC membership and $250,000 protection are draft claims that require verification. Actual coverage depends on the insured institution, depositor, ownership category and account structure. Non-US customers should not assume US protection applies.' },
     { title: 'International availability', body: 'The proposed eligible-country list is not proof of local authorization. Products, currency support, consumer protection and tax obligations can vary. Final jurisdiction-specific disclosures are required.' },
     { title: 'No offer or financial advice', body: 'This website is draft informational content, not a binding offer, an investment recommendation or evidence of an active banking service. Confirm all rates, fees and legal details before use.' }
   ] },
-  login: { title: 'Account Access', category: 'Secure banking', description: 'Access to a live VARENTA banking account is not available on this website yet.', kind: 'login', sections: [
+  login: { title: 'Account Access', category: 'Secure banking', description: 'Access to a live AXIOM banking account is not available on this website yet.', kind: 'login', sections: [
     { title: 'Online banking is not connected', body: 'No customer sign-in service or account dashboard is currently connected. Do not enter a password, card PIN or banking credentials on this website.' },
     { title: 'Need help?', body: 'Visit the Help Center for general information or contact the team with questions about future account access. Verified sign-in and recovery channels will be provided when the banking service is available.' }
   ] }
@@ -101,5 +101,5 @@ export const bankPages = {
 export type BankPageKey = keyof typeof bankPages;
 export function bankPageHead(key: BankPageKey) {
   const page = bankPages[key];
-  return { meta: [{ title: `${page.title} — VARENTA BANK` }, { name: 'description', content: page.description }, { property: 'og:title', content: `${page.title} — VARENTA BANK` }, { property: 'og:description', content: page.description }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] };
+  return { meta: [{ title: `${page.title} — AXIOM BANK` }, { name: 'description', content: page.description }, { property: 'og:title', content: `${page.title} — AXIOM BANK` }, { property: 'og:description', content: page.description }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] };
 }
