@@ -69,7 +69,7 @@ function Index() {
       <main>
         {/* Hero */}
         <section className="relative isolate overflow-hidden">
-          <img src={heroSigning.url} alt="VARENTA BANK advisers signing account documents with a client" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_18%]" />
+          <img src={heroBuilding.url} alt="VARENTA BANK headquarters building" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[78vh] items-center py-20 md:min-h-[86vh]">
             <div className="reveal max-w-2xl text-navy-foreground">
@@ -144,6 +144,36 @@ function Index() {
           </div>
         </section>
 
+        {/* Agreement band */}
+        <section id="agreement" className="relative isolate overflow-hidden bg-navy">
+          <img src={heroSigning.url} alt="Two clients signing VARENTA BANK account documents with an adviser beside them" loading="lazy" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_42%]" />
+          <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
+          <div className="container-x flex min-h-[64vh] items-center py-16 md:min-h-[72vh]">
+            <div className="reveal max-w-xl text-navy-foreground">
+              <p className="eyebrow text-navy-foreground/90">Sign with confidence</p>
+              <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Everything in Writing. Nothing Hidden in the Fine Print.</h2>
+              <p className="mt-5 text-lg leading-relaxed text-navy-foreground/85">
+                From the moment you apply, you see the same information we do: what the account costs, what it earns, and what changes if anything does. No pressure, no small print, no surprises at the counter.
+              </p>
+              <ul className="mt-8 space-y-3">
+                {["Fees shown before you confirm any transaction", "Account terms written in plain English", "30 days' notice before any change to your terms"].map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-navy-foreground/85">
+                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />{item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button variant="hero" size="xl" asChild>
+                  <Link to="/open-account">Open Your Account <ArrowRight /></Link>
+                </Button>
+                <Button variant="quiet" size="xl" asChild>
+                  <Link to="/disclosures">Read the Disclosures</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flag-stripes h-1.5" aria-hidden="true" />
+        </section>
 
         {/* Trust */}
         <section id="security" className="section-y bg-navy text-navy-foreground">
