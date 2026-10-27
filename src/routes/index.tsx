@@ -8,7 +8,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg";
 import { BankingPreview } from "@/components/site/BankingPreview";
-import lifestyle from "@/assets/lifestyle.jpg";
+import branchDesk from "@/assets/vantera-bank-branch-operations.png.asset.json";
 import branchPhoto from "@/assets/vantera-bank-branch-portrait.png.asset.json";
 
 
@@ -165,7 +165,7 @@ function Index() {
         {/* Human */}
         <section className="section-y">
           <div className="container-x grid items-center gap-12 lg:grid-cols-2">
-            <img src={lifestyle} alt="A couple reviewing their finances together at the kitchen table" loading="lazy" width={1280} height={960} className="aspect-[4/3] w-full rounded-3xl object-cover shadow-lift" />
+            <img src={branchDesk.url} alt="A VANTERA BANK banker at a branch desk with account services on screen behind him" loading="lazy" width={1536} height={1024} className="aspect-[4/3] w-full rounded-3xl object-cover object-[50%_42%] shadow-lift" />
             <div>
               <p className="eyebrow">Made for real life</p>
               <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08] text-navy">Money Is Personal. Banking Should Be Too.</h2>
@@ -262,25 +262,27 @@ function Index() {
           </div>
         </section>
         {/* Branch band */}
-        <section className="relative isolate overflow-hidden bg-navy text-navy-foreground">
+        <section className="bg-navy text-navy-foreground">
           <div className="flag-stripes h-1.5" aria-hidden="true" />
-          <img src={branchPhoto.url} alt="A VARENTA BANK banker holding account documents inside a VARENTA BANK branch" loading="lazy" width={1305} height={1206} className="block h-[46vh] max-h-[420px] w-full object-cover object-[50%_18%] md:hidden" />
-          <img src={branchPhoto.url} alt="" aria-hidden="true" loading="lazy" width={1305} height={1206} className="absolute inset-0 -z-20 hidden h-full w-full object-cover object-[50%_22%] md:block" />
-          <div className="bg-branch-overlay absolute inset-0 -z-10 hidden md:block" aria-hidden="true" />
-          <div className="container-x md:flex md:min-h-[72vh] md:items-end md:pb-20 md:pt-32">
-            <div className="reveal max-w-xl py-14 md:py-0">
-
-              <p className="eyebrow text-navy-foreground/90">Come in as you are</p>
-              <h2 className="mt-3 text-[clamp(1.9rem,5vw,3.4rem)] font-extrabold leading-[1.06]">Better Banking. <span className="text-primary">Brighter Futures.</span></h2>
-              <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every VARENTA branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
-                <Button variant="quiet" size="xl" asChild><a href="mailto:support@varentabank.com">Talk to Our Team</a></Button>
+          <div className="container-x py-16 md:py-24">
+            <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+              <div className="reveal order-2 md:order-1">
+                <p className="eyebrow text-navy-foreground/90">Come in as you are</p>
+                <h2 className="mt-3 text-[clamp(1.9rem,5vw,3.4rem)] font-extrabold leading-[1.06]">Better Banking. <span className="text-primary">Brighter Futures.</span></h2>
+                <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every VARENTA branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
+                  <Button variant="quiet" size="xl" asChild><a href="mailto:support@varentabank.com">Talk to Our Team</a></Button>
+                </div>
+                <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
               </div>
-              <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
+              <div className="reveal order-1 md:order-2">
+                <img src={branchPhoto.url} alt="A VARENTA BANK banker holding account documents inside a VARENTA BANK branch" loading="lazy" width={1305} height={1206} className="aspect-[1305/1206] w-full rounded-3xl border border-navy-foreground/15 object-cover shadow-lift" />
+              </div>
             </div>
           </div>
         </section>
+
       </main>
 
       <Footer />
