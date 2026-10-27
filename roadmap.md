@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Display zero balances and connect Open Account applications to administrator confirmation
+- [x] Display zero balances and connect Open Account applications to administrator confirmation
 
 - [x] Add customer registration, sign-in, confirmation and password recovery
 - [x] Save owner-only profiles, applications and editable avatars
