@@ -33,13 +33,13 @@ export function RotatingCard() {
         ctx.fillStyle = navy; ctx.beginPath(); ctx.roundRect(0, 0, 1080, 680, 48); ctx.fill();
         ctx.fillStyle = red; ctx.fillRect(0, 540, 1080, 16);
         ctx.fillStyle = white; ctx.fillRect(0, 556, 1080, 8);
-        ctx.font = 'bold 44px sans-serif'; ctx.fillText('VARENTA BANK', 64, 95);
+        ctx.font = 'bold 44px sans-serif'; ctx.fillText('AXIOM BANK', 64, 95);
         ctx.font = '20px sans-serif'; ctx.fillText('TRANSPARENT BY DESIGN', 66, 132);
         if (back) {
           ctx.fillStyle = token('--foreground'); ctx.fillRect(0, 178, 1080, 126);
           ctx.fillStyle = white; ctx.fillRect(64, 346, 730, 66);
           ctx.fillStyle = navy; ctx.font = '30px monospace'; ctx.fillText(cardDisplay.securityCode, 695, 390);
-          ctx.fillStyle = white; ctx.font = '22px sans-serif'; ctx.fillText('VARENTA · DEBIT', 64, 490);
+          ctx.fillStyle = white; ctx.font = '22px sans-serif'; ctx.fillText('AXIOM · DEBIT', 64, 490);
           ctx.font = '18px sans-serif'; ctx.fillText('This card remains the property of the issuer.', 64, 615);
         } else {
           ctx.fillStyle = white; ctx.beginPath(); ctx.roundRect(66, 215, 128, 98, 15); ctx.fill();
@@ -85,9 +85,9 @@ export function RotatingCard() {
     }).catch(()=>setFailed(true));
     return ()=>{disposed=true;cleanup();};
   }, []);
-  return <section aria-label="VARENTA debit card display" className="relative bg-secondary">
-    <div ref={host} role="img" aria-label="Rotating VARENTA BANK debit card, cardholder name and all card numbers masked" className="card-stage h-[320px] w-full md:h-[420px]" />
-    {failed && <p className="absolute inset-0 flex items-center justify-center text-navy">VARENTA BANK · {cardDisplay.number}</p>}
+  return <section aria-label="AXIOM debit card display" className="relative bg-secondary">
+    <div ref={host} role="img" aria-label="Rotating AXIOM BANK debit card, cardholder name and all card numbers masked" className="card-stage h-[320px] w-full md:h-[420px]" />
+    {failed && <p className="absolute inset-0 flex items-center justify-center text-navy">AXIOM BANK · {cardDisplay.number}</p>}
     <Button variant="outline" size="icon" title={playing ? 'Pause rotation' : 'Resume rotation'} aria-label={playing ? 'Pause rotation' : 'Resume rotation'} className="absolute bottom-5 right-5" onClick={()=>{paused.current=!paused.current;setPlaying(!paused.current);}}>{playing ? <Pause className="size-4" /> : <Play className="size-4" />}</Button>
   </section>;
 }
