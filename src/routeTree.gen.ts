@@ -10,11 +10,84 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
+import { Route as CardsRouteImport } from './routes/cards'
+import { Route as CareersRouteImport } from './routes/careers'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiePreferencesRouteImport } from './routes/cookie-preferences'
+import { Route as DisclosuresRouteImport } from './routes/disclosures'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FeesRouteImport } from './routes/fees'
+import { Route as HelpCenterRouteImport } from './routes/help-center'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as OpenAccountRouteImport } from './routes/open-account'
+import { Route as OurApproachRouteImport } from './routes/our-approach'
+import { Route as PersonalBankingRouteImport } from './routes/personal-banking'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SavingsRouteImport } from './routes/savings'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SpendingInsightsRouteImport } from './routes/spending-insights'
+import { Route as TermsRouteImport } from './routes/terms'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardsRoute = CardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiePreferencesRoute = CookiePreferencesRouteImport.update({
+  id: '/cookie-preferences',
+  path: '/cookie-preferences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclosuresRoute = DisclosuresRouteImport.update({
+  id: '/disclosures',
+  path: '/disclosures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeesRoute = FeesRouteImport.update({
+  id: '/fees',
+  path: '/fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpCenterRoute = HelpCenterRouteImport.update({
+  id: '/help-center',
+  path: '/help-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OpenAccountRoute = OpenAccountRouteImport.update({
@@ -22,31 +95,199 @@ const OpenAccountRoute = OpenAccountRouteImport.update({
   path: '/open-account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OurApproachRoute = OurApproachRouteImport.update({
+  id: '/our-approach',
+  path: '/our-approach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalBankingRoute = PersonalBankingRouteImport.update({
+  id: '/personal-banking',
+  path: '/personal-banking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavingsRoute = SavingsRouteImport.update({
+  id: '/savings',
+  path: '/savings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpendingInsightsRoute = SpendingInsightsRouteImport.update({
+  id: '/spending-insights',
+  path: '/spending-insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
+  '/cards': typeof CardsRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
+  '/cookie-preferences': typeof CookiePreferencesRoute
+  '/disclosures': typeof DisclosuresRoute
+  '/faq': typeof FaqRoute
+  '/fees': typeof FeesRoute
+  '/help-center': typeof HelpCenterRoute
+  '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
+  '/our-approach': typeof OurApproachRoute
+  '/personal-banking': typeof PersonalBankingRoute
+  '/privacy': typeof PrivacyRoute
+  '/savings': typeof SavingsRoute
+  '/security': typeof SecurityRoute
+  '/spending-insights': typeof SpendingInsightsRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
+  '/cards': typeof CardsRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
+  '/cookie-preferences': typeof CookiePreferencesRoute
+  '/disclosures': typeof DisclosuresRoute
+  '/faq': typeof FaqRoute
+  '/fees': typeof FeesRoute
+  '/help-center': typeof HelpCenterRoute
+  '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
+  '/our-approach': typeof OurApproachRoute
+  '/personal-banking': typeof PersonalBankingRoute
+  '/privacy': typeof PrivacyRoute
+  '/savings': typeof SavingsRoute
+  '/security': typeof SecurityRoute
+  '/spending-insights': typeof SpendingInsightsRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
+  '/cards': typeof CardsRoute
+  '/careers': typeof CareersRoute
+  '/contact': typeof ContactRoute
+  '/cookie-preferences': typeof CookiePreferencesRoute
+  '/disclosures': typeof DisclosuresRoute
+  '/faq': typeof FaqRoute
+  '/fees': typeof FeesRoute
+  '/help-center': typeof HelpCenterRoute
+  '/login': typeof LoginRoute
   '/open-account': typeof OpenAccountRoute
+  '/our-approach': typeof OurApproachRoute
+  '/personal-banking': typeof PersonalBankingRoute
+  '/privacy': typeof PrivacyRoute
+  '/savings': typeof SavingsRoute
+  '/security': typeof SecurityRoute
+  '/spending-insights': typeof SpendingInsightsRoute
+  '/terms': typeof TermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/open-account'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/accessibility'
+    | '/cards'
+    | '/careers'
+    | '/contact'
+    | '/cookie-preferences'
+    | '/disclosures'
+    | '/faq'
+    | '/fees'
+    | '/help-center'
+    | '/login'
+    | '/open-account'
+    | '/our-approach'
+    | '/personal-banking'
+    | '/privacy'
+    | '/savings'
+    | '/security'
+    | '/spending-insights'
+    | '/terms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/open-account'
-  id: '__root__' | '/' | '/open-account'
+  to:
+    | '/'
+    | '/about'
+    | '/accessibility'
+    | '/cards'
+    | '/careers'
+    | '/contact'
+    | '/cookie-preferences'
+    | '/disclosures'
+    | '/faq'
+    | '/fees'
+    | '/help-center'
+    | '/login'
+    | '/open-account'
+    | '/our-approach'
+    | '/personal-banking'
+    | '/privacy'
+    | '/savings'
+    | '/security'
+    | '/spending-insights'
+    | '/terms'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/accessibility'
+    | '/cards'
+    | '/careers'
+    | '/contact'
+    | '/cookie-preferences'
+    | '/disclosures'
+    | '/faq'
+    | '/fees'
+    | '/help-center'
+    | '/login'
+    | '/open-account'
+    | '/our-approach'
+    | '/personal-banking'
+    | '/privacy'
+    | '/savings'
+    | '/security'
+    | '/spending-insights'
+    | '/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  AccessibilityRoute: typeof AccessibilityRoute
+  CardsRoute: typeof CardsRoute
+  CareersRoute: typeof CareersRoute
+  ContactRoute: typeof ContactRoute
+  CookiePreferencesRoute: typeof CookiePreferencesRoute
+  DisclosuresRoute: typeof DisclosuresRoute
+  FaqRoute: typeof FaqRoute
+  FeesRoute: typeof FeesRoute
+  HelpCenterRoute: typeof HelpCenterRoute
+  LoginRoute: typeof LoginRoute
   OpenAccountRoute: typeof OpenAccountRoute
+  OurApproachRoute: typeof OurApproachRoute
+  PersonalBankingRoute: typeof PersonalBankingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SavingsRoute: typeof SavingsRoute
+  SecurityRoute: typeof SecurityRoute
+  SpendingInsightsRoute: typeof SpendingInsightsRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +299,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cards': {
+      id: '/cards'
+      path: '/cards'
+      fullPath: '/cards'
+      preLoaderRoute: typeof CardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookie-preferences': {
+      id: '/cookie-preferences'
+      path: '/cookie-preferences'
+      fullPath: '/cookie-preferences'
+      preLoaderRoute: typeof CookiePreferencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclosures': {
+      id: '/disclosures'
+      path: '/disclosures'
+      fullPath: '/disclosures'
+      preLoaderRoute: typeof DisclosuresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fees': {
+      id: '/fees'
+      path: '/fees'
+      fullPath: '/fees'
+      preLoaderRoute: typeof FeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/help-center': {
+      id: '/help-center'
+      path: '/help-center'
+      fullPath: '/help-center'
+      preLoaderRoute: typeof HelpCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/open-account': {
       id: '/open-account'
       path: '/open-account'
@@ -65,12 +383,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OpenAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/our-approach': {
+      id: '/our-approach'
+      path: '/our-approach'
+      fullPath: '/our-approach'
+      preLoaderRoute: typeof OurApproachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personal-banking': {
+      id: '/personal-banking'
+      path: '/personal-banking'
+      fullPath: '/personal-banking'
+      preLoaderRoute: typeof PersonalBankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/savings': {
+      id: '/savings'
+      path: '/savings'
+      fullPath: '/savings'
+      preLoaderRoute: typeof SavingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/spending-insights': {
+      id: '/spending-insights'
+      path: '/spending-insights'
+      fullPath: '/spending-insights'
+      preLoaderRoute: typeof SpendingInsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  AccessibilityRoute: AccessibilityRoute,
+  CardsRoute: CardsRoute,
+  CareersRoute: CareersRoute,
+  ContactRoute: ContactRoute,
+  CookiePreferencesRoute: CookiePreferencesRoute,
+  DisclosuresRoute: DisclosuresRoute,
+  FaqRoute: FaqRoute,
+  FeesRoute: FeesRoute,
+  HelpCenterRoute: HelpCenterRoute,
+  LoginRoute: LoginRoute,
   OpenAccountRoute: OpenAccountRoute,
+  OurApproachRoute: OurApproachRoute,
+  PersonalBankingRoute: PersonalBankingRoute,
+  PrivacyRoute: PrivacyRoute,
+  SavingsRoute: SavingsRoute,
+  SecurityRoute: SecurityRoute,
+  SpendingInsightsRoute: SpendingInsightsRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

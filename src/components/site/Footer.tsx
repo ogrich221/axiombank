@@ -1,11 +1,12 @@
 import { Logo } from "./Logo";
+import { Link } from "@tanstack/react-router";
 
 const cols = [
-  { title: "Personal Banking", links: ["Accounts", "Savings", "Cards", "Spending Insights"] },
-  { title: "Company", links: ["About VARENTA", "Our Approach", "Careers", "Contact"] },
-  { title: "Support", links: ["Help Center", "Frequently Asked Questions", "Security", "Accessibility"] },
-  { title: "Legal", links: ["Privacy Policy", "Terms and Conditions", "Fee Schedule", "Cookie Preferences", "Regulatory Disclosures"] },
-];
+  { title: "Personal Banking", links: [["Accounts", "/personal-banking"], ["Savings", "/savings"], ["Cards", "/cards"], ["Spending Insights", "/spending-insights"]] },
+  { title: "Company", links: [["About VARENTA", "/about"], ["Our Approach", "/our-approach"], ["Careers", "/careers"], ["Contact", "/contact"]] },
+  { title: "Support", links: [["Help Center", "/help-center"], ["Frequently Asked Questions", "/faq"], ["Security", "/security"], ["Accessibility", "/accessibility"]] },
+  { title: "Legal", links: [["Privacy Policy", "/privacy"], ["Terms and Conditions", "/terms"], ["Fee Schedule", "/fees"], ["Cookie Preferences", "/cookie-preferences"], ["Regulatory Disclosures", "/disclosures"]] },
+] as const;
 
 export function Footer() {
   return (
@@ -20,9 +21,9 @@ export function Footer() {
           <div key={c.title}>
             <h3 className="text-sm font-semibold text-navy">{c.title}</h3>
             <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
-              {c.links.map((l) => (
+              {c.links.map(([l, to]) => (
                 <li key={l}>
-                  <a href={l === "Fee Schedule" ? "/#faq" : l === "Security" ? "/#security" : l === "Savings" || l === "Spending Insights" ? "/#features" : l.startsWith("About") || l === "Our Approach" ? "/#about" : "/#faq"} className="hover:text-navy">{l}</a>
+                  <Link to={to} className="hover:text-navy">{l}</Link>
                 </li>
               ))}
             </ul>
