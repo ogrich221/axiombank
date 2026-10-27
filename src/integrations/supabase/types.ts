@@ -80,6 +80,87 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_applications: {
+        Row: {
+          id: string
+          status: string
+          submitted_at: string
+          terms_accepted_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          status?: string
+          submitted_at?: string
+          terms_accepted_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          status?: string
+          submitted_at?: string
+          terms_accepted_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          address: string
+          avatar_path: string | null
+          city: string
+          country: string
+          created_at: string
+          date_of_birth: string | null
+          display_name: string
+          first_name: string
+          id: string
+          last_name: string
+          middle_name: string
+          nationality: string
+          notification_preferences: Json
+          phone: string
+          postal_code: string
+          region: string
+        }
+        Insert: {
+          address?: string
+          avatar_path?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          date_of_birth?: string | null
+          display_name?: string
+          first_name?: string
+          id: string
+          last_name?: string
+          middle_name?: string
+          nationality?: string
+          notification_preferences?: Json
+          phone?: string
+          postal_code?: string
+          region?: string
+        }
+        Update: {
+          address?: string
+          avatar_path?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          date_of_birth?: string | null
+          display_name?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          middle_name?: string
+          nationality?: string
+          notification_preferences?: Json
+          phone?: string
+          postal_code?: string
+          region?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

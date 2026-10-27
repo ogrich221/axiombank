@@ -8,6 +8,13 @@
       "when": 1793131901234,
       "tag": "0000_admin_directory",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793134554799,
+      "tag": "0001_customer_profiles_applications",
+      "breakpoints": true
     }
   ]
 }
