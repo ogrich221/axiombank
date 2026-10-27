@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { bankPages, type BankPageKey, type BankPage as PageData } from '@/lib/bank-pages';
-import building from '@/assets/hero-building.jpg.asset.json';
-import desk from '@/assets/varenta-branch-operations-final.png.asset.json';
+import building from '@/assets/axiom-hero-building.jpg.asset.json';
+import desk from '@/assets/axiom-branch-operations.jpg.asset.json';
 import { RotatingCard } from './RotatingCard';
 
 export function BankPage({ pageKey }: { pageKey: BankPageKey }) {
