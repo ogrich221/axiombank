@@ -1,9 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { BankPage } from '@/components/site/BankPage';
-import { bankPageHead } from '@/lib/bank-pages';
-
-export const Route = createFileRoute('/login')({
-  head: () => bankPageHead('login'),
-  component: Page,
-});
-function Page() { return <BankPage pageKey="login" />; }
+import { AuthPage } from '@/components/customer/AuthPage';
+import { customerHead } from '@/lib/customer-schemas';
+export const Route = createFileRoute('/login')({head: () => customerHead('Customer login', 'Sign in to your VARENTA customer workspace.'), component: AuthPage});
