@@ -172,7 +172,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      confirm_customer_application: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
