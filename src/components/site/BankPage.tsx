@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { bankPages, type BankPageKey, type BankPage as PageData } from '@/lib/bank-pages';
-import building from '@/assets/varenta-hero-signing.jpg.asset.json';
+import building from '@/assets/hero-building.jpg.asset.json';
 import desk from '@/assets/varenta-branch-operations-final.png.asset.json';
 import { RotatingCard } from './RotatingCard';
 
@@ -15,7 +15,7 @@ export function BankPage({ pageKey }: { pageKey: BankPageKey }) {
   const sections = page.sections.filter(section => page.kind !== 'help' || `${section.title} ${section.body}`.toLowerCase().includes(search.toLowerCase()));
   return <div className="min-h-screen"><Header /><main>
     <section className={`relative isolate overflow-hidden ${page.image ? 'bg-navy text-navy-foreground' : 'bg-secondary text-navy'}`}>
-      {page.image && <><img src={page.image === 'building' ? building.url : desk.url} alt={page.image === 'building' ? 'VARENTA BANK advisers at work' : 'VARENTA BANK branch service desk'} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_18%]" /><div className="bg-hero-overlay absolute inset-0 -z-10" /></>}
+      {page.image && <><img src={page.image === 'building' ? building.url : desk.url} alt={page.image === 'building' ? 'VARENTA BANK headquarters' : 'VARENTA BANK branch service desk'} className="absolute inset-0 -z-20 h-full w-full object-cover" /><div className="bg-hero-overlay absolute inset-0 -z-10" /></>}
       <div className="container-x py-12 md:py-20">
         <Link to="/" className={`text-sm ${page.image ? 'text-navy-foreground/80' : 'text-muted-foreground'} hover:underline`}>Home / {page.title}</Link>
         <p className="eyebrow mt-9">{page.category}</p>
