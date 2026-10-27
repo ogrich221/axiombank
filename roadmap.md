@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Repair stale profile edit drafts, inline validation and repeated photo selection; profile tests pass
+- [ ] Verify updated profile saving and photo upload while signed in (blocked: user must sign in through preview; automatic session unavailable)
+
 - [x] Improve personal profile layout and editing; verified no “customer workspace” wording remains; retained accurate financial availability notices (signed-in desktop/mobile and cancel editing verified; 12 tests passed)
 
 - [x] Retest admin sign-in, directory CRUD/status/search/export/audit/logout, confirmed application review, signed-in customer pages/profile/transfer preview/notifications/sign-out (20 unit tests pass; no browser runtime errors; temporary records removed)
