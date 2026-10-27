@@ -9,6 +9,7 @@ import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg.asset.json";
 import heroSigning from "@/assets/varenta-hero-signing.jpg.asset.json";
 import reception from "@/assets/varenta-reception-hero.jpg.asset.json";
+import counter from "@/assets/varenta-counter-hero.jpg.asset.json";
 import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
 import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
@@ -316,14 +317,23 @@ function Index() {
         {/* Final CTA */}
         <section className="pb-20">
           <div className="container-x">
-            <div className="relative overflow-hidden rounded-[2rem] bg-mint px-6 py-16 text-center sm:px-12 md:py-20">
-              <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 800 300" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M0 220 Q 200 140 400 200 T 800 160" fill="none" className="stroke-primary/25" strokeWidth="1.5" />
-                <path d="M0 250 Q 220 180 420 230 T 800 200" fill="none" className="stroke-primary/15" strokeWidth="1.5" />
-              </svg>
-              <div className="relative">
-                <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight text-navy">Feel Good About Your Money.</h2>
-                <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">Clearer information. More confident decisions. Banking built around you.</p>
+            <div className="relative isolate overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-12 md:py-24">
+              <img src={counter.url} alt="A customer receiving a printed receipt at a VARENTA BANK counter after completing a transaction" loading="lazy" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_62%]" />
+              <div className="absolute inset-0 -z-10 bg-navy/88" aria-hidden="true" />
+              <div className="relative flex flex-col items-center">
+                <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+                  <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
+                    <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
+                    <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
+                    <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span className="flex flex-col leading-none">
+                    <span className="text-lg font-extrabold tracking-[0.08em]">VARENTA</span>
+                    <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
+                  </span>
+                </div>
+                <h2 className="mt-6 text-[clamp(2rem,5vw,3.5rem)] font-extrabold leading-tight text-navy-foreground">Feel Good About Your Money.</h2>
+                <p className="mx-auto mt-4 max-w-lg text-lg text-navy-foreground/85">Clearer information. More confident decisions. Banking built around you.</p>
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account</Link></Button>
                   <Button variant="quiet" size="xl" asChild><Link to="/about">Discover VARENTA</Link></Button>
