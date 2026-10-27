@@ -259,6 +259,41 @@ function Index() {
           </div>
         </section>
 
+        {/* Reception band */}
+        <section id="visit" className="relative isolate overflow-hidden bg-navy">
+          <img src={reception.url} alt="A visitor signing in at a VARENTA BANK reception desk while a team member hands over a badge" loading="lazy" width={1400} height={939} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_28%]" />
+          <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
+          <div className="container-x flex min-h-[58vh] items-center py-16 md:min-h-[66vh]">
+            <div className="reveal max-w-xl text-navy-foreground">
+              <div className="flex items-center gap-2.5" aria-label="VARENTA BANK">
+                <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" className="drop-shadow">
+                  <rect width="32" height="32" rx="9" className="fill-navy-foreground" />
+                  <path d="M7 19h18" className="stroke-primary" strokeWidth="2.5" strokeLinecap="round" />
+                  <path d="M10 13.5l6 9 6-9" fill="none" className="stroke-navy" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="flex flex-col leading-none">
+                  <span className="text-lg font-extrabold tracking-[0.08em]">VARENTA</span>
+                  <span className="mt-1 text-[0.55rem] font-semibold tracking-[0.42em] text-navy-foreground/80">BANK</span>
+                </span>
+              </div>
+              <p className="eyebrow mt-7 text-navy-foreground/90">Visit us</p>
+              <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Walk In and See the Difference.</h2>
+              <p className="mt-5 text-lg leading-relaxed text-navy-foreground/85">
+                Prefer a face-to-face conversation? Our team will walk you through the account, the fees and the paperwork in plain language — then help you get started the same day.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button variant="hero" size="xl" asChild>
+                  <Link to="/contact">Talk to Our Team <ArrowRight /></Link>
+                </Button>
+                <Button variant="quiet" size="xl" asChild>
+                  <Link to="/open-account">Open Your Account</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="flag-stripes h-1.5" aria-hidden="true" />
+        </section>
+
         {/* FAQ */}
         <section id="faq" className="section-y">
           <div className="container-x max-w-3xl">
