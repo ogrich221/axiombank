@@ -6,12 +6,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import heroBuilding from "@/assets/hero-building.jpg.asset.json";
-import heroSigning from "@/assets/varenta-hero-signing.jpg.asset.json";
-import reception from "@/assets/varenta-reception-hero.jpg.asset.json";
-import counter from "@/assets/varenta-counter-hero-usd.jpg.asset.json";
-import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
-import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
+import heroBuilding from "@/assets/axiom-hero-building.jpg.asset.json";
+import heroSigning from "@/assets/axiom-hero-signing.jpg.asset.json";
+import reception from "@/assets/axiom-reception-hero.jpg.asset.json";
+import counter from "@/assets/axiom-counter-hero.jpg.asset.json";
+import branchDesk from "@/assets/axiom-branch-operations.jpg.asset.json";
+import branchPhoto from "@/assets/axiom-branch-portrait.jpg.asset.json";
 
 
 export const Route = createFileRoute("/")({
@@ -51,7 +51,7 @@ const faqs = [
   ["How do I open an account?", "Apply online in about 10 minutes: enter your details, verify your identity with a government ID and a selfie, then start banking once approved — usually within 1 business day."],
   ["How can I manage my card?", "In the AXIOM app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
   ["How does AXIOM BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
-  ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@varentabank.com."],
+  ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@axiombank.com."],
   ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the globe above for the full list."],
 ];
 
