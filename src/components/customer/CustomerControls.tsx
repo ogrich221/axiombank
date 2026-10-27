@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/site/Logo';
 
-export function Field({ label, error, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
+export function Field({ label, error, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string | undefined }) {
   return <label className="block text-sm font-medium"><span>{label}</span><input {...props} className="customer-field mt-2" aria-invalid={Boolean(error)} />{error && <span className="mt-1 block text-xs text-destructive">{error}</span>}</label>;
 }
 export function PasswordField({ label, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string }) {
