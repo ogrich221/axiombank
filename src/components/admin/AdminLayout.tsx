@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
-import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock } from 'lucide-react';
+import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Logo } from '@/components/site/Logo';
