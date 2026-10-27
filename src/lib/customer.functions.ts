@@ -4,7 +4,7 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { profileSchema, registrationSchema } from './customer-schemas';
 
 export const registerCustomer = createServerFn({ method: 'POST' })
-  .inputValidator((input: unknown) => registrationSchema.extend ? input : input)
+  .inputValidator((input: unknown) => registrationSchema.parse(input))
   .handler(async ({ data }) => {
     const input = registrationSchema.parse(data);
     const { createClient } = await import('@supabase/supabase-js');
