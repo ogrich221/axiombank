@@ -16,7 +16,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
-      <div className="container-x flex h-16 items-center justify-between gap-4 md:h-[72px]">
+      <div className="container-x flex h-16 items-center justify-between gap-2 md:h-[72px]">
         <Logo />
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-7 text-sm font-medium text-muted-foreground">
@@ -27,12 +27,12 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Button variant="ghost" className="hidden rounded-full text-navy sm:inline-flex" asChild>
             <a href="/#login">Log In</a>
           </Button>
-          <Button variant="hero" className="h-10 px-4 font-semibold" asChild>
-            <Link to="/open-account">Open an Account</Link>
+          <Button variant="hero" className="h-10 px-3.5 text-[0.8rem] font-semibold sm:px-4 sm:text-sm" asChild>
+            <Link to="/open-account"><span className="sm:hidden">Open Account</span><span className="hidden sm:inline">Open an Account</span></Link>
           </Button>
           <button
             type="button"
