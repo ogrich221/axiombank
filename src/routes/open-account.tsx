@@ -48,14 +48,14 @@ function OpenAccount() {
         <div className="container-x max-w-xl">
           <p className="eyebrow">Step 1 of 3 · Start your application</p>
           <h1 className="mt-3 text-[clamp(2rem,5vw,3rem)] font-extrabold leading-tight text-navy">Let's get you started.</h1>
-          <p className="mt-3 text-muted-foreground">Applications aren't open yet. Leave your details and we'll let you know when you can apply.</p>
+          <p className="mt-3 text-muted-foreground">Available to residents of 54 eligible countries. It takes about 10 minutes.</p>
 
           <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
             {done ? (
               <div className="text-center" role="status">
                 <CheckCircle2 className="mx-auto size-12 text-primary" />
-                <h2 className="mt-4 text-xl font-bold text-navy">Thanks — you're on the list.</h2>
-                <p className="mt-2 text-muted-foreground">We'll be in touch when applications open.</p>
+                <h2 className="mt-4 text-xl font-bold text-navy">Application started.</h2>
+                <p className="mt-2 text-muted-foreground">Check your email for a link to verify your identity (step 2).</p>
                 <Button variant="quiet" size="xl" className="mt-6" asChild><Link to="/">Back to home</Link></Button>
               </div>
             ) : (

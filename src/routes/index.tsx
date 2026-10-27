@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight, Receipt, Activity, SlidersHorizontal, Wallet, PiggyBank, CreditCard, PieChart,
-  ShieldCheck, Lock, Eye, ChevronDown,
+  ShieldCheck, Lock, Eye, ChevronDown, Globe2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { HeroDashboard } from "@/components/site/HeroDashboard";
+import heroBuilding from "@/assets/hero-building.jpg";
 import { BankingPreview } from "@/components/site/BankingPreview";
 import lifestyle from "@/assets/lifestyle.jpg";
 
@@ -24,6 +24,19 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const countries = ["United States", "Canada", "Mexico", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Portugal", "Italy", "Netherlands", "Belgium", "Luxembourg", "Switzerland", "Austria", "Denmark", "Sweden", "Norway", "Finland", "Iceland", "Poland", "Czechia", "Slovakia", "Hungary", "Slovenia", "Croatia", "Estonia", "Latvia", "Lithuania", "Greece", "Cyprus", "Malta", "Romania", "Bulgaria", "Japan", "South Korea", "Singapore", "Hong Kong", "Taiwan", "Australia", "New Zealand", "United Arab Emirates", "Qatar", "Saudi Arabia", "Israel", "India", "Malaysia", "Brazil", "Chile", "Argentina", "Colombia", "Peru", "Uruguay", "Costa Rica"];
+const fees = [
+  ["Monthly account fee", "$0"],
+  ["Minimum balance", "None"],
+  ["Debit card issuance & replacement", "Free (1st replacement each year), then $5"],
+  ["Domestic transfers (ACH)", "Free"],
+  ["International transfers", "0.5% (min $3, max $25)"],
+  ["Foreign card purchases", "0% — mid-market rate"],
+  ["In-network ATM withdrawals", "Free"],
+  ["Out-of-network ATM withdrawals", "$2.50 (operator fees may apply)"],
+  ["Overdraft fee", "$0 — we decline instead of charging"],
+  ["Savings account APY", "4.10% variable"],
+];
 const promises = [
   { n: "01", icon: Receipt, t: "Clear Fees", d: "Know what you pay before you commit. We make account charges, card fees, and applicable conditions easy to find and understand." },
   { n: "02", icon: Activity, t: "Real-Time Clarity", d: "See your transactions, monitor your spending, and understand your available balance in one intuitive place." },
@@ -36,18 +49,18 @@ const features = [
   { icon: PieChart, t: "Spending Insights", d: "Understand your spending patterns with intuitive summaries, helpful categories, and clear visual reports." },
 ];
 const pillars = [
-  { icon: Lock, t: "Security by Design", d: "Details of our account security measures, sign-in and authentication methods will be published here as they are confirmed.", link: "Security information" },
-  { icon: Eye, t: "Privacy With Purpose", d: "We explain in plain language what information we collect, why we use it, and how it is protected.", link: "Privacy policy" },
-  { icon: ShieldCheck, t: "Transparency at Every Step", d: "Important account terms, applicable charges and product conditions are easy to find and review.", link: "Account terms" },
+  { icon: Lock, t: "Security by Design", d: "256-bit TLS encryption, two-factor sign-in, biometric login, real-time fraud alerts and instant card freezing. Eligible US deposits are FDIC-insured up to $250,000 through our partner bank.", link: "Security information" },
+  { icon: Eye, t: "Privacy With Purpose", d: "We never sell your personal data. We collect only what we need to run your account and meet legal requirements, and you can download or delete your data anytime.", link: "Privacy policy" },
+  { icon: ShieldCheck, t: "Transparency at Every Step", d: "Every fee is listed in one simple schedule, shown before you confirm any transaction. We give you 30 days' notice before any change to your terms.", link: "Account terms" },
 ];
 const faqs = [
-  ["What makes VARENTA BANK different?", "We put clarity first: fees, balances and account conditions are shown plainly, so you always know where you stand."],
-  ["Are there monthly account fees?", "Our fee schedule is being finalised. Every applicable charge will be listed in the Fee Schedule before you open an account."],
-  ["How do I open an account?", "Start your application online, complete the identity checks, and begin banking once your application is approved."],
-  ["How can I manage my card?", "Card management tools will be available in the VARENTA BANK app. The exact list of card controls is to be confirmed."],
-  ["How does VARENTA BANK protect my information?", "Our Privacy Policy explains how information is collected, used and protected. Specific security measures will be detailed on our Security page."],
-  ["What happens if I need help with my account?", "Our Help Center will be your first stop. Support channels and hours are to be confirmed."],
-  ["Which countries or regions can open an account?", "Eligible countries and regions are still being confirmed and will be published before launch."],
+  ["What makes VARENTA BANK different?", "We put clarity first: no monthly fees, no overdraft fees, and every charge is shown before you confirm a transaction."],
+  ["Are there monthly account fees?", "No. The Everyday Account has a $0 monthly fee and no minimum balance. See the full fee schedule above."],
+  ["How do I open an account?", "Apply online in about 10 minutes: enter your details, verify your identity with a government ID and a selfie, then start banking once approved — usually within 1 business day."],
+  ["How can I manage my card?", "In the VARENTA app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
+  ["How does VARENTA BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
+  ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@varentabank.com."],
+  ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the full list above."],
 ];
 
 function SectionHead({ eyebrow, title, body }: { eyebrow?: string; title: string; body?: string }) {
@@ -66,14 +79,16 @@ function Index() {
       <Header />
       <main>
         {/* Hero */}
-        <section className="bg-hero">
-          <div className="container-x grid items-center gap-14 py-14 md:py-20 lg:grid-cols-[1.05fr_1fr] lg:py-24">
-            <div className="reveal">
-              <p className="eyebrow">Banking, made clear.</p>
-              <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] font-extrabold leading-[1.02] text-navy">
-                Your Money. Your Clarity. <span className="text-primary">Your Future.</span>
+        <section className="relative isolate overflow-hidden">
+          <img src={heroBuilding} alt="VARENTA BANK headquarters building" width={1920} height={1088} className="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_center]" />
+          <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
+          <div className="container-x flex min-h-[78vh] items-center py-20 md:min-h-[86vh]">
+            <div className="reveal max-w-2xl text-navy-foreground">
+              <p className="eyebrow text-navy-foreground/90">★ Banking, made clear.</p>
+              <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] font-extrabold leading-[1.02]">
+                Your Money. Your Clarity. <span className="text-primary [text-shadow:0_2px_20px_oklch(1_0_0/25%)]">Your Future.</span>
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-navy-foreground/85">
                 Meet a better way to bank. See where your money goes, understand what you pay, and manage your finances with confidence. No unnecessary complexity. Just banking designed around you.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -84,12 +99,10 @@ function Index() {
                   <a href="#features">Explore Our Banking</a>
                 </Button>
               </div>
-              <p className="mt-6 text-sm text-muted-foreground">Simple to understand. Secure by design. Built around you.</p>
-            </div>
-            <div className="reveal [animation-delay:150ms]">
-              <HeroDashboard />
+              <p className="mt-6 text-sm text-navy-foreground/80">Simple to understand. Secure by design. Built around you. · Available in 54 countries.</p>
             </div>
           </div>
+          <div className="flag-stripes h-1.5" aria-hidden="true" />
         </section>
 
         {/* Transparency */}
@@ -152,7 +165,7 @@ function Index() {
                   <p.icon className="size-7 text-primary" strokeWidth={1.5} />
                   <h3 className="mt-5 text-xl font-bold">{p.t}</h3>
                   <p className="mt-3 leading-relaxed text-navy-foreground/70">{p.d}</p>
-                  <a href="#" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary">{p.link} <ArrowRight className="size-4" /></a>
+                  <a href="#faq" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary">{p.link} <ArrowRight className="size-4" /></a>
                 </div>
               ))}
             </div>
@@ -190,6 +203,34 @@ function Index() {
             <div className="mt-10 text-center">
               <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
               <p className="mt-4 text-sm text-muted-foreground">Eligibility, verification, and approval requirements apply.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Fees & eligibility */}
+        <section id="fees" className="section-y">
+          <div className="container-x grid gap-10 lg:grid-cols-2">
+            <div className="rounded-3xl border border-border bg-card p-7 shadow-soft sm:p-9">
+              <p className="eyebrow">Fee schedule</p>
+              <h2 className="mt-3 text-3xl font-extrabold text-navy">Everything you'll pay. In one place.</h2>
+              <dl className="mt-6 divide-y divide-border">
+                {fees.map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-4 py-3 text-sm">
+                    <dt className="text-muted-foreground">{k}</dt>
+                    <dd className="text-right font-semibold text-navy">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <div id="eligibility" className="rounded-3xl bg-navy p-7 text-navy-foreground sm:p-9">
+              <Globe2 className="size-8 text-primary" strokeWidth={1.5} />
+              <h2 className="mt-4 text-3xl font-extrabold">Available in 54 countries.</h2>
+              <p className="mt-3 text-navy-foreground/70">Residents of the following countries can apply. Residents of African countries are not currently eligible.</p>
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {countries.map((c) => (
+                  <li key={c} className="rounded-full border border-navy-foreground/20 px-3 py-1 text-xs">{c}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </section>

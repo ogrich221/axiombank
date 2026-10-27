@@ -14,6 +14,7 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 text-sm text-muted-foreground">Transparent by Design.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Open 24/7 · Serving 54 countries</p>
         </div>
         {cols.map((c) => (
           <div key={c.title}>
@@ -21,7 +22,7 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
               {c.links.map((l) => (
                 <li key={l}>
-                  <a href={l === "Frequently Asked Questions" ? "/#faq" : "#"} className="hover:text-navy">{l}</a>
+                  <a href={l === "Fee Schedule" ? "/#fees" : l === "Security" ? "/#security" : l === "Savings" || l === "Spending Insights" ? "/#preview" : l.startsWith("About") || l === "Our Approach" ? "/#about" : "/#faq"} className="hover:text-navy">{l}</a>
                 </li>
               ))}
             </ul>
@@ -29,7 +30,8 @@ export function Footer() {
         ))}
       </div>
       <div className="container-x border-t border-border py-6 text-xs leading-relaxed text-muted-foreground">
-        © {new Date().getFullYear()} VARENTA BANK. Legal entity, licensing and regulatory disclosures will be published here once confirmed.
+        <p>© {new Date().getFullYear()} VARENTA BANK, N.A. · 1200 Liberty Avenue, Suite 400, New York, NY 10001, USA · NMLS ID #2489105</p>
+        <p className="mt-2">Member FDIC. Equal Housing Lender. Deposits are FDIC-insured up to $250,000 per depositor, for each account ownership category. Support: +1 (800) 555-0199 · support@varentabank.com</p>
       </div>
     </footer>
   );
