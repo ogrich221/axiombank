@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Upgrade profile overview and domestic/international transfer review, PIN authorization, confirmed status and duplicate protection (live money movement blocked: banking/payment provider and approved currency/destination coverage required)
+
 - [x] Repair stale profile edit drafts, inline validation and repeated photo selection; profile tests pass
 - [ ] Verify updated profile saving and photo upload while signed in (blocked: user must sign in through preview; automatic session unavailable)
 
