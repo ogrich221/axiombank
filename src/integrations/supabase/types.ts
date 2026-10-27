@@ -14,7 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_events: {
+        Row: {
+          action: string
+          actor: string
+          id: string
+          outcome: string
+          target: string
+          time: string
+        }
+        Insert: {
+          action: string
+          actor: string
+          id?: string
+          outcome?: string
+          target: string
+          time?: string
+        }
+        Update: {
+          action?: string
+          actor?: string
+          id?: string
+          outcome?: string
+          target?: string
+          time?: string
+        }
+        Relationships: []
+      }
+      admin_users: {
+        Row: {
+          activity: string | null
+          email: string
+          first_name: string
+          id: string
+          joined: string
+          last_name: string
+          phone: string
+          role: string
+          status: string
+          verified: boolean
+        }
+        Insert: {
+          activity?: string | null
+          email: string
+          first_name: string
+          id: string
+          joined?: string
+          last_name: string
+          phone?: string
+          role?: string
+          status?: string
+          verified?: boolean
+        }
+        Update: {
+          activity?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          joined?: string
+          last_name?: string
+          phone?: string
+          role?: string
+          status?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
