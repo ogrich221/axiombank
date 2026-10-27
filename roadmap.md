@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Make profile editing and photo controls reliably functional and verify saved changes
+
 - [x] Improve personal profile layout and editing; verified no “customer workspace” wording remains; retained accurate financial availability notices (signed-in desktop/mobile and cancel editing verified; 12 tests passed)
 
 - [x] Retest admin sign-in, directory CRUD/status/search/export/audit/logout, confirmed application review, signed-in customer pages/profile/transfer preview/notifications/sign-out (20 unit tests pass; no browser runtime errors; temporary records removed)
