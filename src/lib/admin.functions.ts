@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
-import { useSession } from '@tanstack/react-start/server';
+import { useSession, setResponseHeader } from '@tanstack/react-start/server';
 import type { AdminUser, AdminEvent } from './admin-demo';
+import { confirmApplicationSchema, type AdminApplication } from './customer-account-state';
 
 type GateSession = { unlocked?: boolean };
 
@@ -18,6 +19,7 @@ async function passcodeMatches(input: string, expected: string) {
 }
 
 async function requireUnlocked() {
+  setResponseHeader('Cache-Control', 'no-store');
   const session = await useSession<GateSession>(sessionConfig());
   if (!session.data.unlocked) throw new Error('Admin passcode required');
 }
@@ -52,13 +54,32 @@ export const lockAdmin = createServerFn({ method: 'POST' }).handler(async () => 
 export const getAdminData = createServerFn({ method: 'GET' }).handler(async () => {
   await requireUnlocked();
   const client = await db();
-  const [users, events] = await Promise.all([
+  const [users, events, applications, profiles] = await Promise.all([
     client.from('admin_users').select('*').order('joined', { ascending: false }),
     client.from('admin_events').select('*').order('time', { ascending: false }).limit(500),
+    client.from('customer_applications').select('id,user_id,submitted_at,admin_review_status,admin_reviewed_at').order('submitted_at', { ascending: false }),
+    client.from('profiles').select('id,first_name,last_name,phone,country,address,city'),
   ]);
-  if (users.error || events.error) { console.error(users.error ?? events.error); throw new Error('Could not load the user directory'); }
-  return { users: (users.data as Row[]).map(toUser), events: events.data as AdminEvent[] };
+  if (users.error || events.error || applications.error || profiles.error) throw new Error('Could not load the user directory');
+  const profileMap = new Map(profiles.data.map(p => [p.id, p]));
+  const customerApplications: AdminApplication[] = await Promise.all(applications.data.map(async a => {
+    const p = profileMap.get(a.user_id);
+    const { data, error } = await client.auth.admin.getUserById(a.user_id);
+    if (error) throw new Error('Could not load an applicant');
+    return { id: a.id, userId: a.user_id, firstName: p?.first_name ?? '', lastName: p?.last_name ?? '', phone: p?.phone ?? '', country: p?.country ?? '', address: [p?.address, p?.city].filter(Boolean).join(', '), email: data.user.email ?? '', emailVerified: Boolean(data.user.email_confirmed_at), submittedAt: a.submitted_at, reviewStatus: a.admin_review_status, reviewedAt: a.admin_reviewed_at };
+  }));
+  return { users: (users.data as Row[]).map(toUser), events: events.data as AdminEvent[], applications: customerApplications };
 });
+
+export const confirmCustomerApplication = createServerFn({ method: 'POST' })
+  .inputValidator((input: unknown) => confirmApplicationSchema.parse(input))
+  .handler(async ({ data }) => {
+    await requireUnlocked();
+    const client = await db();
+    const { error } = await client.rpc('confirm_customer_application', { application_id: data.id });
+    if (error) throw new Error('This application could not be confirmed. Refresh and try again.');
+    return { ok: true as const };
+  });
 
 export const saveAdminUser = createServerFn({ method: 'POST' })
   .inputValidator((data: { user: AdminUser; isNew: boolean }) => data)
