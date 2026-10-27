@@ -9,7 +9,7 @@ import { routeTree } from "@/routeTree.gen";
 describe("App routing", () => {
   it("matches admin overview, directory, and nested user screens", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
-    for (const path of ["/admin", "/admin/users", "/admin/users/new", "/admin/users/VR-001042", "/admin/users/VR-001042/edit", "/admin/roles", "/admin/activity", "/admin/notifications", "/admin/settings", "/admin/help"]) {
+    for (const path of ["/admin", "/admin/users", "/admin/users/new", "/admin/users/VR-001042", "/admin/users/VR-001042/edit", "/admin/activity", "/admin/notifications", "/admin/settings", "/admin/help"]) {
       expect(router.matchRoutes(path).at(-1)?.routeId).not.toBe(rootRouteId);
       expect(router.matchRoutes(path).at(-1)?.routeId).toContain("/admin");
     }

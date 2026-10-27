@@ -34,7 +34,6 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminHelpRouteImport } from './routes/admin.help'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
-import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
@@ -168,11 +167,6 @@ const AdminNotificationsRoute = AdminNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminRolesRoute = AdminRolesRouteImport.update({
-  id: '/roles',
-  path: '/roles',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -234,7 +228,6 @@ export interface FileRoutesByFullPath {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
@@ -268,7 +261,6 @@ export interface FileRoutesByTo {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin': typeof AdminIndexRoute
   '/admin/users/new': typeof AdminUsersNewRoute
@@ -302,7 +294,6 @@ export interface FileRoutesById {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
-  '/admin/roles': typeof AdminRolesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
@@ -339,7 +330,6 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/help'
     | '/admin/notifications'
-    | '/admin/roles'
     | '/admin/settings'
     | '/admin/users'
     | '/admin/'
@@ -373,7 +363,6 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/help'
     | '/admin/notifications'
-    | '/admin/roles'
     | '/admin/settings'
     | '/admin'
     | '/admin/users/new'
@@ -406,7 +395,6 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/help'
     | '/admin/notifications'
-    | '/admin/roles'
     | '/admin/settings'
     | '/admin/users'
     | '/admin/'
@@ -618,13 +606,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNotificationsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/roles': {
-      id: '/admin/roles'
-      path: '/roles'
-      fullPath: '/admin/roles'
-      preLoaderRoute: typeof AdminRolesRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -710,7 +691,6 @@ interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminHelpRoute: typeof AdminHelpRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
-  AdminRolesRoute: typeof AdminRolesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
@@ -720,7 +700,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminHelpRoute: AdminHelpRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
-  AdminRolesRoute: AdminRolesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
