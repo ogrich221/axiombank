@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { sampleUsers, filterUsers, emptyFilters, validateUser } from '@/lib/admin-demo';
+import { filterUsers, emptyFilters, validateUser, type AdminUser } from '@/lib/admin-demo';
+const names: [string,string][] = [['Olivia','Bennett'],['James','Wilson'],['Emma','Thompson'],['Noah','Anderson'],['Sophia','Martinez'],['Liam','Chen'],['Isabella','Taylor'],['Oliver','Davis'],['Mia','Robinson'],['Ethan','Clark'],['Amelia','Lewis'],['Lucas','Walker'],['Charlotte','Young'],['Henry','Allen'],['Harper','King'],['Daniel','Wright'],['Evelyn','Scott'],['Alexander','Green'],['Abigail','Baker'],['Benjamin','Adams'],['Ella','Nelson'],['Jack','Carter'],['Grace','Mitchell'],['Leo','Turner']];
+const sampleUsers: AdminUser[] = names.map(([firstName,lastName], i) => ({ id: `VR-${String(1042+i).padStart(6,'0')}`, firstName, lastName, email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`, phone: '', role: i === 6 ? 'Support' : i === 12 ? 'Auditor' : 'Customer', status: i % 7 === 4 ? 'Suspended' : i % 5 === 2 ? 'Pending' : 'Active', joined: `2026-10-${String(26-i).padStart(2,'0')}T09:00:00Z`, activity: i % 5 === 2 ? null : `2026-10-27T${String(18-i%8).padStart(2,'0')}:24:00Z`, verified: i % 5 !== 2 }));
 describe('Sample administrator directory',()=>{
  it('searches by name, email and user ID',()=>{for(const query of ['Olivia','olivia.bennett@example.com','VR-001042']) expect(filterUsers(sampleUsers,{...emptyFilters,query}).map(u=>u.id)).toEqual(['VR-001042']);});
  it('applies status and role filters together',()=>{expect(filterUsers(sampleUsers,{...emptyFilters,status:'Active',role:'Support'}).map(u=>u.id)).toEqual(['VR-001048']);});
