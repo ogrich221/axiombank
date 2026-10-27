@@ -22,7 +22,7 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-muted-foreground">
               {c.links.map((l) => (
                 <li key={l}>
-                  <a href={l === "Fee Schedule" ? "/#fees" : l === "Security" ? "/#security" : l === "Savings" || l === "Spending Insights" ? "/#preview" : l.startsWith("About") || l === "Our Approach" ? "/#about" : "/#faq"} className="hover:text-navy">{l}</a>
+                  <a href={l === "Fee Schedule" ? "/#faq" : l === "Security" ? "/#security" : l === "Savings" || l === "Spending Insights" ? "/#preview" : l.startsWith("About") || l === "Our Approach" ? "/#about" : "/#faq"} className="hover:text-navy">{l}</a>
                 </li>
               ))}
             </ul>

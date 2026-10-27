@@ -25,18 +25,6 @@ export const Route = createFileRoute("/")({
 });
 
 const countries = ["United States", "Canada", "Mexico", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Portugal", "Italy", "Netherlands", "Belgium", "Luxembourg", "Switzerland", "Austria", "Denmark", "Sweden", "Norway", "Finland", "Iceland", "Poland", "Czechia", "Slovakia", "Hungary", "Slovenia", "Croatia", "Estonia", "Latvia", "Lithuania", "Greece", "Cyprus", "Malta", "Romania", "Bulgaria", "Japan", "South Korea", "Singapore", "Hong Kong", "Taiwan", "Australia", "New Zealand", "United Arab Emirates", "Qatar", "Saudi Arabia", "Israel", "India", "Malaysia", "Brazil", "Chile", "Argentina", "Colombia", "Peru", "Uruguay", "Costa Rica"];
-const fees = [
-  ["Monthly account fee", "$0"],
-  ["Minimum balance", "None"],
-  ["Debit card issuance & replacement", "Free (1st replacement each year), then $5"],
-  ["Domestic transfers (ACH)", "Free"],
-  ["International transfers", "0.5% (min $3, max $25)"],
-  ["Foreign card purchases", "0% — mid-market rate"],
-  ["In-network ATM withdrawals", "Free"],
-  ["Out-of-network ATM withdrawals", "$2.50 (operator fees may apply)"],
-  ["Overdraft fee", "$0 — we decline instead of charging"],
-  ["Savings account APY", "4.10% variable"],
-];
 const promises = [
   { n: "01", icon: Receipt, t: "Clear Fees", d: "Know what you pay before you commit. We make account charges, card fees, and applicable conditions easy to find and understand." },
   { n: "02", icon: Activity, t: "Real-Time Clarity", d: "See your transactions, monitor your spending, and understand your available balance in one intuitive place." },
@@ -55,12 +43,12 @@ const pillars = [
 ];
 const faqs = [
   ["What makes VARENTA BANK different?", "We put clarity first: no monthly fees, no overdraft fees, and every charge is shown before you confirm a transaction."],
-  ["Are there monthly account fees?", "No. The Everyday Account has a $0 monthly fee and no minimum balance. See the full fee schedule above."],
+  ["Are there monthly account fees?", "No. The Everyday Account has a $0 monthly fee and no minimum balance. Full pricing is available on request from our support team."],
   ["How do I open an account?", "Apply online in about 10 minutes: enter your details, verify your identity with a government ID and a selfie, then start banking once approved — usually within 1 business day."],
   ["How can I manage my card?", "In the VARENTA app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
   ["How does VARENTA BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
   ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@varentabank.com."],
-  ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the full list above."],
+  ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the globe above for the full list."],
 ];
 
 function SectionHead({ eyebrow, title, body }: { eyebrow?: string; title: string; body?: string }) {
@@ -84,7 +72,7 @@ function Index() {
           <div className="bg-hero-overlay absolute inset-0 -z-10" aria-hidden="true" />
           <div className="container-x flex min-h-[78vh] items-center py-20 md:min-h-[86vh]">
             <div className="reveal max-w-2xl text-navy-foreground">
-              <p className="eyebrow text-navy-foreground/90">★ Banking, made clear.</p>
+              <p className="eyebrow text-navy-foreground/90"><span className="mr-2 tracking-normal text-primary" aria-label="5 stars">★★★★★</span>Banking, made clear.</p>
               <h1 className="mt-4 text-[clamp(2.4rem,6vw,4.5rem)] font-extrabold leading-[1.02]">
                 Your Money. Your Clarity. <span className="text-primary [text-shadow:0_2px_20px_oklch(1_0_0/25%)]">Your Future.</span>
               </h1>
@@ -207,28 +195,27 @@ function Index() {
           </div>
         </section>
 
-        {/* Fees & eligibility */}
-        <section id="fees" className="section-y">
-          <div className="container-x grid gap-10 lg:grid-cols-2">
-            <div className="rounded-3xl border border-border bg-card p-7 shadow-soft sm:p-9">
-              <p className="eyebrow">Fee schedule</p>
-              <h2 className="mt-3 text-3xl font-extrabold text-navy">Everything you'll pay. In one place.</h2>
-              <dl className="mt-6 divide-y divide-border">
-                {fees.map(([k, v]) => (
-                  <div key={k} className="flex justify-between gap-4 py-3 text-sm">
-                    <dt className="text-muted-foreground">{k}</dt>
-                    <dd className="text-right font-semibold text-navy">{v}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-            <div id="eligibility" className="rounded-3xl bg-navy p-7 text-navy-foreground sm:p-9">
-              <Globe2 className="size-8 text-primary" strokeWidth={1.5} />
-              <h2 className="mt-4 text-3xl font-extrabold">Available in 54 countries.</h2>
-              <p className="mt-3 text-navy-foreground/70">Residents of the following countries can apply. Residents of African countries are not currently eligible.</p>
-              <ul className="mt-6 flex flex-wrap gap-2">
-                {countries.map((c) => (
-                  <li key={c} className="rounded-full border border-navy-foreground/20 px-3 py-1 text-xs">{c}</li>
+        {/* Eligibility globe */}
+        <section id="eligibility" className="section-y overflow-hidden bg-navy text-navy-foreground">
+          <div className="container-x text-center">
+            <p className="eyebrow">Where we bank</p>
+            <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Available in 54 countries.</h2>
+            <p className="mx-auto mt-4 max-w-xl text-navy-foreground/70">Residents of these countries can apply. Residents of African countries are not currently eligible.</p>
+            <div className="relative mx-auto mt-12 aspect-square w-full max-w-[640px]">
+              <div className="globe-sphere absolute inset-0 rounded-full" aria-hidden="true" />
+              <svg viewBox="0 0 200 200" className="globe-spin absolute inset-0 h-full w-full" aria-hidden="true">
+                <g fill="none" className="stroke-navy-foreground/15" strokeWidth="0.4">
+                  {[20, 45, 70, 90].map((rx) => <ellipse key={rx} cx="100" cy="100" rx={rx} ry="99" />)}
+                  {[-70, -40, 0, 40, 70].map((y) => { const r = Math.sqrt(99 * 99 - y * y); return <ellipse key={y} cx="100" cy={100 + y} rx={r} ry={r * 0.12} />; })}
+                </g>
+              </svg>
+              <ul className="absolute inset-[8%] flex flex-col justify-center gap-[1.2%]" aria-label="Eligible countries">
+                {[3, 5, 6, 7, 8, 8, 7, 6, 4].reduce<{ rows: string[][]; i: number }>((acc, n) => { acc.rows.push(countries.slice(acc.i, acc.i + n)); acc.i += n; return acc; }, { rows: [], i: 0 }).rows.map((row, r) => (
+                  <li key={r} className="flex flex-wrap justify-center gap-x-[1.5%] gap-y-1">
+                    {row.map((c) => (
+                      <span key={c} className="globe-chip rounded-full px-[0.5em] py-[0.15em] text-[clamp(0.5rem,1.5vw,0.78rem)] font-medium whitespace-nowrap">{c}</span>
+                    ))}
+                  </li>
                 ))}
               </ul>
             </div>
