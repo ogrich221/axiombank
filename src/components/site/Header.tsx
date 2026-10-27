@@ -14,12 +14,12 @@ const languages = [
 ];
 
 const nav = [
-  { label: "Personal Banking", href: "/#features" },
-  { label: "Savings", href: "/#features" },
-  { label: "Cards", href: "/#features" },
-  { label: "About Us", href: "/#about" },
-  { label: "Help & Support", href: "/#faq" },
-];
+  { label: "Personal Banking", href: "/personal-banking" },
+  { label: "Savings", href: "/savings" },
+  { label: "Cards", href: "/cards" },
+  { label: "About Us", href: "/about" },
+  { label: "Help & Support", href: "/help-center" },
+] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -37,27 +37,29 @@ export function Header() {
           <ul className="flex items-center gap-7 text-sm font-medium text-muted-foreground">
             {nav.map((n) => (
               <li key={n.label}>
-                <a href={n.href} className="transition-colors hover:text-navy">{n.label}</a>
+                <Link to={n.href} className="transition-colors hover:text-navy">{n.label}</Link>
               </li>
             ))}
           </ul>
         </nav>
         <div className="flex items-center gap-1">
           <Button variant="ghost" className="hidden rounded-full text-navy sm:inline-flex" asChild>
-            <a href="/#login">Log In</a>
+            <Link to="/login">Log In</Link>
           </Button>
           <Button variant="hero" className="hidden h-10 px-3.5 text-[0.8rem] min-[400px]:inline-flex font-semibold sm:px-4 sm:text-sm" asChild>
             <Link to="/open-account"><span className="sm:hidden">Open Account</span><span className="hidden sm:inline">Open an Account</span></Link>
           </Button>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             className="inline-flex size-11 items-center justify-center rounded-full text-navy hover:bg-secondary lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          </Button>
         </div>
       </div>
       {open && (
@@ -65,15 +67,15 @@ export function Header() {
           <ul className="container-x flex flex-col py-3">
             {nav.map((n) => (
               <li key={n.label}>
-                <a href={n.href} onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-navy">
+                <Link to={n.href} onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-navy">
                   {n.label}
-                </a>
+                </Link>
               </li>
             ))}
             <li>
-              <a href="/#login" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-muted-foreground">
+              <Link to="/login" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-medium text-muted-foreground">
                 Log In
-              </a>
+              </Link>
             </li>
             <li>
               <Link to="/open-account" onClick={() => setOpen(false)} className="flex h-12 items-center text-base font-semibold text-primary">

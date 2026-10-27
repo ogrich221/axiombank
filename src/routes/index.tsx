@@ -32,11 +32,11 @@ const promises = [
   { n: "03", icon: SlidersHorizontal, t: "Your Money, Your Control", d: "Manage your account, review your activity, and make informed financial decisions with tools designed around your everyday life." },
 ];
 const features = [
-  { icon: Wallet, t: "Everyday Banking", d: "Manage daily expenses, receive money, and keep track of your transactions in one place." },
-  { icon: PiggyBank, t: "Smart Savings", d: "Set savings goals, monitor your progress, and build better financial habits at your own pace." },
-  { icon: CreditCard, t: "Cards That Work for You", d: "Manage your card, review transactions, and access available card controls directly from your banking experience." },
-  { icon: PieChart, t: "Spending Insights", d: "Understand your spending patterns with intuitive summaries, helpful categories, and clear visual reports." },
-];
+  { icon: Wallet, t: "Everyday Banking", d: "Manage daily expenses, receive money, and keep track of your transactions in one place.", to: "/personal-banking" },
+  { icon: PiggyBank, t: "Smart Savings", d: "Set savings goals, monitor your progress, and build better financial habits at your own pace.", to: "/savings" },
+  { icon: CreditCard, t: "Cards That Work for You", d: "Manage your card, review transactions, and access available card controls directly from your banking experience.", to: "/cards" },
+  { icon: PieChart, t: "Spending Insights", d: "Understand your spending patterns with intuitive summaries, helpful categories, and clear visual reports.", to: "/spending-insights" },
+] as const;
 const pillars = [
   { icon: Lock, t: "Security by Design", d: "256-bit TLS encryption, two-factor sign-in, biometric login, real-time fraud alerts and instant card freezing. Eligible US deposits are FDIC-insured up to $250,000 through our partner bank.", link: "Security information" },
   { icon: Eye, t: "Privacy With Purpose", d: "We never sell your personal data. We collect only what we need to run your account and meet legal requirements, and you can download or delete your data anytime.", link: "Privacy policy" },
@@ -85,7 +85,7 @@ function Index() {
                   <Link to="/open-account">Open Your Account <ArrowRight /></Link>
                 </Button>
                 <Button variant="quiet" size="xl" asChild>
-                  <a href="#features">Explore Our Banking</a>
+                  <Link to="/personal-banking">Explore Our Banking</Link>
                 </Button>
               </div>
               <p className="mt-6 text-sm text-navy-foreground/80">Simple to understand. Secure by design. Built around you. · Available in 54 countries.</p>
@@ -123,10 +123,10 @@ function Index() {
                   <span className="flex size-12 items-center justify-center rounded-2xl bg-navy text-navy-foreground"><f.icon className="size-5" strokeWidth={1.75} /></span>
                   <h3 className="mt-6 text-lg font-bold text-navy">{f.t}</h3>
                   <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{f.d}</p>
-                  <a href="#faq" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
+                  <Link to={f.to} className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
                     Learn more <ArrowRight className="size-4" />
 
-                  </a>
+                  </Link>
                 </article>
               ))}
             </div>
@@ -148,7 +148,7 @@ function Index() {
                   <p.icon className="size-7 text-primary" strokeWidth={1.5} />
                   <h3 className="mt-5 text-xl font-bold">{p.t}</h3>
                   <p className="mt-3 leading-relaxed text-navy-foreground/70">{p.d}</p>
-                  <a href="#faq" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary">{p.link} <ArrowRight className="size-4" /></a>
+                  <Link to={p.link === "Security information" ? "/security" : p.link === "Privacy policy" ? "/privacy" : "/terms"} className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-primary">{p.link} <ArrowRight className="size-4" /></Link>
                 </div>
               ))}
             </div>
@@ -158,7 +158,7 @@ function Index() {
         {/* Human */}
         <section className="section-y">
           <div className="container-x grid items-center gap-12 lg:grid-cols-2">
-            <img src={branchDesk.url} alt="A VANTERA BANK banker at a branch desk with account services on screen behind him" loading="lazy" width={1536} height={1024} className="aspect-[4/3] w-full rounded-3xl object-cover object-[50%_42%] shadow-lift" />
+            <img src={branchDesk.url} alt="A VARENTA BANK banker at a branch desk with account services on screen behind him" loading="lazy" width={1536} height={1024} className="aspect-[4/3] w-full rounded-3xl object-cover object-[50%_42%] shadow-lift" />
             <div>
               <p className="eyebrow">Made for real life</p>
               <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08] text-navy">Money Is Personal. Banking Should Be Too.</h2>
@@ -248,7 +248,7 @@ function Index() {
                 <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">Clearer information. More confident decisions. Banking built around you.</p>
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account</Link></Button>
-                  <Button variant="quiet" size="xl" asChild><a href="#about">Discover VARENTA</a></Button>
+                  <Button variant="quiet" size="xl" asChild><Link to="/about">Discover VARENTA</Link></Button>
                 </div>
               </div>
             </div>
@@ -265,7 +265,7 @@ function Index() {
                 <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every VARENTA branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
-                  <Button variant="quiet" size="xl" asChild><a href="mailto:support@varentabank.com">Talk to Our Team</a></Button>
+                  <Button variant="quiet" size="xl" asChild><Link to="/contact">Talk to Our Team</Link></Button>
                 </div>
                 <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
               </div>
