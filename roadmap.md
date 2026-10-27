@@ -1,5 +1,13 @@
 # Roadmap
 
+- [ ] Add customer registration, sign-in, confirmation and password recovery
+- [ ] Save owner-only profiles, applications and editable avatars
+- [ ] Build customer dashboard, profile, accounts, cards, transfers, bills, transactions, security and support
+- [ ] Verify customer journey, ownership protections and phone layouts
+- [ ] Connect authorized payment/card/identity services (blocked: no provider available)
+- [ ] Confirm approved 54 international destinations (blocked: bank/payment partner approval)
+- [ ] Enable transfer PIN authorization (blocked: payment service and rate-limit infrastructure)
+
 - [x] Build the admin workspace and branded loading states
 - [x] Implement sample user search, filters, profiles, creation, editing, and status confirmations
 - [x] Add roles, read-only sample activity, notifications, settings, and support
