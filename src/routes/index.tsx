@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg";
-import { BankingPreview } from "@/components/site/BankingPreview";
-import branchDesk from "@/assets/varenta-branch-operations.png.asset.json";
-import branchPhoto from "@/assets/varenta-branch-portrait.png.asset.json";
+import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
+import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
 
 export const Route = createFileRoute("/")({
@@ -124,8 +123,9 @@ function Index() {
                   <span className="flex size-12 items-center justify-center rounded-2xl bg-navy text-navy-foreground"><f.icon className="size-5" strokeWidth={1.75} /></span>
                   <h3 className="mt-6 text-lg font-bold text-navy">{f.t}</h3>
                   <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{f.d}</p>
-                  <a href="#preview" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
-                    Explore feature <ArrowRight className="size-4" />
+                  <a href="#faq" className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all">
+                    Learn more <ArrowRight className="size-4" />
+
                   </a>
                 </article>
               ))}
@@ -133,13 +133,6 @@ function Index() {
           </div>
         </section>
 
-        {/* Preview */}
-        <section id="preview" className="section-y">
-          <div className="container-x">
-            <SectionHead eyebrow="Try it" title="See Your Money More Clearly." body="Switch periods and tap a category to see how VARENTA makes your spending easy to understand." />
-            <div className="mx-auto mt-12 max-w-5xl"><BankingPreview /></div>
-          </div>
-        </section>
 
         {/* Trust */}
         <section id="security" className="section-y bg-navy text-navy-foreground">
