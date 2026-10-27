@@ -80,7 +80,7 @@ export function RotatingCard() {
       const observer=new ResizeObserver(resize); observer.observe(element); resize();
       const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
       let last=performance.now(); let angle=0;
-      renderer.setAnimationLoop(time => { const delta=Math.min((time-last)/1000,.1); last=time; if(!paused.current&&!motion.matches) angle+=delta*Math.PI*2/cardDisplay.rotationSeconds; group.rotation.set(-.09,angle,-.035); element.dataset.rotation=String(angle); renderer.render(scene,camera); });
+      renderer.setAnimationLoop(time => { const delta=Math.min((time-last)/1000,.1); last=time; if(!paused.current&&!motion.matches) angle+=delta*Math.PI*2/cardDisplay.rotationSeconds; group.rotation.set(-.09,angle,-.035); element.dataset['rotation']=String(angle); renderer.render(scene,camera); });
       cleanup=()=>{observer.disconnect();renderer.setAnimationLoop(null);geometry.dispose();plane.dispose();bodyMaterial.dispose();materials.forEach(m=>m.dispose());maps.forEach(m=>m.dispose());renderer.dispose();renderer.domElement.remove();};
     }).catch(()=>setFailed(true));
     return ()=>{disposed=true;cleanup();};
