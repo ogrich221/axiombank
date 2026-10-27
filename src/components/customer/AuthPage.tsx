@@ -12,10 +12,11 @@ export function AuthPage({ recovery=false }: { recovery?: boolean }) {
   async function submit(event: FormEvent) { event.preventDefault(); setError('');setMessage('');setBusy(true);
     try {
       if(recovery) {
-        if(!new URLSearchParams(window.location.hash.slice(1)).get('type')?.includes('recovery')) throw new Error('Open the password reset link from your email to continue.');
+        const hashRecovery = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
+        if(!hashRecovery && sessionStorage.getItem('varenta-password-recovery') !== 'true') throw new Error('Open the password reset link from your email to continue.');
         z.string().min(12,'Use at least 12 characters.').max(128).parse(password); if(password!==confirm) throw new Error('Passwords do not match.');
         const { error: updateError } = await supabase.auth.updateUser({password}); if(updateError) throw updateError;
-        await supabase.auth.signOut(); setMessage('Password updated. You can now sign in.');setPassword('');setConfirm('');
+        sessionStorage.removeItem('varenta-password-recovery'); await supabase.auth.signOut(); setMessage('Password updated. You can now sign in.');setPassword('');setConfirm('');
       } else if(mode==='forgot') {
         z.string().email().max(255).parse(email); const {error:resetError}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:`${window.location.origin}/reset-password`}); if(resetError) throw resetError;
         setMessage('If an account can receive a reset email, a link will be sent. Please check your inbox.');

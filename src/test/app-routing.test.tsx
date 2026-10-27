@@ -7,6 +7,13 @@ import { routeTree } from "@/routeTree.gen";
 // Match routes without running loaders or rendering: loaders may need a server or
 // network the test run lacks, and jsdom never loads the stylesheets React waits on.
 describe("App routing", () => {
+  it('matches protected customer pages and public authentication pages', () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+    for (const path of ['/dashboard', '/dashboard/profile', '/dashboard/accounts', '/dashboard/cards', '/dashboard/transfer', '/dashboard/international', '/dashboard/bills', '/dashboard/transactions', '/dashboard/security', '/dashboard/support', '/dashboard/notifications']) {
+      expect(router.matchRoutes(path).at(-1)?.routeId).toContain('/_authenticated/');
+    }
+    for (const path of ['/auth', '/login', '/open-account', '/reset-password']) expect(router.matchRoutes(path).at(-1)?.routeId).not.toBe(rootRouteId);
+  });
   it("matches admin overview, directory, and nested user screens", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     for (const path of ["/admin", "/admin/users", "/admin/users/new", "/admin/users/VR-001042", "/admin/users/VR-001042/edit", "/admin/activity", "/admin/notifications", "/admin/settings", "/admin/help"]) {

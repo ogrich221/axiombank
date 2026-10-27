@@ -17,7 +17,7 @@ export const registerCustomer = createServerFn({ method: 'POST' })
     const origin = new URL(getRequest().url).origin;
     const { email, password, confirm_password: _confirm, terms: _terms, ...profile } = input;
     const { error } = await client.auth.signUp({ email, password, options: { emailRedirectTo: `${origin}/auth`, data: { ...profile, terms_accepted: 'true' } } });
-    if (error) { console.error('Customer registration failed', error.code, error.status, error.message.replaceAll(email, '[redacted]')); throw new Error('Registration could not be completed. Please try again or contact support.'); }
+    if (error) { console.error('Customer registration failed', error.code, error.status); throw new Error('Registration could not be completed. Please try again or contact support.'); }
     return { confirmationRequired: true };
   });
 
