@@ -9,7 +9,7 @@ import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg.asset.json";
 import heroSigning from "@/assets/varenta-hero-signing.jpg.asset.json";
 import reception from "@/assets/varenta-reception-hero.jpg.asset.json";
-import counter from "@/assets/varenta-counter-hero.jpg.asset.json";
+import counter from "@/assets/varenta-counter-hero-usd.jpg.asset.json";
 import branchDesk from "@/assets/varenta-branch-operations-final.png.asset.json";
 import branchPhoto from "@/assets/varenta-branch-portrait-clean.png.asset.json";
 
