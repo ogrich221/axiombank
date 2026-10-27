@@ -7,6 +7,7 @@ import { Footer } from './Footer';
 import { bankPages, type BankPageKey, type BankPage as PageData } from '@/lib/bank-pages';
 import building from '@/assets/hero-building.jpg';
 import desk from '@/assets/varenta-branch-operations-final.png.asset.json';
+import { RotatingCard } from './RotatingCard';
 
 export function BankPage({ pageKey }: { pageKey: BankPageKey }) {
   const page: PageData = bankPages[pageKey];
@@ -22,6 +23,7 @@ export function BankPage({ pageKey }: { pageKey: BankPageKey }) {
         <p className={`mt-5 max-w-2xl text-lg leading-relaxed ${page.image ? 'text-navy-foreground/85' : 'text-muted-foreground'}`}>{page.description}</p>
       </div><div className="flag-stripes h-1.5" aria-hidden="true" />
     </section>
+    {pageKey === 'cards' && <RotatingCard />}
     <div className="container-x grid gap-10 py-12 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-16 md:py-16">
       <aside><p className="text-xs font-bold uppercase text-muted-foreground">On this page</p><nav aria-label="Page contents" className="mt-4 flex flex-col gap-3 text-sm">{page.sections.map((section, i) => <a key={section.title} href={`#section-${i}`} className="text-navy hover:text-primary">{section.title}</a>)}</nav><div className="mt-8 border-t border-border pt-6"><Link to="/contact" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">Talk to our team <ArrowRight className="size-4" /></Link></div></aside>
       <div className="min-w-0 max-w-3xl">
