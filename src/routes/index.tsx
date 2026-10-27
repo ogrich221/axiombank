@@ -9,6 +9,8 @@ import { Footer } from "@/components/site/Footer";
 import heroBuilding from "@/assets/hero-building.jpg";
 import { BankingPreview } from "@/components/site/BankingPreview";
 import lifestyle from "@/assets/lifestyle.jpg";
+import branchPhoto from "@/assets/vantera-bank-branch-portrait.png.asset.json";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -259,7 +261,28 @@ function Index() {
             </div>
           </div>
         </section>
+        {/* Branch band */}
+        <section className="relative isolate overflow-hidden bg-navy text-navy-foreground">
+          <div className="flag-stripes h-1.5" aria-hidden="true" />
+          <img src={branchPhoto.url} alt="A VARENTA BANK banker holding account documents inside a VARENTA BANK branch" loading="lazy" width={1305} height={1206} className="block h-[46vh] max-h-[420px] w-full object-cover object-[50%_18%] md:hidden" />
+          <img src={branchPhoto.url} alt="" aria-hidden="true" loading="lazy" width={1305} height={1206} className="absolute inset-0 -z-20 hidden h-full w-full object-cover object-[50%_22%] md:block" />
+          <div className="bg-branch-overlay absolute inset-0 -z-10 hidden md:block" aria-hidden="true" />
+          <div className="container-x md:flex md:min-h-[72vh] md:items-end md:pb-20 md:pt-32">
+            <div className="reveal max-w-xl py-14 md:py-0">
+
+              <p className="eyebrow text-navy-foreground/90">Come in as you are</p>
+              <h2 className="mt-3 text-[clamp(1.9rem,5vw,3.4rem)] font-extrabold leading-[1.06]">Better Banking. <span className="text-primary">Brighter Futures.</span></h2>
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-navy-foreground/85">Every VARENTA branch is staffed by people who can walk you through your account, your card and your goals — in person, at your own pace.</p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
+                <Button variant="quiet" size="xl" asChild><a href="mailto:support@varentabank.com">Talk to Our Team</a></Button>
+              </div>
+              <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
+            </div>
+          </div>
+        </section>
       </main>
+
       <Footer />
     </div>
   );
