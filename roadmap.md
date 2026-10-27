@@ -1,6 +1,8 @@
 # Roadmap
 
-- [ ] Retest admin sign-in, directory management, application review and signed-in customer functions
+- [x] Retest admin sign-in, directory CRUD/status/search/export/audit/logout, confirmed application review, signed-in customer pages/profile/transfer preview/notifications/sign-out (20 unit tests pass; no browser runtime errors; temporary records removed)
+- [ ] Retest pending application confirmation (blocked: no pending application available; existing approvals must not be reset)
+- [ ] Retest account photo storage and password changes (blocked: preserve the user's existing photo and credentials; crop/cancel and password form verified)
 
 - [x] Display zero balances and connect Open Account applications to administrator confirmation
 
