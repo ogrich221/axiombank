@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { profileSchema, registrationSchema } from './customer-schemas';
+import { zeroBalances } from './customer-account-state';
 
 export const registerCustomer = createServerFn({ method: 'POST' })
   .inputValidator((input: unknown) => registrationSchema.parse(input))
@@ -26,12 +27,12 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
   setResponseHeader('Cache-Control', 'no-store');
   const { data: profile, error } = await context.supabase.from('profiles').select('*').eq('id', context.userId).maybeSingle();
   if (error) throw new Error('Your profile could not be loaded.');
-  const { data: application, error: applicationError } = await context.supabase.from('customer_applications').select('status,submitted_at,id').eq('user_id', context.userId).maybeSingle();
+  const { data: application, error: applicationError } = await context.supabase.from('customer_applications').select('status,submitted_at,id,admin_review_status,admin_reviewed_at').eq('user_id', context.userId).maybeSingle();
   if (applicationError) throw new Error('Your application could not be loaded.');
   const { data: authData } = await context.supabase.auth.getUser();
   let avatarUrl: string | null = null;
   if (profile?.avatar_path?.startsWith(`${context.userId}/`)) { const { data } = await context.supabase.storage.from('customer-avatars').createSignedUrl(profile.avatar_path, 3600); avatarUrl = data?.signedUrl ?? null; }
-  return { profile, application, avatarUrl, email: authData.user?.email ?? '', emailVerified: Boolean(authData.user?.email_confirmed_at) };
+  return { profile, application, balances: zeroBalances, avatarUrl, email: authData.user?.email ?? '', emailVerified: Boolean(authData.user?.email_confirmed_at) };
 });
 
 export const updateCustomerProfile = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator((input: unknown) => profileSchema.parse(input)).handler(async ({ data, context }) => {

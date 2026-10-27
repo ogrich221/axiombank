@@ -17,3 +17,5 @@
 - Customer pages live under the integration-style client-gated `_authenticated` layout; all private operations additionally validate the bearer on the server and use owner-scoped access, keeping admin passcode access independent.
 - Keep customer schemas, server operations, and shared presentation outside leaf routes; do not collect transfer PINs or create financial records until authorized providers and protected authorization are connected.
 - Customer avatar uploads are cropped and re-encoded in the browser, checked on the server, and stored in an owner-only private bucket so profile photos do not become public assets.
+
+- Keep administrator customer-application review on customer_applications, separate from identity verification and directory roles; use a passcode-gated service-only atomic function to confirm and audit each pending application.

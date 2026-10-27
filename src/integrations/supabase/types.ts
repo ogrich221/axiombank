@@ -82,6 +82,8 @@ export type Database = {
       }
       customer_applications: {
         Row: {
+          admin_review_status: string
+          admin_reviewed_at: string | null
           id: string
           status: string
           submitted_at: string
@@ -89,6 +91,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          admin_review_status?: string
+          admin_reviewed_at?: string | null
           id?: string
           status?: string
           submitted_at?: string
@@ -96,6 +100,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          admin_review_status?: string
+          admin_reviewed_at?: string | null
           id?: string
           status?: string
           submitted_at?: string
@@ -166,7 +172,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      confirm_customer_application: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

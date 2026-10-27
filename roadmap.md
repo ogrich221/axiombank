@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Display zero balances and connect Open Account applications to administrator confirmation
+
 - [x] Add customer registration, sign-in, confirmation and password recovery
 - [x] Save owner-only profiles, applications and editable avatars
 - [x] Build customer dashboard, profile, accounts, cards, transfers, bills, transactions, security and support
