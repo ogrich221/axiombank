@@ -13,6 +13,7 @@ describe('Editable customer profile', () => {
     const values = editableProfile(null);
     expect(Object.keys(values)).toHaveLength(12);
     expect(Object.values(values).every(value => value === '')).toBe(true);
+    expect(editableProfile({ date_of_birth: null }).date_of_birth).toBe('');
   });
   it('excludes private and noneditable account fields', () => {
     const saved = { first_name: 'Jordan', id: 'private-id', avatar_path: 'private/photo.png', admin_review_status: 'confirmed' };
