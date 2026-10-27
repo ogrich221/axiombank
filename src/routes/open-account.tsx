@@ -46,16 +46,18 @@ function OpenAccount() {
       <Header />
       <main className="bg-hero section-y">
         <div className="container-x max-w-xl">
-          <p className="eyebrow">Step 1 of 3 · Start your application</p>
+          <p className="eyebrow">Account opening</p>
           <h1 className="mt-3 text-[clamp(2rem,5vw,3rem)] font-extrabold leading-tight text-navy">Let's get you started.</h1>
-          <p className="mt-3 text-muted-foreground">Available to residents of 54 eligible countries. It takes about 10 minutes.</p>
+          <p className="mt-3 text-muted-foreground">Available to residents of 54 eligible countries, subject to verification and approval.</p>
+          <p className="mt-5 border-l-4 border-primary bg-secondary p-4 text-sm leading-relaxed text-muted-foreground">Online applications are not connected yet. This form does not submit your details or send an email. Do not enter sensitive identity or banking information.</p>
 
           <div className="mt-8 rounded-3xl border border-border bg-card p-6 shadow-soft sm:p-8">
             {done ? (
               <div className="text-center" role="status">
                 <CheckCircle2 className="mx-auto size-12 text-primary" />
-                <h2 className="mt-4 text-xl font-bold text-navy">Application started.</h2>
-                <p className="mt-2 text-muted-foreground">Check your email for a link to verify your identity (step 2).</p>
+                <h2 className="mt-4 text-xl font-bold text-navy">Details checked.</h2>
+                <p className="mt-2 text-muted-foreground">Your details have not been submitted. No account has been opened and no email has been sent. Contact the team for information about account availability.</p>
+                <Button variant="hero" className="mt-6" asChild><Link to="/contact">Contact the Team</Link></Button>
                 <Button variant="quiet" size="xl" className="mt-6" asChild><Link to="/">Back to home</Link></Button>
               </div>
             ) : (
@@ -67,7 +69,7 @@ function OpenAccount() {
                     {errors[id] && <p id={`${id}-err`} className="mt-1.5 text-sm text-destructive">{errors[id]}</p>}
                   </div>
                 ))}
-                <Button type="submit" variant="hero" size="xl" className="w-full">Continue</Button>
+                <Button type="submit" variant="hero" size="xl" className="w-full">Check Details</Button>
                 <p className="text-center text-xs text-muted-foreground">Eligibility, verification, and approval requirements apply.</p>
               </form>
             )}
