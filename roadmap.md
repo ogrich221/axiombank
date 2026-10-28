@@ -1,5 +1,9 @@
 # Roadmap
 
+- [x] Show the bank's webmail mailbox (axiombank@axiomfinancialinstitution.online) as the contact email on the home page, contact page and footer
+- [ ] Confirm the real webmail sign-in address (the linked address currently returns "page not found" from the site host)
+
+
 - [ ] Upgrade profile overview and domestic/international transfer review, PIN authorization, confirmed status and duplicate protection (live money movement blocked: banking/payment provider and approved currency/destination coverage required)
 
 - [x] Repair stale profile edit drafts, inline validation and repeated photo selection; profile tests pass
