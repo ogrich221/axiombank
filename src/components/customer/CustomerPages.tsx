@@ -77,7 +77,7 @@ export function PaymentCard() {
                   <span className="font-mono text-xs font-bold text-foreground">CVV •••</span>
                 </div>
                 <p className="mt-3 text-[10px] leading-relaxed opacity-60">
-                  Issued to {holder}{city ? ` · ${city}` : ''}. Linked account {formatAccountNumber(account, true)}. Property of AXIOM BANK. 24/7 Support: +1 (800) 555-0199.
+                  Issued to {holder}{city ? ` · ${city}` : ''}. Linked account {formatAccountNumber(account, true)}. Property of AXIOM BANK. 24/7 Support: {SUPPORT_PHONE}.
                 </p>
               </div>
               <div className="flex items-center justify-between px-6 text-xs opacity-70">
