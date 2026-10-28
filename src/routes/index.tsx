@@ -52,7 +52,7 @@ const faqs = [
   ["How do I open an account?", "Apply online in about 10 minutes: enter your details, verify your identity with a government ID and a selfie, then start banking once approved — usually within 1 business day."],
   ["How can I manage my card?", "In the AXIOM app you can freeze and unfreeze your card, set spending limits, change your PIN, block online or international payments, and order a replacement."],
   ["How does AXIOM BANK protect my information?", "We use encryption in transit and at rest, two-factor authentication, biometric login and 24/7 fraud monitoring. We never sell your data."],
-  ["What happens if I need help with my account?", "Our support team is available 24/7 via in-app chat, by phone at +1 (800) 555-0199, or by email at support@axiombank.com."],
+  ["What happens if I need help with my account?", `Our support team is available 24/7 via in-app chat, by phone at ${SUPPORT_PHONE}, or by email at ${SUPPORT_EMAIL}.`],
   ["Which countries or regions can open an account?", "Residents of 54 countries across North America, South America, Europe, Asia and Oceania can apply. Residents of African countries are not currently eligible. See the globe above for the full list."],
 ];
 
@@ -368,7 +368,7 @@ function Index() {
                   <Button variant="hero" size="xl" asChild><Link to="/open-account">Open Your Account <ArrowRight /></Link></Button>
                   <Button variant="quiet" size="xl" asChild><Link to="/contact">Talk to Our Team</Link></Button>
                 </div>
-                <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone +1 (800) 555-0199</p>
+                <p className="mt-6 text-sm text-navy-foreground/75">Open 24/7 in the app · Support by phone <a href={SUPPORT_PHONE_TEL} className="hover:text-primary">{SUPPORT_PHONE}</a> · <a href={SUPPORT_MAILTO} className="break-all hover:text-primary">{SUPPORT_EMAIL}</a></p>
               </div>
               <div className="reveal order-1 md:order-2">
                 <img src={branchPhoto.url} alt="A AXIOM BANK banker holding account documents inside a AXIOM BANK branch" loading="lazy" width={1305} height={1206} className="aspect-[1305/1206] w-full rounded-3xl border border-navy-foreground/15 object-cover shadow-lift" />
