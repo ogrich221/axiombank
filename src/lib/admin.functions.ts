@@ -112,8 +112,14 @@ export const getAdminData = createServerFn({ method: 'GET' }).handler(async () =
   // Compute balances per user
   const balancesByUser = new Map<string, number>();
   for (const t of [...transactions].reverse()) {
+    if ((t.status as string) === 'Rejected') {
+      t.balanceAfter = balancesByUser.get(t.userId) || 0;
+      continue;
+    }
     const prev = balancesByUser.get(t.userId) || 0;
-    const next = t.type === 'credit' ? prev + t.amount : prev - t.amount;
+    const next = t.type === 'credit'
+      ? ((t.status as string) === 'Pending' ? prev : prev + t.amount)
+      : prev - t.amount;
     balancesByUser.set(t.userId, next);
     t.balanceAfter = next;
   }

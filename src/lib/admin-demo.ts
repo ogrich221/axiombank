@@ -2,7 +2,7 @@ export type UserStatus = 'Active' | 'Pending' | 'Suspended';
 export type UserRole = 'Customer' | 'Support' | 'Admin' | 'Auditor';
 export interface AdminUser { id: string; firstName: string; lastName: string; email: string; phone: string; role: UserRole; status: UserStatus; joined: string; activity: string | null; verified: boolean; balance?: string; }
 export interface AdminEvent { id: string; actor: string; action: string; target: string; time: string; outcome: string; }
-export interface UserTransaction { id: string; userId: string; type: 'credit' | 'debit'; amount: number; narration: string; date: string; reference: string; status: 'Completed' | 'Pending' | 'Failed'; balanceAfter?: number; }
+export interface UserTransaction { id: string; userId: string; type: 'credit' | 'debit'; amount: number; narration: string; date: string; reference: string; status: 'Completed' | 'Pending' | 'Failed' | 'Rejected'; balanceAfter?: number; }
 export interface UserFilters { query: string; status: string; role: string; from: string; to: string; sort: string; }
 export const emptyFilters: UserFilters = { query:'', status:'All', role:'All', from:'', to:'', sort:'newest' };
 export function formatCurrency(amount: number | string) { const num = typeof amount === 'number' ? amount : parseFloat(amount || '0'); return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(isNaN(num) ? 0 : num); }

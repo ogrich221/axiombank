@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link, Outlet, useRouterState } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
-import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Users, ShieldCheck, History, Bell, Settings, CircleHelp, PanelLeftClose, PanelLeftOpen, Menu, X, LogOut, ChevronDown, CheckCircle2, Lock, Eye, EyeOff, Sparkles, ArrowRightLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Logo } from '@/components/site/Logo';
 import { AdminProvider, useAdmin } from './AdminProvider';
 import { getAdminStatus, unlockAdmin } from '@/lib/admin.functions';
-const nav = [{title:'Dashboard',to:'/admin',icon:LayoutDashboard},{title:'User Management',to:'/admin/users',icon:Users},{title:'Transfer Review',to:'/admin/transfer-review',icon:Sparkles},{title:'Activity Logs',to:'/admin/activity',icon:History},{title:'Notifications',to:'/admin/notifications',icon:Bell},{title:'Settings',to:'/admin/settings',icon:Settings},{title:'Help & Support',to:'/admin/help',icon:CircleHelp}] as const;
+const nav = [{title:'Dashboard',to:'/admin',icon:LayoutDashboard},{title:'User Management',to:'/admin/users',icon:Users},{title:'Transfer Review',to:'/admin/transfer-review',icon:ArrowRightLeft},{title:'Activity Logs',to:'/admin/activity',icon:History},{title:'Notifications',to:'/admin/notifications',icon:Bell},{title:'Settings',to:'/admin/settings',icon:Settings},{title:'Help & Support',to:'/admin/help',icon:CircleHelp}] as const;
 export function AdminLoader() { return <div className="admin-theme fixed inset-0 z-50 flex flex-col items-center justify-center gap-5 bg-background"><Logo/><p className="text-sm text-muted-foreground">Transparent by Design.</p><div className="h-1 w-36 overflow-hidden rounded bg-secondary"><div className="admin-loader h-full w-full bg-primary"/></div></div>; }
 export function AdminLayout() {
   const status = useServerFn(getAdminStatus); const [state,setState] = useState<'checking'|'locked'|'open'>('checking');

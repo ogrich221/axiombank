@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2, Wallet, Upload, Check, Bell, Search, Download, Lock, ArrowLeft, Receipt, RotateCw, ArrowDownLeft, Users, Building2 } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2, Wallet, Upload, Check, Bell, Search, Download, Lock, ArrowLeft, Receipt, RotateCw, ArrowDownLeft, Users, Building2, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Field, PasswordField } from './CustomerControls';
 import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './CustomerLayout';
@@ -188,8 +188,21 @@ export function Overview() {
                   {tx.type === 'credit' ? <ArrowDownLeft className="size-4"/> : <ArrowUpRight className="size-4"/>}
                 </span>
                 <div>
-                  <p className="text-sm font-medium text-foreground">{tx.narration || (tx.type === 'credit' ? 'Funds Credited' : 'Funds Debited')}</p>
-                  <p className="text-xs text-muted-foreground">{new Date(tx.createdAt).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})} · Ref: {tx.reference}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-sm font-medium text-foreground">{tx.narration || (tx.type === 'credit' ? 'Funds Credited' : 'Funds Debited')}</p>
+                    {tx.status === 'Pending' && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-500 border border-amber-500/20">
+                        <span className="size-1 rounded-full bg-amber-500 animate-pulse" />
+                        Pending Approval
+                      </span>
+                    )}
+                    {tx.status === 'Rejected' && (
+                      <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive border border-destructive/20">
+                        Declined
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">{new Date(tx.createdAt || tx.date).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'})} · Ref: {tx.reference}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -498,29 +511,34 @@ export function TransferPage({international=false}:{international?:boolean}) {
 
     {stage==='success' ? (
       <div className="mt-8 max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
-        <ShieldCheck className="mx-auto size-12 text-primary" />
-        <h2 className="mt-4 text-2xl font-bold">Transfer Completed</h2>
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">
+          <Clock className="size-7" />
+        </div>
+        <h2 className="mt-4 text-2xl font-bold">Transfer Submitted</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Your transfer of {money(amount)} USD to <strong>{result?.recipientName || values.recipient}</strong> has been processed successfully.
+          Your transfer of {money(amount)} USD to <strong>{result?.recipientName || values.recipient}</strong> has been initiated and funds have moved from your available balance. It is now awaiting administrator review and approval.
         </p>
-        {result?.isInternal && (
-          <div className="mt-3 rounded-md bg-primary/10 border border-primary/20 p-2.5 text-xs font-semibold text-primary">
-            ✓ Internal AXIOM Customer Transfer: Recipient balance has been credited in real-time.
-          </div>
-        )}
-        <div className="my-5 rounded-md border border-border bg-background p-4 text-left text-xs space-y-2">
+        <div className="my-5 rounded-md border border-border bg-background p-4 text-left text-xs space-y-2.5">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Transaction Reference:</span>
             <span className="font-mono font-semibold text-primary">{result?.reference}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">New Available Balance:</span>
+            <span className="text-muted-foreground">Updated Available Balance:</span>
             <span className="font-mono font-semibold text-foreground">${result?.balanceAfter} USD</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Ledger Settlement:</span>
-            <span className="font-semibold text-primary">Completed (Settled)</span>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Transfer Status:</span>
+            <span className="inline-flex items-center gap-1 font-semibold text-amber-500">
+              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
+              Awaiting Admin Approval
+            </span>
           </div>
+          {result?.isInternal && (
+            <div className="pt-2 border-t border-border text-[11px] text-muted-foreground">
+              AXIOM Member Transfer: The recipient&apos;s account will be credited as soon as administrative approval is granted.
+            </div>
+          )}
         </div>
         <div className="mt-6 flex justify-center gap-3">
           <Button onClick={()=>{setStage('details');setValues(empty);setSelectedMemberId('');setPin('');setResult(null);}}>Make another transfer</Button>
@@ -565,7 +583,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
               <div className="rounded-lg border border-primary/30 bg-primary/5 p-3.5 text-xs text-primary flex items-center gap-2">
                 <ShieldCheck className="size-4 shrink-0" />
                 <span>
-                  <strong>Verified AXIOM Customer:</strong> Funds will be credited to <strong>{values.recipient}</strong> immediately and reflected in both accounts&apos; ledger histories.
+                  <strong>Verified AXIOM Customer:</strong> Funds will move immediately from your available balance and will be credited to <strong>{values.recipient}</strong> once administrative approval is granted.
                 </span>
               </div>
             )}
@@ -730,8 +748,8 @@ export function TransactionsPage(){
     }
     return true;
   }).sort((a: any, b: any) => {
-    const timeA = new Date(a.createdAt).getTime();
-    const timeB = new Date(b.createdAt).getTime();
+    const timeA = new Date(a.createdAt || a.date).getTime();
+    const timeB = new Date(b.createdAt || b.date).getTime();
     return sortOrder === 'Newest first' ? timeB - timeA : timeA - timeB;
   });
 
@@ -739,13 +757,13 @@ export function TransactionsPage(){
     if (!filtered.length) return;
     const headers = ['Date', 'Reference', 'Type', 'Narration', 'Amount (USD)', 'Balance After (USD)', 'Status'];
     const rows = filtered.map((tx: any) => [
-      `"${new Date(tx.createdAt).toISOString()}"`,
+      `"${new Date(tx.createdAt || tx.date).toISOString()}"`,
       `"${tx.reference || ''}"`,
       `"${tx.type.toUpperCase()}"`,
       `"${(tx.narration || '').replace(/"/g, '""')}"`,
       `"${Number(tx.amount).toFixed(2)}"`,
       `"${Number(tx.balanceAfter).toFixed(2)}"`,
-      `"${tx.status || 'completed'}"`
+      `"${tx.status || 'Completed'}"`
     ]);
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e: string[]) => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
@@ -794,6 +812,7 @@ export function TransactionsPage(){
               <th className="px-4 py-3 font-medium">Date</th>
               <th className="px-4 py-3 font-medium">Type</th>
               <th className="px-4 py-3 font-medium">Narration</th>
+              <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Amount</th>
               <th className="px-4 py-3 font-medium">Balance</th>
               <th className="px-4 py-3 font-medium">Reference</th>
@@ -803,7 +822,7 @@ export function TransactionsPage(){
             {filtered.map((tx: any) => (
               <tr key={tx.id} className="transition-colors hover:bg-muted/40">
                 <td className="whitespace-nowrap px-4 py-3.5 text-xs text-muted-foreground">
-                  {new Date(tx.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {new Date(tx.createdAt || tx.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                 </td>
                 <td className="px-4 py-3.5">
                   <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-semibold ${tx.type === 'credit' ? 'bg-primary/10 text-primary' : 'bg-destructive/10 text-destructive'}`}>
@@ -814,7 +833,23 @@ export function TransactionsPage(){
                 <td className="max-w-xs break-words px-4 py-3.5 text-xs font-medium text-foreground">
                   {tx.narration || (tx.type === 'credit' ? 'Account Credit' : 'Account Debit')}
                 </td>
-                <td className={`whitespace-nowrap px-4 py-3.5 font-mono text-xs font-semibold ${tx.type === 'credit' ? 'text-primary' : 'text-destructive'}`}>
+                <td className="whitespace-nowrap px-4 py-3.5">
+                  {tx.status === 'Pending' ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-500 border border-amber-500/20">
+                      <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
+                      Pending Approval
+                    </span>
+                  ) : tx.status === 'Rejected' ? (
+                    <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-semibold text-destructive border border-destructive/20">
+                      Declined
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                      Completed
+                    </span>
+                  )}
+                </td>
+                <td className={`whitespace-nowrap px-4 py-3.5 font-mono text-xs font-semibold ${tx.type === 'credit' ? 'text-primary' : tx.status === 'Rejected' ? 'text-muted-foreground line-through' : 'text-destructive'}`}>
                   {tx.type === 'credit' ? `+$${Number(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : `-$${Number(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3.5 font-mono text-xs text-muted-foreground">

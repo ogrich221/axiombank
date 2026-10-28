@@ -48,6 +48,7 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
     amount: number;
     narration: string;
     date: string;
+    createdAt: string;
     reference: string;
     status: string;
     balanceAfter?: number;
@@ -65,6 +66,7 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
           amount: Number(t.amount),
           narration: t.narration ?? '',
           date: t.created_at,
+          createdAt: t.created_at,
           reference: t.reference ?? '',
           status: t.status || 'Completed',
           balanceAfter: Number(t.balance_after || 0)
@@ -72,11 +74,11 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
       }
     }
 
-    const evRes = await supabaseAdmin.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited']).order('time', { ascending: false });
+    const evRes = await supabaseAdmin.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited', 'Transfer Initiated', 'Transfer Approved', 'Transfer Rejected']).order('time', { ascending: false });
     for (const ev of evRes.data || []) {
       try {
         const payload = JSON.parse(ev.target);
-        if (payload && (payload.userId === context.userId || (userEmail && payload.email && payload.email.toLowerCase() === userEmail.toLowerCase()))) {
+        if (payload && (payload.userId === context.userId || payload.senderUserId === context.userId || (userEmail && payload.email && payload.email.toLowerCase() === userEmail.toLowerCase()))) {
           if (!transactions.some(t => t.reference === payload.reference || t.id === ev.id)) {
             transactions.push({
               id: ev.id,
@@ -85,8 +87,9 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
               amount: Number(payload.amount),
               narration: payload.narration || '',
               date: payload.date || ev.time,
+              createdAt: payload.date || ev.time,
               reference: payload.reference || `TX-${ev.id.slice(0, 8).toUpperCase()}`,
-              status: 'Completed',
+              status: payload.status || 'Completed',
               balanceAfter: payload.balanceAfter
             });
           }
@@ -101,7 +104,18 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
 
   let currentBalance = 0;
   for (const t of [...transactions].reverse()) {
-    currentBalance = t.type === 'credit' ? currentBalance + t.amount : currentBalance - t.amount;
+    if (t.status === 'Rejected') {
+      t.balanceAfter = currentBalance;
+      continue;
+    }
+    if (t.type === 'credit') {
+      if (t.status === 'Completed') {
+        currentBalance += t.amount;
+      }
+    } else {
+      // debit: both Pending and Completed reduce available balance
+      currentBalance -= t.amount;
+    }
     t.balanceAfter = currentBalance;
   }
 
@@ -147,7 +161,7 @@ export const saveCustomerAvatar = createServerFn({ method: 'POST' }).middleware(
 });
 
 async function computeUserBalance(supabaseAdminClient: any, userId: string, userEmail: string): Promise<number> {
-  const transactions: Array<{ id: string; type: 'credit' | 'debit'; amount: number; reference: string; date: string }> = [];
+  const transactions: Array<{ id: string; type: 'credit' | 'debit'; amount: number; reference: string; date: string; status: string }> = [];
 
   try {
     const txRes = await supabaseAdminClient.from('account_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false });
@@ -159,17 +173,18 @@ async function computeUserBalance(supabaseAdminClient: any, userId: string, user
           amount: Number(t.amount),
           reference: t.reference,
           date: t.created_at,
+          status: t.status || 'Completed',
         });
       }
     }
   } catch {}
 
   try {
-    const evRes = await supabaseAdminClient.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited']).order('time', { ascending: false });
+    const evRes = await supabaseAdminClient.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited', 'Transfer Initiated', 'Transfer Approved', 'Transfer Rejected']).order('time', { ascending: false });
     for (const ev of evRes.data || []) {
       try {
         const payload = JSON.parse(ev.target);
-        if (payload && (payload.userId === userId || (userEmail && payload.email && payload.email.toLowerCase() === userEmail.toLowerCase()))) {
+        if (payload && (payload.userId === userId || payload.senderUserId === userId || (userEmail && payload.email && payload.email.toLowerCase() === userEmail.toLowerCase()))) {
           if (!transactions.some(t => t.reference === payload.reference || t.id === ev.id)) {
             transactions.push({
               id: ev.id,
@@ -177,6 +192,7 @@ async function computeUserBalance(supabaseAdminClient: any, userId: string, user
               amount: Number(payload.amount),
               reference: payload.reference || `TX-${ev.id.slice(0, 8).toUpperCase()}`,
               date: payload.date || ev.time,
+              status: payload.status || 'Completed',
             });
           }
         }
@@ -188,7 +204,15 @@ async function computeUserBalance(supabaseAdminClient: any, userId: string, user
 
   let currentBalance = 0;
   for (const t of [...transactions].reverse()) {
-    currentBalance = t.type === 'credit' ? currentBalance + t.amount : currentBalance - t.amount;
+    if (t.status === 'Rejected') continue;
+    if (t.type === 'credit') {
+      if (t.status === 'Completed') {
+        currentBalance += t.amount;
+      }
+    } else {
+      // debit: both Pending and Completed reduce available balance
+      currentBalance -= t.amount;
+    }
   }
   return currentBalance;
 }
@@ -316,10 +340,11 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
     const senderNewBalance = senderCurrentBalance - data.amount;
 
     const senderNarration = data.reference.trim()
-      ? `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? (targetUser.email || 'AXIOM') : data.bank}) - ${data.reference.trim()}`
-      : `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? (targetUser.email || 'AXIOM') : data.bank})`;
+      ? `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? 'AXIOM Customer' : data.bank}) - ${data.reference.trim()}`
+      : `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? 'AXIOM Customer' : data.bank})`;
 
-    // 4. Record Sender Debit in account_transactions
+    // 4. Record Sender Debit in account_transactions with status: 'Pending'
+    // This immediately deducts the funds from the sender's available balance awaiting admin review.
     try {
       await supabaseAdmin.from('account_transactions').insert({
         user_id: context.userId,
@@ -328,88 +353,43 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
         narration: senderNarration,
         reference,
         balance_after: senderNewBalance,
-        status: 'Completed',
+        status: 'Pending',
         created_at: date,
       });
     } catch (err) {
       console.warn('account_transactions sender debit notice:', err);
     }
 
-    // 5. Dual-write Sender Debit to admin_events
+    // 5. Dual-write Transfer Initiated to admin_events with complete metadata
     try {
       await supabaseAdmin.from('admin_events').insert({
         actor: userEmail || 'Customer',
-        action: 'Account Debited',
+        action: 'Transfer Initiated',
         target: JSON.stringify({
           userId: context.userId,
-          email: userEmail,
+          senderUserId: context.userId,
+          senderEmail: userEmail,
+          senderName,
           userName: targetUser ? targetUser.name : data.recipient,
+          recipientName: targetUser ? targetUser.name : data.recipient,
+          recipientBank: targetUser ? 'AXIOM BANK (Internal)' : data.bank,
+          recipientAccount: data.account,
+          destinationCountry: data.destinationCountry || 'Domestic',
+          targetUserId: targetUser ? targetUser.id : undefined,
+          targetUserEmail: targetUser ? targetUser.email : undefined,
           type: 'debit',
           amount: data.amount,
           narration: senderNarration,
           reference,
           date,
+          status: 'Pending',
           balanceAfter: senderNewBalance,
-          recipientBank: targetUser ? 'AXIOM BANK (Internal)' : data.bank,
-          recipientAccount: data.account,
-          destinationCountry: data.destinationCountry || 'Domestic',
-          targetUserId: targetUser ? targetUser.id : undefined,
+          isInternal: Boolean(targetUser),
         }),
         time: date,
       });
     } catch (err) {
-      console.warn('admin_events sender debit notice:', err);
-    }
-
-    // 6. IF RECIPIENT IS AN AXIOM USER: CREDIT RECIPIENT!
-    if (targetUser) {
-      const recipientCurrentBalance = await computeUserBalance(supabaseAdmin, targetUser.id, targetUser.email);
-      const recipientNewBalance = recipientCurrentBalance + data.amount;
-      const recipientRef = `${reference}-CR`;
-
-      const recipientNarration = data.reference.trim()
-        ? `Transfer from ${senderName} (${userEmail}) - ${data.reference.trim()}`
-        : `Transfer from ${senderName} (${userEmail})`;
-
-      // Record Recipient Credit in account_transactions
-      try {
-        await supabaseAdmin.from('account_transactions').insert({
-          user_id: targetUser.id,
-          type: 'credit',
-          amount: data.amount,
-          narration: recipientNarration,
-          reference: recipientRef,
-          balance_after: recipientNewBalance,
-          status: 'Completed',
-          created_at: date,
-        });
-      } catch (err) {
-        console.warn('account_transactions recipient credit notice:', err);
-      }
-
-      // Dual-write Recipient Credit to admin_events
-      try {
-        await supabaseAdmin.from('admin_events').insert({
-          actor: userEmail || 'Customer',
-          action: 'Account Credited',
-          target: JSON.stringify({
-            userId: targetUser.id,
-            email: targetUser.email,
-            userName: senderName,
-            type: 'credit',
-            amount: data.amount,
-            narration: recipientNarration,
-            reference: recipientRef,
-            date,
-            balanceAfter: recipientNewBalance,
-            senderUserId: context.userId,
-            senderEmail: userEmail,
-          }),
-          time: date,
-        });
-      } catch (err) {
-        console.warn('admin_events recipient credit notice:', err);
-      }
+      console.warn('admin_events transfer initiated notice:', err);
     }
 
     return {
@@ -419,6 +399,7 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
       balanceAfter: senderNewBalance.toFixed(2),
       isInternal: Boolean(targetUser),
       recipientName: targetUser ? targetUser.name : data.recipient,
+      status: 'Pending',
       date,
     };
   });
