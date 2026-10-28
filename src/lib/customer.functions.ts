@@ -4,9 +4,19 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { profileSchema, registrationSchema } from './customer-schemas';
 import { zeroBalances, accountNumberFor, formatAccountNumber } from './customer-account-state';
 
+function decodeAvatarPng(image: string) {
+  if (!image.startsWith('data:image/png;base64,')) throw new Error('Choose a valid profile photo.');
+  const bytes = Uint8Array.from(atob(image.slice(22)), character => character.charCodeAt(0));
+  if (bytes.length > 2 * 1024 * 1024 || bytes.length < 24 || ![137,80,78,71,13,10,26,10].every((value, index) => bytes[index] === value)) throw new Error('Choose a photo smaller than 2 MB.');
+  const dimensions = new DataView(bytes.buffer);
+  if (dimensions.getUint32(16) > 1024 || dimensions.getUint32(20) > 1024) throw new Error('Photo is too large.');
+  return bytes;
+}
+
 export const registerCustomer = createServerFn({ method: 'POST' })
-  .inputValidator((input: unknown) => registrationSchema.parse(input))
+  .inputValidator((input: unknown) => ({ ...registrationSchema.parse(input), photo: (input as { photo?: string })?.photo }))
   .handler(async ({ data }) => {
+    const photoBytes = data.photo ? decodeAvatarPng(data.photo) : null;
     const input = registrationSchema.parse(data);
     const { createClient } = await import('@supabase/supabase-js');
     const { getRequest, setResponseHeader } = await import('@tanstack/react-start/server');
@@ -35,26 +45,11 @@ export const registerCustomer = createServerFn({ method: 'POST' })
         const updates: Record<string, unknown> = {
           notification_preferences: { transfer_pin: input.transfer_pin }
         };
-
-        if (photo && photo.startsWith('data:image/')) {
-          try {
-            const commaIdx = photo.indexOf(',');
-            const base64 = photo.slice(commaIdx + 1);
-            const mime = photo.slice(5, commaIdx).split(';')[0] || 'image/png';
-            const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-            const ext = mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' : 'png';
-            const path = `${signUpData.user.id}/avatar.${ext}`;
-            const { error: storageError } = await supabaseAdmin.storage
-              .from('customer-avatars')
-              .upload(path, bytes, { contentType: mime, upsert: true });
-            if (!storageError) {
-              updates.avatar_path = path;
-            }
-          } catch (photoErr) {
-            console.warn('[Registration] Avatar upload notice:', photoErr);
-          }
+        if (photoBytes) {
+          const path = `${signUpData.user.id}/${crypto.randomUUID()}.png`;
+          const { error: uploadError } = await supabaseAdmin.storage.from('customer-avatars').upload(path, photoBytes, { contentType: 'image/png' });
+          if (!uploadError) updates.avatar_path = path;
         }
-
         await supabaseAdmin.from('profiles').update(updates).eq('id', signUpData.user.id);
       } catch {}
     }
@@ -184,11 +179,7 @@ export const saveCustomerAvatar = createServerFn({ method: 'POST' }).middleware(
   const { data: profile } = await context.supabase.from('profiles').select('avatar_path').eq('id', context.userId).maybeSingle();
   let path: string | null = null;
   if (data.image) {
-    if (!data.image.startsWith('data:image/png;base64,')) throw new Error('Choose a valid image.');
-    const bytes = Uint8Array.from(atob(data.image.slice(22)), character => character.charCodeAt(0));
-    if (bytes.length > 2 * 1024 * 1024 || bytes.length < 24 || ![137,80,78,71,13,10,26,10].every((value, index) => bytes[index] === value)) throw new Error('Choose a PNG smaller than 2 MB.');
-    const dimensions = new DataView(bytes.buffer);
-    if (dimensions.getUint32(16) > 1024 || dimensions.getUint32(20) > 1024) throw new Error('Image is too large.');
+    const bytes = decodeAvatarPng(data.image);
     path = `${context.userId}/${crypto.randomUUID()}.png`;
     const { error } = await context.supabase.storage.from('customer-avatars').upload(path, bytes, { contentType: 'image/png' });
     if (error) throw new Error('Your photo could not be uploaded.');
