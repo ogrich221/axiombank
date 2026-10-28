@@ -27,7 +27,7 @@ describe('bank contact details', () => {
   });
 
   it('keeps phone and office details separate from the mailbox', () => {
-    expect(SUPPORT_PHONE).toBe('+1 (800) 555-0199');
+    expect(SUPPORT_PHONE).toBe('+1800AXB');
     expect(OFFICE_ADDRESS).toContain('New York');
   });
 });

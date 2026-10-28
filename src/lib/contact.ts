@@ -7,7 +7,7 @@ export const SUPPORT_EMAIL = "axiombank@axiomfinancialinstitution.online";
 export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`;
 
 
-export const SUPPORT_PHONE = "+1 (800) 555-0199";
-export const SUPPORT_PHONE_TEL = "tel:+18005550199";
+export const SUPPORT_PHONE = "+1800AXB";
+export const SUPPORT_PHONE_TEL = "tel:+1800AXB";
 
 export const OFFICE_ADDRESS = "1200 Liberty Avenue, Suite 400, New York, NY 10001, USA";
