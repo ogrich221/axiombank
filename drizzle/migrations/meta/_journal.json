@@ -36,6 +36,20 @@
       "when": 1793135294371,
       "tag": "0004_atomic_customer_application_confirmation",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793177518843,
+      "tag": "0005_create_account_transactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793177904925,
+      "tag": "0006_registered_accounts_in_admin_directory",
+      "breakpoints": true
     }
   ]
 }

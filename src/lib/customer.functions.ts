@@ -29,6 +29,11 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
   if (error) throw new Error('Your profile could not be loaded.');
   const { data: application, error: applicationError } = await context.supabase.from('customer_applications').select('status,submitted_at,id,admin_review_status,admin_reviewed_at').eq('user_id', context.userId).maybeSingle();
   if (applicationError) throw new Error('Your application could not be loaded.');
+  {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: dir } = await supabaseAdmin.from('admin_users').select('status').eq('id', context.userId).maybeSingle();
+    if (dir?.status === 'Suspended') throw new Error('This account has been suspended. Please contact AXIOM BANK support.');
+  }
   const { data: authData } = await context.supabase.auth.getUser();
   const userEmail = (authData.user?.email ?? '').toLowerCase();
 
@@ -57,9 +62,9 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
           userId: t.user_id,
           type: t.type as 'credit' | 'debit',
           amount: Number(t.amount),
-          narration: t.narration,
+          narration: t.narration ?? '',
           date: t.created_at,
-          reference: t.reference,
+          reference: t.reference ?? '',
           status: t.status || 'Completed',
           balanceAfter: Number(t.balance_after || 0)
         });
@@ -113,6 +118,7 @@ export const updateCustomerProfile = createServerFn({ method: 'POST' }).middlewa
   if (error) throw new Error('Your changes could not be saved.');
   return { saved: true };
 });
+
 export const submitCustomerApplication = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator((input: unknown) => z.object({ terms: z.literal(true) }).parse(input)).handler(async ({ context }) => {
   const { data: profile } = await context.supabase.from('profiles').select('*').eq('id', context.userId).single();
   profileSchema.parse(profile);
@@ -139,7 +145,6 @@ export const saveCustomerAvatar = createServerFn({ method: 'POST' }).middleware(
   if (profile?.avatar_path?.startsWith(`${context.userId}/`)) await context.supabase.storage.from('customer-avatars').remove([profile.avatar_path]);
   return { saved: true };
 });
-
 
 async function computeUserBalance(supabaseClient: any, userId: string, userEmail: string): Promise<number> {
   const transactions: Array<{ id: string; type: 'credit' | 'debit'; amount: number; reference: string; date: string }> = [];

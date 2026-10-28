@@ -8,4 +8,5 @@ describe('Customer rules',()=>{
   it('does not accept application submission without consent',()=>{expect(registrationSchema.safeParse({...profile,email:'jordan@example.com',password:'a secure passphrase',confirm_password:'a secure passphrase',terms:false}).success).toBe(false);});
   it('validates valid registration details',()=>{expect(registrationSchema.safeParse({...profile,email:'jordan@example.com',password:'a secure passphrase',confirm_password:'a secure passphrase',terms:true}).success).toBe(true);});
   it('rejects invalid transfer amounts',()=>{expect(transferPreviewSchema.safeParse({recipient:'Jordan Lee',bank:'Test Bank',account:'12345678',amount:-50,reference:''}).success).toBe(false);});
-});
+});import { describe as d2, it as i2, expect as e2 } from 'vitest';
+d2('transfer bank address',()=>{i2('requires recipient bank address',()=>{e2(transferPreviewSchema.safeParse({recipient:'Jordan Lee',bank:'Test Bank',bankAddress:'',account:'12345678',amount:50,reference:''}).success).toBe(false);});});

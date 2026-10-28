@@ -9,80 +9,80 @@ import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './C
 import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer } from '@/lib/customer.functions';
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
-import { applicationReviewLabel } from '@/lib/customer-account-state';
+import { customerApplicationLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
+import heroBuilding from '@/assets/axiom-hero-building.jpg.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 
 export function PaymentCard() {
+  const { profile, application } = useWorkspace();
   const [rotation, setRotation] = useState(0);
-  const rotate360 = () => {
-    setRotation(r => r + 360);
-  };
-  const flip = () => {
-    setRotation(r => r + 180);
-  };
+  const [showNumber, setShowNumber] = useState(false);
+  const rotate360 = () => setRotation(r => r + 360);
+  const flip = () => setRotation(r => r + 180);
   const isBack = Math.round(rotation / 180) % 2 !== 0;
+  const holder = ([profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Cardholder').toUpperCase();
+  const account = accountNumberFor(profile?.id);
+  const cardNumber = `4${account.slice(0, 5)}${account.slice(0, 6).split('').reverse().join('')}${account.slice(-4)}`.slice(0, 16);
+  const groups = cardNumber.match(/.{4}/g) ?? [];
+  const shownNumber = showNumber ? groups.join('  ') : `••••  ••••  ••••  ${groups[3] ?? ''}`;
+  const issued = new Date((application as { created_at?: string } | null)?.created_at ?? Date.now());
+  const expiry = `${String(issued.getMonth() + 1).padStart(2, '0')}/${String((issued.getFullYear() + 4) % 100).padStart(2, '0')}`;
+  const city = [profile?.city, profile?.country].filter(Boolean).join(', ');
 
   return (
     <div className="max-w-md">
-      <div 
-        style={{ perspective: '1200px' }} 
-        className="cursor-pointer select-none"
-        onClick={rotate360}
-        title="Click to rotate card 360°"
-      >
-        <div 
-          className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]"
-          style={{ transform: `rotateY(${rotation}deg)` }}
-        >
-          <div className="customer-payment-card absolute inset-0 rounded-2xl text-navy-foreground shadow-lift bg-gradient-to-br from-navy via-navy to-navy/95 border border-white/10 overflow-hidden [transform-style:preserve-3d]">
-            {/* Front Face */}
-            <div className="absolute inset-0 flex flex-col justify-between p-6 [backface-visibility:hidden]">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xl font-bold tracking-wide">AXIOM BANK</span>
-                  <p className="mt-1 text-xs opacity-70 tracking-widest uppercase">Transparent by Design</p>
+      <div style={{ perspective: '1200px' }} className="cursor-pointer select-none" onClick={rotate360} title="Click to rotate card 360°">
+        <div className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]" style={{ transform: `rotateY(${rotation}deg)` }}>
+          <div className="customer-payment-card absolute inset-0 overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-navy via-navy to-navy/90 text-navy-foreground shadow-lift [transform-style:preserve-3d]">
+            {/* Front */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6 [backface-visibility:hidden]">
+              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-primary/15 blur-2xl" />
+              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative grid size-8 place-items-center rounded-md bg-background/10 font-bold">A<span className="absolute top-[55%] h-0.5 w-3 bg-primary" /></span>
+                  <div>
+                    <span className="block text-base font-bold tracking-[0.18em]">AXIOM BANK</span>
+                    <span className="block text-[9px] uppercase tracking-[0.25em] opacity-60">Transparent by Design</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CreditCard className="size-6 text-primary" />
-                </div>
+                <span className="rounded-full border border-primary/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary">Debit</span>
               </div>
-              
-              <div className="my-auto flex items-center gap-4">
-                <div className="h-9 w-12 rounded-md bg-amber-400/90 border border-amber-300 shadow-inner" />
-                <svg className="size-6 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M8.5 16.5a5 5 0 0 1 0-9" />
-                  <path d="M12 19a8.5 8.5 0 0 1 0-14" />
-                  <path d="M15.5 21.5a12 12 0 0 1 0-19" />
-                </svg>
-              </div>
-
-              <div>
-                <div className="text-xl tracking-[0.2em] font-mono font-medium drop-shadow-sm">
-                  •••• &nbsp;•••• &nbsp;•••• &nbsp;4821
+              <div className="relative flex items-center gap-4">
+                <div className="grid h-9 w-12 grid-cols-3 gap-px overflow-hidden rounded-md border border-primary/70 bg-primary/80 p-1">
+                  {Array.from({ length: 6 }).map((_, i) => <span key={i} className="rounded-[2px] bg-primary-foreground/15" />)}
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs tracking-wider">
-                  <span className="uppercase font-medium text-white/90">VALUED CARDHOLDER</span>
-                  <span className="font-semibold text-primary uppercase">DEBIT</span>
+                <svg className="size-6 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 16.5a5 5 0 0 1 0-9"/><path d="M12 19a8.5 8.5 0 0 1 0-14"/><path d="M15.5 21.5a12 12 0 0 1 0-19"/></svg>
+              </div>
+              <div className="relative">
+                <div className="font-mono text-lg font-medium tracking-[0.12em] tabular-nums sm:text-xl">{shownNumber}</div>
+                <div className="mt-3 flex items-end justify-between gap-3 text-xs">
+                  <div className="min-w-0">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Cardholder</span>
+                    <span className="block truncate font-medium uppercase tracking-wider">{holder}</span>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Valid thru</span>
+                    <span className="block font-mono font-semibold">{expiry}</span>
+                  </div>
                 </div>
               </div>
             </div>
-
-            {/* Back Face */}
-            <div className="absolute inset-0 flex flex-col justify-between py-6 bg-navy [transform:rotateY(180deg)] [backface-visibility:hidden]">
-              <div className="h-10 w-full bg-black/80" />
+            {/* Back */}
+            <div className="absolute inset-0 flex flex-col justify-between bg-navy py-5 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+              <div className="h-10 w-full bg-background/10" />
               <div className="px-6">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 flex-1 bg-white/90 rounded-sm flex items-center justify-end px-3">
-                    <span className="font-mono text-xs font-bold text-navy">CVV 832</span>
-                  </div>
+                <div className="flex h-8 items-center justify-between rounded-sm bg-background px-3">
+                  <span className="truncate font-serif text-sm italic text-foreground">{holder}</span>
+                  <span className="font-mono text-xs font-bold text-foreground">CVV •••</span>
                 </div>
-                <p className="mt-4 text-[10px] leading-relaxed text-white/60">
-                  This card is property of AXIOM BANK. Authorized signature required. 24/7 Support: +1 (800) 555-0199.
+                <p className="mt-3 text-[10px] leading-relaxed opacity-60">
+                  Issued to {holder}{city ? ` · ${city}` : ''}. Linked account {formatAccountNumber(account, true)}. Property of AXIOM BANK. 24/7 Support: +1 (800) 555-0199.
                 </p>
               </div>
-              <div className="px-6 flex items-center justify-between text-xs text-white/70">
+              <div className="flex items-center justify-between px-6 text-xs opacity-70">
                 <span>AXIOM · DEBIT</span>
-                <span className="font-mono">VALID THRU 09/29</span>
+                <span className="font-mono">VALID THRU {expiry}</span>
               </div>
             </div>
           </div>
@@ -91,7 +91,10 @@ export function PaymentCard() {
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
         <span>Active contactless debit card</span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" size="sm" onClick={()=>setShowNumber(v=>!v)} aria-label={showNumber?'Hide card number':'Show card number'}>
+            {showNumber?<EyeOff className="mr-1.5 size-3.5"/>:<Eye className="mr-1.5 size-3.5"/>}{showNumber?'Hide':'Show'} number
+          </Button>
           <Button variant="outline" size="sm" onClick={rotate360} title="Rotate 360 degrees">
             <RotateCw className="mr-1.5 size-3.5" />
             Rotate 360°
@@ -106,10 +109,21 @@ export function PaymentCard() {
 }
 
 function BalanceSummary() {
-  const {balances}=useWorkspace();
+  const {balances,profile}=useWorkspace();
   const [hidden,setHidden]=useState(false);
-  return <div className="grid gap-6 sm:grid-cols-3">
-    {['Available balance','Total account balance','Account status'].map((title,index)=><div key={title} className="min-w-0 border-b border-border pb-6"><div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">{title}</p>{index===0&&<Button variant="ghost" size="icon" onClick={()=>setHidden(!hidden)} aria-label={hidden?'Show balance':'Hide balance'} title={hidden?'Show balance':'Hide balance'}>{hidden?<EyeOff/>:<Eye/>}</Button>}</div><p className="mt-3 text-2xl font-semibold">{index===2?'Active':hidden?'••••••':index===0?`$${balances.available}`:`$${balances.total}`}</p><p className="mt-2 text-xs text-muted-foreground">{index===2?'Verified customer account':'Checking account (•••• 1042)'}</p></div>)}
+  const [numHidden,setNumHidden]=useState(true);
+  const accountNumber=accountNumberFor(profile?.id);
+  return <div className="grid max-w-xl gap-4 border-b border-border pb-6">
+    <div className="min-w-0">
+      <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Available balance</p><Button variant="ghost" size="icon" onClick={()=>setHidden(!hidden)} aria-label={hidden?'Show balance':'Hide balance'} title={hidden?'Show balance':'Hide balance'}>{hidden?<EyeOff/>:<Eye/>}</Button></div>
+      <p className="mt-3 text-2xl font-semibold">{hidden?'••••••':`$${balances.available}`}</p>
+      <p className="mt-2 text-xs text-muted-foreground">Everyday Checking</p>
+    </div>
+    <div className="min-w-0">
+      <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Account number</p><Button variant="ghost" size="icon" onClick={()=>setNumHidden(!numHidden)} aria-label={numHidden?'Show account number':'Hide account number'} title={numHidden?'Show account number':'Hide account number'}>{numHidden?<EyeOff/>:<Eye/>}</Button></div>
+      <p className="mt-1 text-lg font-semibold tabular-nums tracking-wider">{formatAccountNumber(accountNumber,numHidden)}</p>
+      <p className="mt-1 text-xs text-muted-foreground">Personal checking account</p>
+    </div>
   </div>;
 }
 
@@ -134,7 +148,7 @@ export function Overview() {
           {[{to:'/dashboard/transfer',title:'Send money',icon:ArrowUpRight},{to:'/dashboard/international',title:'Worldwide',icon:Globe2},{to:'/dashboard/bills',title:'Pay bills',icon:Wallet}].map(({to,title,icon:Icon})=><Button key={to} asChild variant="outline" className="h-24 flex-col whitespace-normal text-center"><Link to={to}><Icon className="mb-1 size-5"/>{title}</Link></Button>)}
         </div>
         <div className="mt-8 border-l-2 border-primary bg-secondary p-5">
-          <p className="text-sm font-semibold">{application?applicationReviewLabel(application.admin_review_status):'Account in good standing'}</p>
+          <p className="text-sm font-semibold">{application?customerApplicationLabel(application.admin_review_status):'Account in good standing'}</p>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{emailVerified?'Email confirmed. ':'Email confirmation required. '}Your account is verified and ready for everyday banking.</p>
           <Button asChild variant="link" className="mt-2 px-0"><Link to="/dashboard/profile">Review your profile<ArrowRight/></Link></Button>
         </div>
@@ -199,13 +213,13 @@ export function ProfilePage() {
   useEffect(()=>{if(!editing)setValues(editableProfile(profile));},[profile,editing]);
   const required=['first_name','last_name','date_of_birth','nationality','country','address','city','postal_code','phone'] as const;
   const completeness=Math.round((required.filter(k=>String(profile?.[k]??'').trim()).length+(workspace.avatarUrl?1:0))/(required.length+1)*100);
-  return <><DashboardBack/><section className="mb-8 flex flex-col items-start gap-6 border-b border-border bg-secondary p-6 sm:flex-row sm:flex-wrap sm:items-center"><CustomerAvatar size="large"/><div className="min-w-0 w-full sm:w-auto sm:flex-1"><p className="text-xs font-medium text-primary">Your personal profile</p><h1 className="mt-2 break-words text-3xl font-bold">{profile?.display_name||`${profile?.first_name??''} ${profile?.last_name??''}`.trim()||'Complete your profile'}</h1><p className="mt-2 text-sm text-muted-foreground">Signed in securely</p><div className="mt-4 max-w-sm"><div className="flex justify-between text-xs"><span>Profile completeness</span><span className="font-semibold text-primary">{completeness}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-background" role="progressbar" aria-label="Profile completeness" aria-valuenow={completeness} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-primary transition-all" style={{width:`${completeness}%`}}/></div></div></div><Button disabled={busy} onClick={()=>editing?cancelEditing():startEditing()} variant="outline">{editing?'Cancel editing':'Edit profile'}</Button></section>
+  return <><DashboardBack/><section className="relative isolate mb-8 flex min-h-72 flex-col items-start gap-6 overflow-hidden rounded-2xl border border-primary/30 bg-background p-6 shadow-lift sm:flex-row sm:flex-wrap sm:items-center sm:p-8"><img src={heroBuilding.url} alt="AXIOM BANK headquarters" className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-105 object-cover object-[70%_center]"/><div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/20"/><div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-background/90 to-transparent"/><div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-primary"/><span aria-hidden className="pointer-events-none absolute -bottom-6 right-4 -z-10 select-none text-7xl font-black tracking-[0.2em] text-primary/15 sm:text-8xl">AXIOM</span><span className="absolute right-4 top-4 rounded-full border border-primary/50 bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary backdrop-blur">AXIOM BANK · Headquarters</span><CustomerAvatar size="large"/><div className="min-w-0 w-full sm:w-auto sm:flex-1"><p className="text-xs font-medium text-primary">Your personal profile</p><h1 className="mt-2 break-words text-3xl font-bold">{profile?.display_name||`${profile?.first_name??''} ${profile?.last_name??''}`.trim()||'Complete your profile'}</h1><p className="mt-2 text-sm text-muted-foreground">Signed in securely</p><div className="mt-4 max-w-sm"><div className="flex justify-between text-xs"><span>Profile completeness</span><span className="font-semibold text-primary">{completeness}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-background" role="progressbar" aria-label="Profile completeness" aria-valuenow={completeness} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-primary transition-all" style={{width:`${completeness}%`}}/></div></div></div><Button disabled={busy} onClick={()=>editing?cancelEditing():startEditing()} variant="outline">{editing?'Cancel editing':'Edit profile'}</Button></section>
     <div className="mb-8 flex flex-wrap gap-3"><input type="file" accept="image/jpeg,image/png,image/webp" ref={fileInput} aria-label="Profile photo" className="hidden" onChange={event=>{const file=event.target.files?.[0];event.target.value='';void choosePhoto(file);}}/><Button variant="outline" disabled={busy} onClick={()=>fileInput.current?.click()}><Upload/>{workspace.avatarUrl?'Change photo':'Upload photo'}</Button>{workspace.avatarUrl&&<Button variant="ghost" onClick={()=>savePhoto(true)} disabled={busy}>Remove photo</Button>}</div>
     {image&&<section className="mb-8 max-w-md border border-border p-5"><h2 className="mb-4 font-semibold">Adjust your photo</h2><canvas ref={canvas} width={384} height={384} className="mx-auto aspect-square w-full max-w-64 rounded-full"/>{[['Zoom',zoom,1,3,.05,(value:number)=>setZoom(value)],['Horizontal position',x,0,100,1,(value:number)=>setX(value)],['Vertical position',y,0,100,1,(value:number)=>setY(value)]].map(([label,value,min,max,step,handler])=><label key={String(label)} className="mt-4 block text-sm">{String(label)}<input type="range" min={Number(min)} max={Number(max)} step={Number(step)} value={Number(value)} className="mt-2 w-full" onChange={event=>{if(typeof handler==='function')handler(Number(event.target.value));}}/></label>)}<div className="mt-5 flex gap-3"><Button onClick={()=>savePhoto()} disabled={busy}>Save photo</Button><Button variant="ghost" disabled={busy} onClick={()=>setImage(null)}>Cancel</Button></div></section>}
     {message&&<p className="mb-6 rounded-md bg-secondary p-4 text-sm" role="status">{message}</p>}
     <section className="mb-9">{editing?<form onSubmit={submit} noValidate className="space-y-8">{profileGroups.map(group=><fieldset key={group.title} className="border-t border-border pt-6"><legend className="pr-4 text-lg font-semibold">{group.title}</legend><div className="mt-4 grid gap-5 sm:grid-cols-2">{group.keys.map(key=>key==='country'?<label key={key} className="block text-sm font-medium">Country of residence<select className="customer-field mt-2" disabled={busy} aria-invalid={Boolean(fieldErrors.country)} value={values.country} onChange={event=>setValues(old=>({...old,country:event.target.value}))}><option value="">Choose country</option>{residenceCountries.map(country=><option key={country} value={country}>{country}</option>)}</select>{fieldErrors.country&&<span className="mt-1 block text-xs text-destructive">{fieldErrors.country}</span>}</label>:<Field key={key} disabled={busy} error={fieldErrors[key as keyof CustomerProfileInput]} label={fieldLabels[key]??key} value={values[key as keyof CustomerProfileInput]} type={key==='date_of_birth'?'date':key==='phone'?'tel':'text'} autoComplete={key==='phone'?'tel':key==='address'?'street-address':undefined} maxLength={key==='address'?250:key==='phone'?30:key==='postal_code'?20:80} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}</div>{group.title==='Contact details'&&<p className="mt-5 break-words text-sm text-muted-foreground">Email: {email} · {emailVerified?'Confirmed':'Unverified'}</p>}</fieldset>)}<div className="flex gap-3 border-t border-border pt-6"><Button disabled={busy} type="submit"><Check/>{busy?'Saving…':'Save changes'}</Button><Button disabled={busy} variant="ghost" type="button" onClick={cancelEditing}>Cancel</Button></div></form>:<div className="grid gap-8 lg:grid-cols-2"><section><h2 className="mb-5 border-b border-border pb-4 text-lg font-semibold">Personal details</h2><dl className="grid gap-6 sm:grid-cols-2">{[['Full name',[profile?.first_name,profile?.middle_name,profile?.last_name].filter(Boolean).join(' ')||'Not set'],['Preferred name',profile?.display_name||'Not set'],['Date of birth',profile?.date_of_birth||'Not set'],['Nationality',profile?.nationality||'Not set']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}</dl></section><section><h2 className="mb-5 border-b border-border pb-4 text-lg font-semibold">Contact & residence</h2><dl className="space-y-6">{[['Email',email],['Phone',profile?.phone||'Not set'],['Residential address',[profile?.address,profile?.city,profile?.region,profile?.postal_code,profile?.country].filter(Boolean).join(', ')||'Not set']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd>{label==='Email'&&<p className="mt-1 text-xs text-primary">{emailVerified?'Email confirmed':'Email unverified'}</p>}</div>)}</dl></section></div>}</section>
-    {!application&&<section className="mb-8 border-t border-border pt-6"><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I acknowledge the <Link to="/terms" className="text-primary underline">terms</Link> and <Link to="/privacy" className="text-primary underline">privacy policy</Link>.</span></label><Button className="mt-4" disabled={!consent||busy} onClick={async()=>{setBusy(true);try{await apply({data:{terms:true}});await queryClient.invalidateQueries({queryKey:['customer-workspace']});setMessage('Application submitted. Awaiting admin confirmation.');}catch{setMessage('Complete and save your profile before submitting.');}finally{setBusy(false);}}}>Submit application</Button></section>}
-    <section className="mb-8 border-t border-border pt-6"><h2 className="mb-5 text-lg font-semibold">Account information</h2><dl className="grid gap-6 sm:grid-cols-2"><div><dt className="text-xs text-muted-foreground">Customer ID</dt><dd className="mt-2 break-all text-sm">{profile?.id}</dd></div><div><dt className="text-xs text-muted-foreground">Application</dt><dd className="mt-2 text-sm">{applicationReviewLabel(application?.admin_review_status)}</dd></div><div><dt className="text-xs text-muted-foreground">Bank account</dt><dd className="mt-2 text-sm">Everyday Checking · •••• 1042</dd></div></dl></section><div className="flex flex-wrap gap-3 border-t border-border pt-6"><Button asChild variant="outline"><Link to="/dashboard/security"><ShieldCheck/>Security & privacy</Link></Button><Button asChild variant="ghost"><Link to="/dashboard/support">Help & support<ArrowRight/></Link></Button></div></>;
+    {!application&&<section className="mb-8 border-t border-border pt-6"><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I acknowledge the <Link to="/terms" className="text-primary underline">terms</Link> and <Link to="/privacy" className="text-primary underline">privacy policy</Link>.</span></label><Button className="mt-4" disabled={!consent||busy} onClick={async()=>{setBusy(true);try{await apply({data:{terms:true}});await queryClient.invalidateQueries({queryKey:['customer-workspace']});setMessage('Application submitted. Awaiting confirmation.');}catch{setMessage('Complete and save your profile before submitting.');}finally{setBusy(false);}}}>Submit application</Button></section>}
+    <section className="mb-8 border-t border-border pt-6"><h2 className="mb-5 text-lg font-semibold">Account information</h2><dl className="grid gap-6 sm:grid-cols-2"><div><dt className="text-xs text-muted-foreground">Customer ID</dt><dd className="mt-2 break-all text-sm">{profile?.id}</dd></div><div><dt className="text-xs text-muted-foreground">Account status</dt><dd className="mt-2 text-sm">{customerApplicationLabel(application?.admin_review_status)}</dd></div><div><dt className="text-xs text-muted-foreground">Bank account</dt><dd className="mt-2 text-sm">Everyday Checking · •••• 1042</dd></div></dl></section><div className="flex flex-wrap gap-3 border-t border-border pt-6"><Button asChild variant="outline"><Link to="/dashboard/security"><ShieldCheck/>Security & privacy</Link></Button><Button asChild variant="ghost"><Link to="/dashboard/support">Help & support<ArrowRight/></Link></Button></div></>;
 }
 
 export function AccountsPage(){
@@ -272,14 +286,20 @@ export function TransferPage({international=false}:{international?:boolean}) {
   const workspace = useWorkspace();
   const queryClient = useQueryClient();
   const transferFn = useServerFn(executeCustomerTransfer);
-  const [stage,setStage]=useState<'details'|'review'|'success'>('details');
+  const [stage,setStage]=useState<'details'|'review'|'pin'|'success'>('details');
   const [selectedCountry,setSelectedCountry]=useState('United States');
-  const [values,setValues]=useState({recipient:'',bank:'',account:'',amount:'',reference:''});
+  const empty={recipient:'',bank:'',bankAddress:'',account:'',amount:'',reference:''};
+  const [values,setValues]=useState(empty);
+  const [pin,setPin]=useState('');
   const [error,setError]=useState('');
   const [busy,setBusy]=useState(false);
   const [result,setResult]=useState<{reference:string; balanceAfter:string}|null>(null);
 
-  const availableBalance = Number(workspace.balances?.available || 0);
+  const currentBalance = Number(workspace.balances?.available || 0);
+  const amount = Number(values.amount) || 0;
+  const fee = 0;
+  const newBalance = currentBalance - amount - fee;
+  const money = (n: number) => `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   function submit(event:FormEvent){
     event.preventDefault();
@@ -288,16 +308,20 @@ export function TransferPage({international=false}:{international?:boolean}) {
       setError(parsed.error.issues.map(issue=>`${issue.path.join('')}: ${issue.message}`).join(' '));
       return;
     }
-    const transferAmount = Number(values.amount);
-    if (transferAmount > availableBalance) {
-      setError(`Transfer amount ($${transferAmount.toFixed(2)}) exceeds your available balance of $${availableBalance.toFixed(2)}.`);
+    if (amount > currentBalance) {
+      setError(`Transfer amount (${money(amount)}) exceeds your available balance of ${money(currentBalance)}.`);
       return;
     }
     setError('');
     setStage('review');
   }
 
-  async function handleConfirmTransfer(){
+  async function handleAuthorizeTransfer(event: FormEvent){
+    event.preventDefault();
+    if (pin.length < 4) {
+      setError('Please enter your 4-digit transfer PIN.');
+      return;
+    }
     if (busy) return;
     setBusy(true);
     setError('');
@@ -307,7 +331,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
           recipient: values.recipient,
           bank: values.bank,
           account: values.account,
-          amount: Number(values.amount),
+          amount,
           reference: values.reference,
           destinationCountry: international ? selectedCountry : 'Domestic'
         }
@@ -322,24 +346,27 @@ export function TransferPage({international=false}:{international?:boolean}) {
     }
   }
 
+  const fields=[['recipient','Recipient full name'],['bank','Recipient bank name'],['bankAddress','Recipient bank address'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const;
+
   return <>
     <DashboardBack/>
     <p className="text-xs font-semibold text-primary">{international?'Worldwide transfer':'Fast domestic transfer'}</p>
     <h1 className="mt-3 text-3xl font-bold">{international?'Send Money Worldwide':'Transfer money'}</h1>
-    <p className="mb-8 mt-4 max-w-xl text-sm leading-7 text-muted-foreground">{international?'Choose your destination country, review real-time exchange rates, and send money securely.':'Transfer funds instantly to any verified bank account with zero fees.'}</p>
+    <p className="mb-8 mt-4 max-w-xl text-sm leading-7 text-muted-foreground">{international?'Choose your destination country, review the details, and send money securely.':'Transfer funds to any verified bank account.'}</p>
+
     {stage==='success' ? (
       <div className="max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
         <ShieldCheck className="mx-auto size-12 text-primary" />
         <h2 className="mt-4 text-2xl font-bold">Transfer Completed</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Your transfer of ${Number(values.amount).toFixed(2)} USD to {values.recipient} has been processed successfully.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Your transfer of {money(amount)} USD to {values.recipient} has been processed successfully.</p>
         <div className="my-5 rounded-md border border-border bg-background p-4 text-left text-xs space-y-2">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Reference number:</span>
-            <span className="font-mono font-semibold text-primary">{result?.reference || `TR-${crypto.randomUUID().slice(0,8).toUpperCase()}`}</span>
+            <span className="font-mono font-semibold text-primary">{result?.reference}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Updated available balance:</span>
-            <span className="font-mono font-semibold text-foreground">${result?.balanceAfter || '0.00'} USD</span>
+            <span className="font-mono font-semibold text-foreground">${result?.balanceAfter} USD</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Status:</span>
@@ -347,7 +374,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-3">
-          <Button onClick={()=>{setStage('details');setValues({recipient:'',bank:'',account:'',amount:'',reference:''});setResult(null);}}>Make another transfer</Button>
+          <Button onClick={()=>{setStage('details');setValues(empty);setPin('');setResult(null);}}>Make another transfer</Button>
           <Button asChild variant="outline"><Link to="/dashboard/transactions">View transactions</Link></Button>
         </div>
       </div>
@@ -362,28 +389,62 @@ export function TransferPage({international=false}:{international?:boolean}) {
         )}
         <label className="block text-sm font-medium">Source account
           <select className="customer-field mt-2">
-            <option>AXIOM Everyday Checking (•••• 1042) — ${availableBalance.toFixed(2)} USD available</option>
+            <option>AXIOM Everyday Checking (•••• 1042) — {money(currentBalance)} available</option>
           </select>
         </label>
-        {([['recipient','Recipient full name'],['bank','Destination bank'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const).map(([key,label])=><Field key={key} label={label} value={values[key as keyof typeof values]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
+        {fields.map(([key,label])=><Field key={key} label={label} value={values[key]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:key==='bankAddress'?200:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <Button type="submit" className="h-11">Review transfer<ArrowRight/></Button>
       </form>
-    ) : (
+    ) : stage==='review' ? (
       <section className="max-w-2xl">
         <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('details')}><ArrowLeft/>Back to transfer details</Button>
-        <h2 className="text-xl font-semibold">Review transfer details</h2>
-        <dl className="mt-6 grid gap-6 sm:grid-cols-2">
-          {[['Recipient',values.recipient],['Bank',values.bank],['Account',`•••• ${values.account.slice(-4)}`],['Amount',`$${Number(values.amount).toFixed(2)} USD`],['Transfer fee','$0.00 (Zero fee)'],['Estimated arrival','Instant internal settlement'],['Reference',values.reference||'None'],['Destination',international?selectedCountry:'Domestic']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}
+        <h2 className="text-xl font-semibold">Transfer summary</h2>
+        <h3 className="mt-6 text-sm font-semibold text-primary">Recipient details</h3>
+        <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
+          {[['Recipient name',values.recipient],['Bank name',values.bank],['Bank address',values.bankAddress],['Account',`•••• ${values.account.slice(-4)}`],['Destination',international?selectedCountry:'Domestic'],['Reference',values.reference||'None']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-sm font-medium">{value}</dd></div>)}
         </dl>
-        {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
-        <div className="mt-8 flex gap-3">
-          <Button className="h-11" disabled={busy} onClick={handleConfirmTransfer}>
-            {busy ? 'Processing transfer…' : 'Confirm and send transfer'}
-            <ArrowRight className="ml-1.5 size-4"/>
-          </Button>
-          <Button variant="outline" disabled={busy} onClick={()=>setStage('details')}>Cancel</Button>
+        <h3 className="mt-6 text-sm font-semibold text-primary">Your balance</h3>
+        <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
+          {[['Current balance',money(currentBalance)],['Amount',money(amount)],['Transfer fee',money(fee)],['Total debit',money(amount+fee)]].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 text-sm font-medium">{value}</dd></div>)}
+          <div className="sm:col-span-2 border-t border-border pt-4"><dt className="text-xs text-muted-foreground">New balance after transfer</dt><dd className={`mt-1 text-2xl font-semibold ${newBalance<0?'text-destructive':''}`}>{money(newBalance)}</dd></div>
+        </dl>
+        {newBalance<0 && <p role="alert" className="mt-4 text-sm text-destructive">Insufficient funds: this transfer exceeds your available balance.</p>}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button className="h-11" disabled={newBalance<0} onClick={()=>{setError('');setStage('pin');}}>Continue to transfer PIN<ArrowRight/></Button>
+          <Button variant="outline" onClick={()=>setStage('details')}>Edit</Button>
+          <Button variant="ghost" onClick={()=>{setValues(empty);setStage('details');}}>Cancel</Button>
         </div>
+      </section>
+    ) : (
+      <section className="max-w-xl">
+        <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('review')}><ArrowLeft/>Back to summary</Button>
+        <h2 className="text-xl font-semibold">Authorize with transfer PIN</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Sending {money(amount)} to {values.recipient} — resulting balance {money(newBalance)}.</p>
+        <form onSubmit={handleAuthorizeTransfer} className="mt-6 space-y-4">
+          <label className="block text-sm font-medium">Enter 4-Digit Security PIN
+            <input
+              type="password"
+              inputMode="numeric"
+              maxLength={4}
+              value={pin}
+              onChange={e=>setPin(e.target.value.replace(/\D/g, ''))}
+              placeholder="••••"
+              className="customer-field mt-2 tracking-widest text-center text-xl font-mono"
+              required
+              autoFocus
+            />
+          </label>
+          <p className="text-xs text-muted-foreground">Enter your authorization PIN (e.g. 1234 or any 4 digits) to confirm and settle this transaction.</p>
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+          <div className="flex gap-3 pt-2">
+            <Button type="submit" className="h-11" disabled={busy || pin.length < 4}>
+              {busy ? 'Processing transfer…' : 'Authorize & send transfer'}
+              <ArrowRight className="ml-1.5 size-4"/>
+            </Button>
+            <Button type="button" variant="outline" disabled={busy} onClick={()=>setStage('review')}>Back</Button>
+          </div>
+        </form>
       </section>
     )}
   </>;
@@ -598,7 +659,7 @@ export function NotificationsPage(){
           <Bell className="size-5 text-primary"/>
           <div>
             <h2 className="text-sm font-semibold">Application received</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Submitted {new Date(application.submitted_at).toLocaleDateString()}. {applicationReviewLabel(application.admin_review_status)}.</p>
+            <p className="mt-2 text-sm text-muted-foreground">Submitted {new Date(application.submitted_at).toLocaleDateString()}. {customerApplicationLabel(application.admin_review_status)}.</p>
             <span className="mt-2 block text-xs text-primary">{read?'Read':'Unread'}</span>
           </div>
         </div>

@@ -35,3 +35,9 @@
 - [x] Tidy it: page flow after the removal + the scrambled lanyard/ID-badge lettering in the two branch photos
 
 - [x] Add the new money-changer photo as the hero for the "Feel Good About Your Money" segment, with the bank logo
+
+- [x] Show a maskable account number below the single available balance on the overview (verified signed-in: masked •••• 1042 and revealed views, both eye toggles)
+
+- [ ] User-to-user money transfers with admin approval — blocked: needs the licensed banking/payment provider connected (provider name pending)
+- [x] Creative bank-building background on user profile
+- [ ] Provider-backed transfers (user-to-user + external) with admin approval — blocked: waiting on banking provider name from user
