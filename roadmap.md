@@ -37,3 +37,5 @@
 - [x] Add the new money-changer photo as the hero for the "Feel Good About Your Money" segment, with the bank logo
 
 - [x] Show a maskable account number below the single available balance on the overview (verified signed-in: masked •••• 1042 and revealed views, both eye toggles)
+
+- [ ] User-to-user money transfers with admin approval — blocked: needs the licensed banking/payment provider connected (provider name pending)

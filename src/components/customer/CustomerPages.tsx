@@ -86,7 +86,6 @@ export function PaymentCard() {
               </div>
             </div>
           </div>
-          </div>
         </div>
       </div>
 
