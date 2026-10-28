@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { Link } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
-import { useQueryClient } from '@tanstack/react-query';
-import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2, Wallet, Upload, Check, Bell, Search, Download, Lock, ArrowLeft, Receipt, RotateCw, ArrowDownLeft } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2, Wallet, Upload, Check, Bell, Search, Download, Lock, ArrowLeft, Receipt, RotateCw, ArrowDownLeft, Users, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Field, PasswordField } from './CustomerControls';
 import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './CustomerLayout';
-import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer } from '@/lib/customer.functions';
+import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer, getAxiomTransferRecipients } from '@/lib/customer.functions';
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
 import { customerApplicationLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
@@ -340,20 +340,55 @@ export function TransferPage({international=false}:{international?:boolean}) {
   const workspace = useWorkspace();
   const queryClient = useQueryClient();
   const transferFn = useServerFn(executeCustomerTransfer);
-  const [stage,setStage]=useState<'details'|'review'|'pin'|'success'>('details');
-  const [selectedCountry,setSelectedCountry]=useState('United States');
-  const empty={recipient:'',bank:'',bankAddress:'',account:'',amount:'',reference:''};
-  const [values,setValues]=useState(empty);
-  const [pin,setPin]=useState('');
-  const [error,setError]=useState('');
-  const [busy,setBusy]=useState(false);
-  const [result,setResult]=useState<{reference:string; balanceAfter:string}|null>(null);
+  const fetchRecipients = useServerFn(getAxiomTransferRecipients);
+  const recipientsQuery = useQuery({ queryKey: ['axiom-recipients'], queryFn: () => fetchRecipients() });
+  const axiomMembers = recipientsQuery.data || [];
+
+  const [transferType, setTransferType] = useState<'axiom' | 'domestic' | 'international'>(international ? 'international' : 'axiom');
+  const [selectedMemberId, setSelectedMemberId] = useState<string>('');
+  const [stage, setStage] = useState<'details' | 'review' | 'pin' | 'success'>('details');
+  const [selectedCountry, setSelectedCountry] = useState('United States');
+  const empty = { recipient: '', bank: 'AXIOM BANK', bankAddress: '', account: '', amount: '', reference: '' };
+  const [values, setValues] = useState(empty);
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState<{ reference: string; balanceAfter: string; isInternal?: boolean; recipientName?: string } | null>(null);
 
   const currentBalance = Number(workspace.balances?.available || 0);
   const amount = Number(values.amount) || 0;
   const fee = 0;
   const newBalance = currentBalance - amount - fee;
   const money = (n: number) => `$${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+  function handleSelectAxiomMember(memberId: string) {
+    setSelectedMemberId(memberId);
+    if (!memberId || memberId === 'manual') {
+      setValues(v => ({ ...v, recipient: '', account: '', bank: 'AXIOM BANK' }));
+      return;
+    }
+    const member = axiomMembers.find(m => m.id === memberId);
+    if (member) {
+      setValues(v => ({
+        ...v,
+        recipient: member.name,
+        account: member.accountNumber,
+        bank: 'AXIOM BANK',
+      }));
+      setError('');
+    }
+  }
+
+  function handleSwitchType(type: 'axiom' | 'domestic' | 'international') {
+    setTransferType(type);
+    setSelectedMemberId('');
+    setError('');
+    if (type === 'axiom') {
+      setValues({ recipient: '', bank: 'AXIOM BANK', bankAddress: '', account: '', amount: values.amount, reference: values.reference });
+    } else {
+      setValues({ recipient: '', bank: '', bankAddress: '', account: '', amount: values.amount, reference: values.reference });
+    }
+  }
 
   function submit(event:FormEvent){
     event.preventDefault();
@@ -383,14 +418,20 @@ export function TransferPage({international=false}:{international?:boolean}) {
       const res = await transferFn({
         data: {
           recipient: values.recipient,
-          bank: values.bank,
+          bank: values.bank || (transferType === 'axiom' ? 'AXIOM BANK' : 'Domestic Bank'),
           account: values.account,
           amount,
           reference: values.reference,
-          destinationCountry: international ? selectedCountry : 'Domestic'
+          destinationCountry: transferType === 'international' ? selectedCountry : 'Domestic',
+          recipientUserId: selectedMemberId && selectedMemberId !== 'manual' ? selectedMemberId : undefined,
         }
       });
-      setResult({ reference: res.reference, balanceAfter: res.balanceAfter });
+      setResult({
+        reference: res.reference,
+        balanceAfter: res.balanceAfter,
+        isInternal: res.isInternal,
+        recipientName: res.recipientName,
+      });
       await queryClient.invalidateQueries({ queryKey: ['customer-workspace'] });
       setStage('success');
     } catch (err) {
@@ -400,63 +441,206 @@ export function TransferPage({international=false}:{international?:boolean}) {
     }
   }
 
-  const fields=[['recipient','Recipient full name'],['bank','Recipient bank name'],['bankAddress','Recipient bank address'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const;
+  const domesticFields=[['recipient','Recipient full name'],['bank','Recipient bank name'],['bankAddress','Recipient bank address'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const;
 
   return <>
     <DashboardBack/>
-    <p className="text-xs font-semibold text-primary">{international?'Worldwide transfer':'Fast domestic transfer'}</p>
-    <h1 className="mt-3 text-3xl font-bold">{international?'Send Money Worldwide':'Transfer money'}</h1>
-    <p className="mb-8 mt-4 max-w-xl text-sm leading-7 text-muted-foreground">{international?'Choose your destination country, review the details, and send money securely.':'Transfer funds to any verified bank account.'}</p>
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p className="text-xs font-semibold text-primary">Funds Transfer & Settlement</p>
+        <h1 className="mt-1 text-3xl font-bold">{transferType === 'international' ? 'Send Money Worldwide' : 'Transfer Money'}</h1>
+      </div>
+      <span className="rounded-full border border-primary/40 bg-secondary px-3 py-1 font-mono text-xs font-semibold text-foreground">
+        Available: {money(currentBalance)} USD
+      </span>
+    </div>
+
+    {stage === 'details' && (
+      <div className="mt-6 flex flex-wrap gap-2 rounded-xl border border-border bg-background p-1.5 max-w-xl">
+        <button
+          type="button"
+          onClick={() => handleSwitchType('axiom')}
+          className={`flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+            transferType === 'axiom'
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <Users className="size-3.5" />
+          AXIOM Customer Transfer
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSwitchType('domestic')}
+          className={`flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+            transferType === 'domestic'
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <Building2 className="size-3.5" />
+          External Domestic Bank
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSwitchType('international')}
+          className={`flex-1 rounded-lg px-4 py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${
+            transferType === 'international'
+              ? 'bg-primary text-primary-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          }`}
+        >
+          <Globe2 className="size-3.5" />
+          Worldwide
+        </button>
+      </div>
+    )}
 
     {stage==='success' ? (
-      <div className="max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
+      <div className="mt-8 max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
         <ShieldCheck className="mx-auto size-12 text-primary" />
         <h2 className="mt-4 text-2xl font-bold">Transfer Completed</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Your transfer of {money(amount)} USD to {values.recipient} has been processed successfully.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Your transfer of {money(amount)} USD to <strong>{result?.recipientName || values.recipient}</strong> has been processed successfully.
+        </p>
+        {result?.isInternal && (
+          <div className="mt-3 rounded-md bg-primary/10 border border-primary/20 p-2.5 text-xs font-semibold text-primary">
+            ✓ Internal AXIOM Customer Transfer: Recipient balance has been credited in real-time.
+          </div>
+        )}
         <div className="my-5 rounded-md border border-border bg-background p-4 text-left text-xs space-y-2">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Reference number:</span>
+            <span className="text-muted-foreground">Transaction Reference:</span>
             <span className="font-mono font-semibold text-primary">{result?.reference}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Updated available balance:</span>
+            <span className="text-muted-foreground">New Available Balance:</span>
             <span className="font-mono font-semibold text-foreground">${result?.balanceAfter} USD</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Status:</span>
+            <span className="text-muted-foreground">Ledger Settlement:</span>
             <span className="font-semibold text-primary">Completed (Settled)</span>
           </div>
         </div>
         <div className="mt-6 flex justify-center gap-3">
-          <Button onClick={()=>{setStage('details');setValues(empty);setPin('');setResult(null);}}>Make another transfer</Button>
-          <Button asChild variant="outline"><Link to="/dashboard/transactions">View transactions</Link></Button>
+          <Button onClick={()=>{setStage('details');setValues(empty);setSelectedMemberId('');setPin('');setResult(null);}}>Make another transfer</Button>
+          <Button asChild variant="outline"><Link to="/dashboard/transactions">View in transaction history</Link></Button>
         </div>
       </div>
     ) : stage==='details' ? (
-      <form onSubmit={submit} className="max-w-2xl space-y-5">
-        {international && (
+      <form onSubmit={submit} className="mt-6 max-w-2xl space-y-5">
+        {transferType === 'international' && (
           <label className="block text-sm font-medium">Destination country
             <select className="customer-field mt-2" value={selectedCountry} onChange={e=>setSelectedCountry(e.target.value)}>
               {residenceCountries.map(c=><option key={c} value={c}>{c}</option>)}
             </select>
           </label>
         )}
-        <label className="block text-sm font-medium">Source account
+
+        <label className="block text-sm font-medium">Source checking account
           <select className="customer-field mt-2">
             <option>AXIOM Everyday Checking (•••• 1042) — {money(currentBalance)} available</option>
           </select>
         </label>
-        {fields.map(([key,label])=><Field key={key} label={label} value={values[key]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:key==='bankAddress'?200:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
+
+        {transferType === 'axiom' ? (
+          <>
+            <label className="block text-sm font-medium">Select AXIOM Customer (Recipient)
+              <select
+                className="customer-field mt-2"
+                value={selectedMemberId}
+                onChange={e => handleSelectAxiomMember(e.target.value)}
+              >
+                <option value="">-- Choose registered customer --</option>
+                {axiomMembers.map(m => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} ({m.email} · {m.displayAccount})
+                  </option>
+                ))}
+                <option value="manual">Manual Entry (Type recipient name/account)</option>
+              </select>
+            </label>
+
+            {selectedMemberId && selectedMemberId !== 'manual' && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-3.5 text-xs text-primary flex items-center gap-2">
+                <ShieldCheck className="size-4 shrink-0" />
+                <span>
+                  <strong>Verified AXIOM Customer:</strong> Funds will be credited to <strong>{values.recipient}</strong> immediately and reflected in both accounts&apos; ledger histories.
+                </span>
+              </div>
+            )}
+
+            {(selectedMemberId === 'manual' || !axiomMembers.length) && (
+              <>
+                <Field
+                  label="Recipient full name or email"
+                  value={values.recipient}
+                  onChange={e => setValues(v => ({ ...v, recipient: e.target.value }))}
+                  placeholder="e.g. Jane Doe or jane@example.com"
+                  required
+                />
+                <Field
+                  label="Recipient account number"
+                  value={values.account}
+                  onChange={e => setValues(v => ({ ...v, account: e.target.value }))}
+                  placeholder="e.g. 10-digit AXIOM account number"
+                  maxLength={34}
+                  required
+                />
+              </>
+            )}
+
+            <Field
+              label="Transfer amount (USD)"
+              type="number"
+              min="0.01"
+              step="0.01"
+              value={values.amount}
+              onChange={e => setValues(v => ({ ...v, amount: e.target.value }))}
+              required
+            />
+
+            <Field
+              label="Transfer note / Narration (optional)"
+              value={values.reference}
+              onChange={e => setValues(v => ({ ...v, reference: e.target.value }))}
+              placeholder="e.g. Invoice payment, dinner split, gift..."
+              maxLength={140}
+            />
+          </>
+        ) : (
+          domesticFields.map(([key,label]) => (
+            <Field
+              key={key}
+              label={label}
+              value={values[key]}
+              type={key==='amount'?'number':'text'}
+              min={key==='amount'?'0.01':undefined}
+              step={key==='amount'?'0.01':undefined}
+              maxLength={key==='account'?34:key==='bankAddress'?200:140}
+              required={key!=='reference'}
+              onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}
+            />
+          ))
+        )}
+
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        <Button type="submit" className="h-11">Review transfer<ArrowRight/></Button>
+        <Button type="submit" className="h-11">Review transfer<ArrowRight className="ml-1.5 size-4"/></Button>
       </form>
     ) : stage==='review' ? (
-      <section className="max-w-2xl">
+      <section className="mt-8 max-w-2xl">
         <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('details')}><ArrowLeft/>Back to transfer details</Button>
         <h2 className="text-xl font-semibold">Transfer summary</h2>
         <h3 className="mt-6 text-sm font-semibold text-primary">Recipient details</h3>
         <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
-          {[['Recipient name',values.recipient],['Bank name',values.bank],['Bank address',values.bankAddress],['Account',`•••• ${values.account.slice(-4)}`],['Destination',international?selectedCountry:'Domestic'],['Reference',values.reference||'None']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-sm font-medium">{value}</dd></div>)}
+          {[
+            ['Transfer type', transferType === 'axiom' ? 'AXIOM User-to-User Transfer' : transferType === 'international' ? 'International Worldwide Transfer' : 'Domestic Bank Transfer'],
+            ['Recipient name', values.recipient],
+            ['Destination bank', values.bank || (transferType === 'axiom' ? 'AXIOM BANK' : 'External Bank')],
+            ['Account', `•••• ${values.account.slice(-4)}`],
+            ['Settlement', transferType === 'axiom' ? 'Instant Peer-to-Peer Credit' : 'Within 1 business day'],
+            ['Narration / Reference', values.reference || 'None']
+          ].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-sm font-medium">{value}</dd></div>)}
         </dl>
         <h3 className="mt-6 text-sm font-semibold text-primary">Your balance</h3>
         <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
@@ -471,7 +655,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
         </div>
       </section>
     ) : (
-      <section className="max-w-xl">
+      <section className="mt-8 max-w-xl">
         <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('review')}><ArrowLeft/>Back to summary</Button>
         <h2 className="text-xl font-semibold">Authorize with transfer PIN</h2>
         <p className="mt-2 text-sm text-muted-foreground">Sending {money(amount)} to {values.recipient} — resulting balance {money(newBalance)}.</p>
