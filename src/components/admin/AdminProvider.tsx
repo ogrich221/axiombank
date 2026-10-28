@@ -19,7 +19,7 @@ interface Workspace {
   setPageSize: (size: number) => void;
   saveUser: (user: AdminUser, isNew: boolean) => Promise<{ok:true;user:AdminUser}|{ok:false;error:string}>;
   deleteUser: (user: AdminUser) => Promise<boolean>;
-  transactUser: (params: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string }) => Promise<{ ok: boolean; error?: string; message?: string }>;
+  transactUser: (params: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string; date?: string }) => Promise<{ ok: boolean; error?: string; message?: string }>;
   notice: string;
   setNotice: (value: string) => void;
   logout: () => Promise<void>;
@@ -80,7 +80,7 @@ export function AdminProvider({children, onLocked}: {children: ReactNode; onLock
     return r.ok;
   }
 
-  async function transactUser(params: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string }) {
+  async function transactUser(params: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string; date?: string }) {
     const r = await transact({ data: params });
     if (r.ok) {
       setNotice(r.message || `Account successfully ${params.type}ed.`);

@@ -200,6 +200,11 @@ export function TransactDialog({
   const { transactUser } = useAdmin();
   const [amount, setAmount] = useState('');
   const [narration, setNarration] = useState('');
+  const [date, setDate] = useState(() => {
+    const now = new Date();
+    const tzOffset = now.getTimezoneOffset() * 60000;
+    return new Date(now.getTime() - tzOffset).toISOString().slice(0, 16);
+  });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -231,11 +236,15 @@ export function TransactDialog({
       type,
       amount: val,
       narration: narration.trim(),
+      date: date ? new Date(date).toISOString() : undefined,
     });
     setBusy(false);
     if (res.ok) {
       setAmount('');
       setNarration('');
+      const now = new Date();
+      const tzOffset = now.getTimezoneOffset() * 60000;
+      setDate(new Date(now.getTime() - tzOffset).toISOString().slice(0, 16));
       onOpenChange(false);
       onCompleted?.();
     } else {
@@ -301,6 +310,22 @@ export function TransactDialog({
                 />
               </div>
             </label>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium">
+              Effective Transaction Date & Time *
+              <input
+                type="datetime-local"
+                required
+                className="admin-field mt-1.5 font-mono text-sm"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+              />
+            </label>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Admins can edit this date to backdate or record historical credits and debits into the user's ledger.
+            </p>
           </div>
 
           <div>

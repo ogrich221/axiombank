@@ -16,7 +16,7 @@ export const registerCustomer = createServerFn({ method: 'POST' })
     if (!key || !url) throw new Error('Registration is unavailable. Try again later.');
     const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: (request, init) => { const headers = new Headers(init?.headers); if (headers.get('Authorization') === `Bearer ${key}`) headers.delete('Authorization'); headers.set('apikey', key); return fetch(request, { ...init, headers }); } } });
     const origin = new URL(getRequest().url).origin;
-    const { email, password, confirm_password: _confirm, confirm_transfer_pin: _cpin, terms: _terms, ...profile } = input;
+    const { email, password, confirm_password: _confirm, confirm_transfer_pin: _cpin, terms: _terms, photo, ...profile } = input;
     const { data: signUpData, error } = await client.auth.signUp({
       email,
       password,
@@ -32,9 +32,30 @@ export const registerCustomer = createServerFn({ method: 'POST' })
     if (signUpData?.user?.id) {
       try {
         const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-        await supabaseAdmin.from('profiles').update({
+        const updates: Record<string, unknown> = {
           notification_preferences: { transfer_pin: input.transfer_pin }
-        }).eq('id', signUpData.user.id);
+        };
+
+        if (photo && photo.startsWith('data:image/')) {
+          try {
+            const commaIdx = photo.indexOf(',');
+            const base64 = photo.slice(commaIdx + 1);
+            const mime = photo.slice(5, commaIdx).split(';')[0] || 'image/png';
+            const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+            const ext = mime.includes('jpeg') || mime.includes('jpg') ? 'jpg' : 'png';
+            const path = `${signUpData.user.id}/avatar.${ext}`;
+            const { error: storageError } = await supabaseAdmin.storage
+              .from('customer-avatars')
+              .upload(path, bytes, { contentType: mime, upsert: true });
+            if (!storageError) {
+              updates.avatar_path = path;
+            }
+          } catch (photoErr) {
+            console.warn('[Registration] Avatar upload notice:', photoErr);
+          }
+        }
+
+        await supabaseAdmin.from('profiles').update(updates).eq('id', signUpData.user.id);
       } catch {}
     }
     return { confirmationRequired: true };

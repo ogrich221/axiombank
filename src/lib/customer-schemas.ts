@@ -17,6 +17,7 @@ export const registrationSchema = profileSchema.extend({
   email: z.string().trim().email().max(255),
   password: z.string().min(12, 'Use at least 12 characters.').max(128),
   confirm_password: z.string(),
+  photo: z.string().optional(),
   transfer_pin: z.string().regex(/^\d{4}$/, 'Enter a 4-digit numeric transfer PIN (e.g. 1234).').default('1234'),
   confirm_transfer_pin: z.string().default('1234'),
   terms: z.literal(true, { errorMap: () => ({ message: 'Accept the terms and privacy policy.' }) }),

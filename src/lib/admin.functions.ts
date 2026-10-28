@@ -203,11 +203,12 @@ export const deleteAdminUser = createServerFn({ method: 'POST' })
   });
 
 export const adjustUserBalance = createServerFn({ method: 'POST' })
-  .inputValidator((data: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string }) => ({
+  .inputValidator((data: { userId: string; type: 'credit' | 'debit'; amount: number; narration: string; date?: string }) => ({
     userId: String(data.userId || '').trim(),
     type: data.type === 'debit' ? ('debit' as const) : ('credit' as const),
     amount: Math.abs(Number(data.amount)),
     narration: String(data.narration || '').trim().slice(0, 255),
+    date: data.date ? String(data.date).trim() : undefined,
   }))
   .handler(async ({ data }) => {
     await requireUnlocked();
@@ -229,7 +230,9 @@ export const adjustUserBalance = createServerFn({ method: 'POST' })
       : 'Account Holder';
 
     const reference = `TX-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-    const date = new Date().toISOString();
+    const txDate = data.date && !isNaN(Date.parse(data.date))
+      ? new Date(data.date).toISOString()
+      : new Date().toISOString();
 
     // Try inserting into account_transactions table
     try {
@@ -241,7 +244,7 @@ export const adjustUserBalance = createServerFn({ method: 'POST' })
         reference,
         balance_after: data.amount,
         status: 'Completed',
-        created_at: date,
+        created_at: txDate,
       });
     } catch (err) {
       console.warn('[Admin] Account transaction table insert notice:', err);
@@ -255,7 +258,7 @@ export const adjustUserBalance = createServerFn({ method: 'POST' })
       amount: data.amount,
       narration: data.narration,
       reference,
-      date,
+      date: txDate,
     };
 
     await client.from('admin_events').insert({
@@ -263,6 +266,7 @@ export const adjustUserBalance = createServerFn({ method: 'POST' })
       action: data.type === 'credit' ? 'Account Credited' : 'Account Debited',
       target: JSON.stringify(eventPayload),
       outcome: 'Success',
+      time: txDate,
     });
 
     return { 

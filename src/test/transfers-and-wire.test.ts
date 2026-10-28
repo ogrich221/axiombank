@@ -279,6 +279,18 @@ describe('Transfer PIN Requirements & Authorization Enforcement', () => {
     }
   });
 
+  it('accepts identity photo data URL during user sign up', () => {
+    const photoDataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+    const res = registrationSchema.safeParse({
+      ...baseRegistration,
+      photo: photoDataUrl
+    });
+    expect(res.success).toBe(true);
+    if (res.success) {
+      expect(res.data.photo).toBe(photoDataUrl);
+    }
+  });
+
   it('rejects registration when transfer PIN is not exactly 4 digits or non-numeric', () => {
     const invalidPins = ['123', '12345', 'abcd', '12a4', '', '123456'];
     for (const pin of invalidPins) {
@@ -303,5 +315,33 @@ describe('Transfer PIN Requirements & Authorization Enforcement', () => {
       expect(pinError).toBeDefined();
       expect(pinError?.message).toBe('Transfer PINs do not match.');
     }
+  });
+});
+
+describe('Admin Custom Dates for Crediting and Debiting', () => {
+  it('correctly handles backdated and forward-dated transaction timestamps', () => {
+    const historicalDate = '2025-11-15T14:30:00.000Z';
+    const futureDate = '2026-12-01T09:00:00.000Z';
+
+    const ledger = [
+      { id: '1', date: '2026-10-28T10:00:00.000Z', type: 'credit', amount: 500 },
+      { id: '2', date: historicalDate, type: 'credit', amount: 1000 },
+      { id: '3', date: futureDate, type: 'debit', amount: 200 },
+    ];
+
+    // Sort descending by date (as used in admin and user ledgers)
+    ledger.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    expect(ledger[0].id).toBe('3');
+    expect(ledger[1].id).toBe('1');
+    expect(ledger[2].id).toBe('2');
+    expect(ledger[2].date).toBe(historicalDate);
+  });
+
+  it('validates ISO date conversion from datetime-local strings', () => {
+    const localInput = '2026-06-15T10:30';
+    const parsedDate = new Date(localInput).toISOString();
+    expect(parsedDate).toContain('2026-06-15');
+    expect(!isNaN(Date.parse(parsedDate))).toBe(true);
   });
 });
