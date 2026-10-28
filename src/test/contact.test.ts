@@ -4,6 +4,7 @@ import {
   SUPPORT_EMAIL,
   SUPPORT_MAILTO,
   SUPPORT_PHONE,
+  SUPPORT_PHONE_TEL,
   OFFICE_ADDRESS,
 } from '@/lib/contact';
 
@@ -27,8 +28,12 @@ describe('bank contact details', () => {
   });
 
   it('keeps phone and office details separate from the mailbox', () => {
-    expect(SUPPORT_PHONE).toBe('+1800AXB');
+    expect(SUPPORT_PHONE).toBe('+1 213 304 6709');
     expect(OFFICE_ADDRESS).toContain('New York');
+  });
+
+  it('dials the supplied contact number without formatting spaces', () => {
+    expect(SUPPORT_PHONE_TEL).toBe('tel:+12133046709');
   });
 
   it('uses the same support number on the debit card and drops the old one', () => {
