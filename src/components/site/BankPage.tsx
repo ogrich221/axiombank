@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, ChevronDown, Mail, Phone, MapPin, Search, ShieldCheck, ExternalLink } from 'lucide-react';
+import { ArrowRight, ChevronDown, Mail, Phone, MapPin, Search, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Header } from './Header';
 import { Footer } from './Footer';
