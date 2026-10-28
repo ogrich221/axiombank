@@ -139,3 +139,135 @@ export const saveCustomerAvatar = createServerFn({ method: 'POST' }).middleware(
   if (profile?.avatar_path?.startsWith(`${context.userId}/`)) await context.supabase.storage.from('customer-avatars').remove([profile.avatar_path]);
   return { saved: true };
 });
+
+
+async function computeUserBalance(supabaseClient: any, userId: string, userEmail: string): Promise<number> {
+  const transactions: Array<{ id: string; type: 'credit' | 'debit'; amount: number; reference: string; date: string }> = [];
+
+  try {
+    const txRes = await supabaseClient.from('account_transactions').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    if (txRes.data && Array.isArray(txRes.data)) {
+      for (const t of txRes.data) {
+        transactions.push({
+          id: t.id,
+          type: t.type as 'credit' | 'debit',
+          amount: Number(t.amount),
+          reference: t.reference,
+          date: t.created_at,
+        });
+      }
+    }
+  } catch {}
+
+  try {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const evRes = await supabaseAdmin.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited']).order('time', { ascending: false });
+    for (const ev of evRes.data || []) {
+      try {
+        const payload = JSON.parse(ev.target);
+        if (payload && (payload.userId === userId || (userEmail && payload.email === userEmail))) {
+          if (!transactions.some(t => t.reference === payload.reference || t.id === ev.id)) {
+            transactions.push({
+              id: ev.id,
+              type: payload.type || (ev.action === 'Account Credited' ? 'credit' : 'debit'),
+              amount: Number(payload.amount),
+              reference: payload.reference || `TX-${ev.id.slice(0, 8).toUpperCase()}`,
+              date: payload.date || ev.time,
+            });
+          }
+        }
+      } catch {}
+    }
+  } catch {}
+
+  transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  let currentBalance = 0;
+  for (const t of [...transactions].reverse()) {
+    currentBalance = t.type === 'credit' ? currentBalance + t.amount : currentBalance - t.amount;
+  }
+  return currentBalance;
+}
+
+export const executeCustomerTransfer = createServerFn({ method: 'POST' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({
+      recipient: z.string().trim().min(2, 'Enter recipient name.').max(100),
+      bank: z.string().trim().min(2, 'Enter destination bank.').max(100),
+      account: z.string().trim().min(4, 'Enter valid account number.').max(34),
+      amount: z.coerce.number().positive('Enter amount greater than $0.00.').finite().max(1000000),
+      reference: z.string().trim().max(140).default(''),
+      destinationCountry: z.string().optional(),
+    }).parse(input)
+  )
+  .handler(async ({ data, context }) => {
+    const { setResponseHeader } = await import('@tanstack/react-start/server');
+    setResponseHeader('Cache-Control', 'no-store');
+
+    const { data: authData } = await context.supabase.auth.getUser();
+    const userEmail = (authData.user?.email ?? '').toLowerCase();
+
+    const currentBalance = await computeUserBalance(context.supabase, context.userId, userEmail);
+
+    if (data.amount > currentBalance) {
+      throw new Error(`Insufficient available funds. Your current available balance is $${currentBalance.toFixed(2)} USD.`);
+    }
+
+    const newBalance = currentBalance - data.amount;
+    const reference = `TR-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+    const date = new Date().toISOString();
+    const narration = data.reference.trim()
+      ? `Transfer to ${data.recipient} (${data.bank}) - ${data.reference.trim()}`
+      : `Transfer to ${data.recipient} (${data.bank})`;
+
+    // 1. Insert into account_transactions
+    try {
+      await context.supabase.from('account_transactions').insert({
+        user_id: context.userId,
+        type: 'debit',
+        amount: data.amount,
+        narration,
+        reference,
+        balance_after: newBalance,
+        status: 'Completed',
+        created_at: date,
+      });
+    } catch (err) {
+      console.warn('account_transactions insert notice:', err);
+    }
+
+    // 2. Dual-write to admin_events
+    try {
+      const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+      await supabaseAdmin.from('admin_events').insert({
+        actor: userEmail || 'Customer',
+        action: 'Account Debited',
+        target: JSON.stringify({
+          userId: context.userId,
+          email: userEmail,
+          userName: data.recipient,
+          type: 'debit',
+          amount: data.amount,
+          narration,
+          reference,
+          date,
+          balanceAfter: newBalance,
+          recipientBank: data.bank,
+          recipientAccount: data.account,
+          destinationCountry: data.destinationCountry || 'Domestic',
+        }),
+        time: date,
+      });
+    } catch (err) {
+      console.warn('admin_events transfer audit notice:', err);
+    }
+
+    return {
+      success: true,
+      reference,
+      amount: data.amount,
+      balanceAfter: newBalance.toFixed(2),
+      date,
+    };
+  });

@@ -6,7 +6,7 @@ import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2,
 import { Button } from '@/components/ui/button';
 import { Field, PasswordField } from './CustomerControls';
 import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './CustomerLayout';
-import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication } from '@/lib/customer.functions';
+import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer } from '@/lib/customer.functions';
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
 import { applicationReviewLabel } from '@/lib/customer-account-state';
@@ -269,10 +269,18 @@ export function CardsPage(){
 }
 
 export function TransferPage({international=false}:{international?:boolean}) {
+  const workspace = useWorkspace();
+  const queryClient = useQueryClient();
+  const transferFn = useServerFn(executeCustomerTransfer);
   const [stage,setStage]=useState<'details'|'review'|'success'>('details');
   const [selectedCountry,setSelectedCountry]=useState('United States');
   const [values,setValues]=useState({recipient:'',bank:'',account:'',amount:'',reference:''});
   const [error,setError]=useState('');
+  const [busy,setBusy]=useState(false);
+  const [result,setResult]=useState<{reference:string; balanceAfter:string}|null>(null);
+
+  const availableBalance = Number(workspace.balances?.available || 0);
+
   function submit(event:FormEvent){
     event.preventDefault();
     const parsed=transferPreviewSchema.safeParse(values);
@@ -280,9 +288,40 @@ export function TransferPage({international=false}:{international?:boolean}) {
       setError(parsed.error.issues.map(issue=>`${issue.path.join('')}: ${issue.message}`).join(' '));
       return;
     }
+    const transferAmount = Number(values.amount);
+    if (transferAmount > availableBalance) {
+      setError(`Transfer amount ($${transferAmount.toFixed(2)}) exceeds your available balance of $${availableBalance.toFixed(2)}.`);
+      return;
+    }
     setError('');
     setStage('review');
   }
+
+  async function handleConfirmTransfer(){
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      const res = await transferFn({
+        data: {
+          recipient: values.recipient,
+          bank: values.bank,
+          account: values.account,
+          amount: Number(values.amount),
+          reference: values.reference,
+          destinationCountry: international ? selectedCountry : 'Domestic'
+        }
+      });
+      setResult({ reference: res.reference, balanceAfter: res.balanceAfter });
+      await queryClient.invalidateQueries({ queryKey: ['customer-workspace'] });
+      setStage('success');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Transfer could not be processed. Please check your balance and try again.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return <>
     <DashboardBack/>
     <p className="text-xs font-semibold text-primary">{international?'Worldwide transfer':'Fast domestic transfer'}</p>
@@ -291,11 +330,24 @@ export function TransferPage({international=false}:{international?:boolean}) {
     {stage==='success' ? (
       <div className="max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
         <ShieldCheck className="mx-auto size-12 text-primary" />
-        <h2 className="mt-4 text-2xl font-bold">Transfer Initiated</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Your transfer of ${Number(values.amount).toFixed(2)} USD to {values.recipient} has been scheduled successfully.</p>
-        <p className="mt-4 font-mono text-xs text-muted-foreground">Reference: TR-{crypto.randomUUID().slice(0,8).toUpperCase()}</p>
+        <h2 className="mt-4 text-2xl font-bold">Transfer Completed</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Your transfer of ${Number(values.amount).toFixed(2)} USD to {values.recipient} has been processed successfully.</p>
+        <div className="my-5 rounded-md border border-border bg-background p-4 text-left text-xs space-y-2">
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Reference number:</span>
+            <span className="font-mono font-semibold text-primary">{result?.reference || `TR-${crypto.randomUUID().slice(0,8).toUpperCase()}`}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Updated available balance:</span>
+            <span className="font-mono font-semibold text-foreground">${result?.balanceAfter || '0.00'} USD</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Status:</span>
+            <span className="font-semibold text-primary">Completed (Settled)</span>
+          </div>
+        </div>
         <div className="mt-6 flex justify-center gap-3">
-          <Button onClick={()=>{setStage('details');setValues({recipient:'',bank:'',account:'',amount:'',reference:''});}}>Make another transfer</Button>
+          <Button onClick={()=>{setStage('details');setValues({recipient:'',bank:'',account:'',amount:'',reference:''});setResult(null);}}>Make another transfer</Button>
           <Button asChild variant="outline"><Link to="/dashboard/transactions">View transactions</Link></Button>
         </div>
       </div>
@@ -310,7 +362,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
         )}
         <label className="block text-sm font-medium">Source account
           <select className="customer-field mt-2">
-            <option>AXIOM Everyday Checking (•••• 1042) — $0.00</option>
+            <option>AXIOM Everyday Checking (•••• 1042) — ${availableBalance.toFixed(2)} USD available</option>
           </select>
         </label>
         {([['recipient','Recipient full name'],['bank','Destination bank'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const).map(([key,label])=><Field key={key} label={label} value={values[key as keyof typeof values]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
@@ -322,11 +374,15 @@ export function TransferPage({international=false}:{international?:boolean}) {
         <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('details')}><ArrowLeft/>Back to transfer details</Button>
         <h2 className="text-xl font-semibold">Review transfer details</h2>
         <dl className="mt-6 grid gap-6 sm:grid-cols-2">
-          {[['Recipient',values.recipient],['Bank',values.bank],['Account',`•••• ${values.account.slice(-4)}`],['Amount',`$${Number(values.amount).toFixed(2)} USD`],['Transfer fee','$0.00 (Zero fee)'],['Estimated arrival','Within 1 business day'],['Reference',values.reference||'None'],['Destination',international?selectedCountry:'Domestic']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}
+          {[['Recipient',values.recipient],['Bank',values.bank],['Account',`•••• ${values.account.slice(-4)}`],['Amount',`$${Number(values.amount).toFixed(2)} USD`],['Transfer fee','$0.00 (Zero fee)'],['Estimated arrival','Instant internal settlement'],['Reference',values.reference||'None'],['Destination',international?selectedCountry:'Domestic']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}
         </dl>
+        {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
         <div className="mt-8 flex gap-3">
-          <Button className="h-11" onClick={()=>setStage('success')}>Confirm and send transfer<ArrowRight/></Button>
-          <Button variant="outline" onClick={()=>setStage('details')}>Cancel</Button>
+          <Button className="h-11" disabled={busy} onClick={handleConfirmTransfer}>
+            {busy ? 'Processing transfer…' : 'Confirm and send transfer'}
+            <ArrowRight className="ml-1.5 size-4"/>
+          </Button>
+          <Button variant="outline" disabled={busy} onClick={()=>setStage('details')}>Cancel</Button>
         </div>
       </section>
     )}
