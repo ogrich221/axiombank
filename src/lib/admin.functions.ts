@@ -167,6 +167,11 @@ export const saveAdminUser = createServerFn({ method: 'POST' })
       : await client.from('admin_users').update(row).eq('id', u.id).select('*').single();
     if (result.error) { console.error(result.error); return { ok: false as const, error: result.error.code === '23505' ? 'A user with this email already exists.' : 'Could not save this user.' }; }
     const saved = toUser(result.data as Row);
+    // Activating a registered account from the directory also confirms its pending application.
+    if (!data.isNew && saved.status === 'Active' && /^[0-9a-f-]{36}$/i.test(saved.id)) {
+      const { data: app } = await client.from('customer_applications').select('id').eq('user_id', saved.id).eq('admin_review_status', 'pending').maybeSingle();
+      if (app) await client.rpc('confirm_customer_application', { application_id: app.id });
+    }
     await client.from('admin_events').insert({ actor: 'Administrator', action: data.isNew ? 'User created' : 'Profile updated', target: `${saved.firstName} ${saved.lastName}` });
     return { ok: true as const, user: saved };
   });

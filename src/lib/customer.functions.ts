@@ -29,6 +29,11 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
   if (error) throw new Error('Your profile could not be loaded.');
   const { data: application, error: applicationError } = await context.supabase.from('customer_applications').select('status,submitted_at,id,admin_review_status,admin_reviewed_at').eq('user_id', context.userId).maybeSingle();
   if (applicationError) throw new Error('Your application could not be loaded.');
+  {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: dir } = await supabaseAdmin.from('admin_users').select('status').eq('id', context.userId).maybeSingle();
+    if (dir?.status === 'Suspended') throw new Error('This account has been suspended. Please contact AXIOM BANK support.');
+  }
   const { data: authData } = await context.supabase.auth.getUser();
   const userEmail = (authData.user?.email ?? '').toLowerCase();
 
