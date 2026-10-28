@@ -92,7 +92,10 @@ export function PaymentCard() {
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
         <span>Active contactless debit card</span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" size="sm" onClick={()=>setShowNumber(v=>!v)} aria-label={showNumber?'Hide card number':'Show card number'}>
+            {showNumber?<EyeOff className="mr-1.5 size-3.5"/>:<Eye className="mr-1.5 size-3.5"/>}{showNumber?'Hide':'Show'} number
+          </Button>
           <Button variant="outline" size="sm" onClick={rotate360} title="Rotate 360 degrees">
             <RotateCw className="mr-1.5 size-3.5" />
             Rotate 360°
