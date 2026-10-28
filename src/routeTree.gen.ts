@@ -39,6 +39,7 @@ import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminHelpRouteImport } from './routes/admin.help'
 import { Route as AdminNotificationsRouteImport } from './routes/admin.notifications'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminTransferReviewRouteImport } from './routes/admin.transfer-review'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedDashboardAccountsRouteImport } from './routes/_authenticated/dashboard.accounts'
@@ -206,6 +207,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTransferReviewRoute = AdminTransferReviewRouteImport.update({
+  id: '/transfer-review',
+  path: '/transfer-review',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -332,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transfer-review': typeof AdminTransferReviewRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
@@ -378,6 +385,7 @@ export interface FileRoutesByTo {
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transfer-review': typeof AdminTransferReviewRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
   '/dashboard/bills': typeof AuthenticatedDashboardBillsRoute
@@ -426,6 +434,7 @@ export interface FileRoutesById {
   '/admin/help': typeof AdminHelpRoute
   '/admin/notifications': typeof AdminNotificationsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/transfer-review': typeof AdminTransferReviewRoute
   '/admin/users': typeof AdminUsersRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/_authenticated/dashboard/accounts': typeof AuthenticatedDashboardAccountsRoute
@@ -476,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/notifications'
     | '/admin/settings'
+    | '/admin/transfer-review'
     | '/admin/users'
     | '/admin/'
     | '/dashboard/accounts'
@@ -522,6 +532,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/notifications'
     | '/admin/settings'
+    | '/admin/transfer-review'
     | '/admin'
     | '/dashboard/accounts'
     | '/dashboard/bills'
@@ -569,6 +580,7 @@ export interface FileRouteTypes {
     | '/admin/help'
     | '/admin/notifications'
     | '/admin/settings'
+    | '/admin/transfer-review'
     | '/admin/users'
     | '/admin/'
     | '/_authenticated/dashboard/accounts'
@@ -828,6 +840,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/transfer-review': {
+      id: '/admin/transfer-review'
+      path: '/transfer-review'
+      fullPath: '/admin/transfer-review'
+      preLoaderRoute: typeof AdminTransferReviewRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -1032,6 +1051,7 @@ interface AdminRouteChildren {
   AdminHelpRoute: typeof AdminHelpRoute
   AdminNotificationsRoute: typeof AdminNotificationsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTransferReviewRoute: typeof AdminTransferReviewRoute
   AdminUsersRoute: typeof AdminUsersRouteWithChildren
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -1041,6 +1061,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminHelpRoute: AdminHelpRoute,
   AdminNotificationsRoute: AdminNotificationsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTransferReviewRoute: AdminTransferReviewRoute,
   AdminUsersRoute: AdminUsersRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
 }
