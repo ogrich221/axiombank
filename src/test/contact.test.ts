@@ -18,7 +18,7 @@ describe('bank contact details', () => {
   it('shows the contact mailbox on the home page', () => {
     expect(homepage).toContain('{SUPPORT_EMAIL}');
     expect(homepage).toContain('SUPPORT_MAILTO');
-    expect(homepage).toContain('Webmail');
+    expect(homepage).not.toContain('Open webmail');
   });
 
   it('keeps the placeholder address out of every public page', () => {
