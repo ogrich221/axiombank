@@ -218,6 +218,8 @@
 }
 .admin-theme h1, .admin-theme h2, .admin-theme h3 { letter-spacing: 0; }
 .admin-field { width: 100%; min-height: 44px; border: 1px solid var(--border); border-radius: 6px; background: var(--background); padding: 10px 12px; color: var(--foreground); font-size: 14px; }
+.admin-glass { background: color-mix(in oklab, var(--background) 70%, transparent); backdrop-filter: blur(20px) saturate(150%); }
+.admin-glass-soft { background: color-mix(in oklab, var(--background) 55%, transparent); backdrop-filter: blur(12px) saturate(140%); }
 .admin-loader { animation: admin-loading 1.2s ease-in-out infinite; }
 @keyframes admin-loading { 50% { opacity: .35; transform: scaleX(.55); } }
 @media (prefers-reduced-motion: reduce) { .admin-loader { animation: none; } }

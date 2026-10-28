@@ -20,7 +20,7 @@ export function AdminApplications() {
     catch (e) { setError(e instanceof Error ? e.message : 'Could not confirm this application.'); }
     finally { setBusy(false); }
   }
-  return <section className="mb-8 border-y border-border py-6">
+  return <section className="admin-glass mb-8 rounded-xl border border-primary/20 p-6">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h2 className="text-lg font-semibold">Open Account applications</h2><p className="mt-1 text-sm text-muted-foreground">{applications.filter(a => canConfirmApplication(a.reviewStatus)).length} awaiting admin confirmation</p></div><Button variant="outline" size="icon" aria-label="Refresh applications" title="Refresh applications" onClick={() => void refresh()}><RefreshCw/></Button></div>
     {!applications.length && <p className="py-5 text-sm text-muted-foreground">No applications received yet.</p>}
     <div className="divide-y divide-border">{applications.map(a => <article key={a.id} className="flex flex-wrap items-start justify-between gap-4 py-5"><div className="min-w-0"><h3 className="font-semibold">{a.firstName} {a.lastName}</h3><p className="mt-1 break-all text-sm">{a.email}</p><p className="mt-2 text-xs text-muted-foreground">{a.country} · Submitted {new Date(a.submittedAt).toLocaleDateString()}</p><p className="mt-2 text-xs text-primary">{applicationReviewLabel(a.reviewStatus)}</p></div><Button variant="outline" onClick={() => {setSelected(a);setError('');}}>Review application</Button></article>)}</div>

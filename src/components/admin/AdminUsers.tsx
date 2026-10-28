@@ -25,7 +25,7 @@ export function UserStats() {
   const navigate = useNavigate();
   return <div className="mb-7 grid grid-cols-2 gap-3 xl:grid-cols-4">
     {[{label:'Total Users',status:'All',icon:Users},{label:'Active Users',status:'Active',icon:UserCheck},{label:'Pending Verification',status:'Pending',icon:Clock3},{label:'Suspended Users',status:'Suspended',icon:UserX}].map(s=>(
-      <Button key={s.status} variant="outline" className="h-auto min-h-32 flex-col items-start gap-3 whitespace-normal p-4 text-left shadow-none" onClick={()=>{setFilters({...filters,status:s.status});setPage(1);navigate({to:'/admin/users'});}}>
+      <Button key={s.status} variant="outline" className="admin-glass h-auto min-h-32 flex-col items-start gap-3 whitespace-normal border-primary/20 p-4 text-left shadow-none" onClick={()=>{setFilters({...filters,status:s.status});setPage(1);navigate({to:'/admin/users'});}}>
         <span className="flex w-full items-center justify-between gap-2 text-xs text-muted-foreground">{s.label}<s.icon className={s.status==='Suspended'?'text-destructive':'text-primary'}/></span>
         <span className="text-3xl font-bold">{users.filter(u=>s.status==='All'||u.status===s.status).length}</span>
         <span className="text-xs font-normal text-muted-foreground">{s.status==='Active'?'Account status is Active':'Registered accounts'}</span>
@@ -54,7 +54,7 @@ export function UsersPage() {
     <PageHeading title="User Management" description="View, search, and manage registered users and balances from one place." actions={<><Button variant="outline" onClick={exportUsers}><Download/>Export Users</Button><Button asChild><Link to="/admin/users/new"><Plus/>Add User</Link></Button></>}/>
     <UserStats/>
     <AdminApplications/>
-    <section className="rounded-lg border bg-background">
+    <section className="admin-glass rounded-xl border border-primary/20">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b p-5">
         <h2 className="font-semibold">All users <span className="ml-2 text-sm font-normal text-muted-foreground">{filtered.length}</span></h2>
       </div>
