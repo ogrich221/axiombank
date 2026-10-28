@@ -29,7 +29,7 @@ function Workspace() {
   useEffect(()=>{setMobile(false);},[path]);
   if (!loaded) return <AdminLoader/>;
   return <div className="admin-theme relative isolate flex min-h-screen bg-muted text-foreground">
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <img src={heroBuilding.url} alt="" className="h-full w-full object-cover opacity-[0.08]"/>
       <div className="absolute inset-0 bg-gradient-to-b from-muted/70 via-muted/85 to-muted"/>
       <div className="absolute -right-24 -top-24 size-96 rounded-full bg-primary/15 blur-3xl"/>
