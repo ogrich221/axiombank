@@ -36,6 +36,13 @@
       "when": 1793135294371,
       "tag": "0004_atomic_customer_application_confirmation",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793177518843,
+      "tag": "0005_create_account_transactions",
+      "breakpoints": true
     }
   ]
 }

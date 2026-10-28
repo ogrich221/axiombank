@@ -9,7 +9,7 @@ import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './C
 import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication } from '@/lib/customer.functions';
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
-import { customerApplicationLabel } from '@/lib/customer-account-state';
+import { customerApplicationLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
 import heroBuilding from '@/assets/axiom-hero-building.jpg.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -107,10 +107,21 @@ export function PaymentCard() {
 }
 
 function BalanceSummary() {
-  const {balances}=useWorkspace();
+  const {balances,profile}=useWorkspace();
   const [hidden,setHidden]=useState(false);
-  return <div className="grid gap-6 sm:grid-cols-3">
-    {['Available balance','Total account balance','Account status'].map((title,index)=><div key={title} className="min-w-0 border-b border-border pb-6"><div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">{title}</p>{index===0&&<Button variant="ghost" size="icon" onClick={()=>setHidden(!hidden)} aria-label={hidden?'Show balance':'Hide balance'} title={hidden?'Show balance':'Hide balance'}>{hidden?<EyeOff/>:<Eye/>}</Button>}</div><p className="mt-3 text-2xl font-semibold">{index===2?'Active':hidden?'••••••':index===0?`$${balances.available}`:`$${balances.total}`}</p><p className="mt-2 text-xs text-muted-foreground">{index===2?'Verified customer account':'Checking account (•••• 1042)'}</p></div>)}
+  const [numHidden,setNumHidden]=useState(true);
+  const accountNumber=accountNumberFor(profile?.id);
+  return <div className="grid max-w-xl gap-4 border-b border-border pb-6">
+    <div className="min-w-0">
+      <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Available balance</p><Button variant="ghost" size="icon" onClick={()=>setHidden(!hidden)} aria-label={hidden?'Show balance':'Hide balance'} title={hidden?'Show balance':'Hide balance'}>{hidden?<EyeOff/>:<Eye/>}</Button></div>
+      <p className="mt-3 text-2xl font-semibold">{hidden?'••••••':`$${balances.available}`}</p>
+      <p className="mt-2 text-xs text-muted-foreground">Everyday Checking</p>
+    </div>
+    <div className="min-w-0">
+      <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Account number</p><Button variant="ghost" size="icon" onClick={()=>setNumHidden(!numHidden)} aria-label={numHidden?'Show account number':'Hide account number'} title={numHidden?'Show account number':'Hide account number'}>{numHidden?<EyeOff/>:<Eye/>}</Button></div>
+      <p className="mt-1 text-lg font-semibold tabular-nums tracking-wider">{formatAccountNumber(accountNumber,numHidden)}</p>
+      <p className="mt-1 text-xs text-muted-foreground">Personal checking account</p>
+    </div>
   </div>;
 }
 

@@ -73,9 +73,9 @@ export const getAdminData = createServerFn({ method: 'GET' }).handler(async () =
           userId: t.user_id,
           type: t.type as 'credit' | 'debit',
           amount: Number(t.amount),
-          narration: t.narration,
+          narration: t.narration ?? '',
           date: t.created_at,
-          reference: t.reference,
+          reference: t.reference ?? '',
           status: (t.status || 'Completed') as 'Completed',
           balanceAfter: Number(t.balance_after || 0)
         });

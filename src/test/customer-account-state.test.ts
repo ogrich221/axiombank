@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { zeroBalances, canConfirmApplication, confirmApplicationSchema, customerApplicationLabel, applicationReviewLabel } from '@/lib/customer-account-state';
+import { zeroBalances, canConfirmApplication, confirmApplicationSchema, customerApplicationLabel, applicationReviewLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
 describe('Customer balances and admin confirmation', () => {
   it('sets every customer balance to 0.00', () => {
     expect(zeroBalances.available).toBe('0.00');
@@ -23,5 +23,14 @@ describe('Customer balances and admin confirmation', () => {
   });
   it('keeps the admin review wording for admin screens only', () => {
     expect(applicationReviewLabel('confirmed')).toBe('Confirmed by admin');
+  });
+  it('derives a stable maskable account number ending in 1042 for each customer', () => {
+    const number = accountNumberFor('b54bf004-ecb0-49ea-9e93-ac91a90cddf3');
+    expect(number).toMatch(/^\d{10}$/);
+    expect(number.endsWith('1042')).toBe(true);
+    expect(accountNumberFor('b54bf004-ecb0-49ea-9e93-ac91a90cddf3')).toBe(number);
+    expect(accountNumberFor('other-user')).not.toBe(number);
+    expect(formatAccountNumber(number, true)).toBe('•••• 1042');
+    expect(formatAccountNumber(number, false)).not.toContain('•');
   });
 });
