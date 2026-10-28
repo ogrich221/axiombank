@@ -16,9 +16,27 @@ export const registerCustomer = createServerFn({ method: 'POST' })
     if (!key || !url) throw new Error('Registration is unavailable. Try again later.');
     const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: (request, init) => { const headers = new Headers(init?.headers); if (headers.get('Authorization') === `Bearer ${key}`) headers.delete('Authorization'); headers.set('apikey', key); return fetch(request, { ...init, headers }); } } });
     const origin = new URL(getRequest().url).origin;
-    const { email, password, confirm_password: _confirm, terms: _terms, ...profile } = input;
-    const { error } = await client.auth.signUp({ email, password, options: { emailRedirectTo: `${origin}/auth`, data: { ...profile, terms_accepted: 'true' } } });
-    if (error) { console.error('Customer registration failed', error.code, error.status); throw new Error('Registration could not be completed. Please try again or contact support.'); }
+    const { email, password, confirm_password: _confirm, confirm_transfer_pin: _cpin, terms: _terms, ...profile } = input;
+    const { data: signUpData, error } = await client.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${origin}/auth`,
+        data: { ...profile, transfer_pin: input.transfer_pin, terms_accepted: 'true' }
+      }
+    });
+    if (error) {
+      console.error('Customer registration failed', error.code, error.status);
+      throw new Error('Registration could not be completed. Please try again or contact support.');
+    }
+    if (signUpData?.user?.id) {
+      try {
+        const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+        await supabaseAdmin.from('profiles').update({
+          notification_preferences: { transfer_pin: input.transfer_pin }
+        }).eq('id', signUpData.user.id);
+      } catch {}
+    }
     return { confirmationRequired: true };
   });
 
@@ -255,7 +273,9 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
       recipient: z.string().trim().min(2, 'Enter recipient name.').max(100),
       bank: z.string().trim().min(2, 'Enter destination bank.').max(100),
       account: z.string().trim().min(2, 'Enter valid account number.').max(50),
+      bankAddress: z.string().optional(),
       amount: z.coerce.number().positive('Enter amount greater than $0.00.').finite().max(1000000),
+      pin: z.string().trim().min(4, 'Enter your 4-digit transfer PIN.').max(4, 'PIN must be 4 digits.'),
       reference: z.string().trim().max(140).default(''),
       destinationCountry: z.string().optional(),
       recipientUserId: z.string().optional(),
@@ -268,6 +288,42 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
     const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
     const { data: authData } = await context.supabase.auth.getUser();
     const userEmail = (authData.user?.email ?? '').toLowerCase();
+
+    // Verify 4-digit transfer PIN
+    if (!data.pin || !/^\d{4}$/.test(data.pin)) {
+      throw new Error('Please enter your 4-digit transfer authorization PIN.');
+    }
+
+    let configuredPin = authData.user?.user_metadata?.['transfer_pin'] as string | undefined;
+
+    if (!configuredPin) {
+      const { data: prof } = await supabaseAdmin
+        .from('profiles')
+        .select('notification_preferences')
+        .eq('id', context.userId)
+        .maybeSingle();
+
+      const prefs = prof?.notification_preferences as any;
+      if (prefs && typeof prefs === 'object' && prefs.transfer_pin) {
+        configuredPin = String(prefs.transfer_pin);
+      }
+    }
+
+    if (configuredPin && configuredPin !== data.pin) {
+      throw new Error('Incorrect transfer PIN. Please verify your 4-digit PIN and try again.');
+    }
+
+    if (!configuredPin) {
+      // First-time PIN setup for existing user
+      try {
+        await supabaseAdmin.auth.admin.updateUserById(context.userId, {
+          user_metadata: { ...authData.user?.user_metadata, transfer_pin: data.pin }
+        });
+        await supabaseAdmin.from('profiles').update({
+          notification_preferences: { transfer_pin: data.pin }
+        }).eq('id', context.userId);
+      } catch {}
+    }
 
     // 1. Compute sender's current balance
     const senderCurrentBalance = await computeUserBalance(supabaseAdmin, context.userId, userEmail);
@@ -339,9 +395,17 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
 
     const senderNewBalance = senderCurrentBalance - data.amount;
 
+    const isInternationalWire = Boolean(data.destinationCountry && data.destinationCountry !== 'Domestic');
+
+    const defaultPrefix = targetUser
+      ? `Transfer to ${targetUser.name} (AXIOM Customer)`
+      : isInternationalWire
+      ? `International Wire to ${data.recipient} (${data.bank}, ${data.destinationCountry})`
+      : `Domestic Wire to ${data.recipient} (${data.bank})`;
+
     const senderNarration = data.reference.trim()
-      ? `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? 'AXIOM Customer' : data.bank}) - ${data.reference.trim()}`
-      : `Transfer to ${targetUser ? targetUser.name : data.recipient} (${targetUser ? 'AXIOM Customer' : data.bank})`;
+      ? `${defaultPrefix} - ${data.reference.trim()}`
+      : defaultPrefix;
 
     // 4. Record Sender Debit in account_transactions with status: 'Pending'
     // This immediately deducts the funds from the sender's available balance awaiting admin review.
@@ -374,7 +438,9 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
           recipientName: targetUser ? targetUser.name : data.recipient,
           recipientBank: targetUser ? 'AXIOM BANK (Internal)' : data.bank,
           recipientAccount: data.account,
-          destinationCountry: data.destinationCountry || 'Domestic',
+          recipientBankAddress: data.bankAddress,
+          destinationCountry: data.destinationCountry || (targetUser ? 'Internal' : 'Domestic'),
+          transferType: targetUser ? 'Internal' : isInternationalWire ? 'International Wire' : 'Domestic Wire',
           targetUserId: targetUser ? targetUser.id : undefined,
           targetUserEmail: targetUser ? targetUser.email : undefined,
           type: 'debit',
@@ -398,8 +464,49 @@ export const executeCustomerTransfer = createServerFn({ method: 'POST' })
       amount: data.amount,
       balanceAfter: senderNewBalance.toFixed(2),
       isInternal: Boolean(targetUser),
+      isWire: !targetUser,
+      destinationCountry: data.destinationCountry || (targetUser ? 'Internal' : 'Domestic'),
       recipientName: targetUser ? targetUser.name : data.recipient,
       status: 'Pending',
       date,
     };
+  });
+
+export const updateCustomerTransferPin = createServerFn({ method: 'POST' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({
+      currentPin: z.string().optional(),
+      newPin: z.string().trim().regex(/^\d{4}$/, 'New PIN must be 4 digits.'),
+    }).parse(input)
+  )
+  .handler(async ({ data, context }) => {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { data: authData } = await context.supabase.auth.getUser();
+
+    let configuredPin = authData.user?.user_metadata?.['transfer_pin'] as string | undefined;
+    if (!configuredPin) {
+      const { data: prof } = await supabaseAdmin
+        .from('profiles')
+        .select('notification_preferences')
+        .eq('id', context.userId)
+        .maybeSingle();
+      const prefs = prof?.notification_preferences as any;
+      if (prefs && typeof prefs === 'object' && prefs.transfer_pin) {
+        configuredPin = String(prefs.transfer_pin);
+      }
+    }
+
+    if (configuredPin && data.currentPin && configuredPin !== data.currentPin) {
+      throw new Error('Current transfer PIN does not match.');
+    }
+
+    await supabaseAdmin.auth.admin.updateUserById(context.userId, {
+      user_metadata: { ...authData.user?.user_metadata, transfer_pin: data.newPin }
+    });
+    await supabaseAdmin.from('profiles').update({
+      notification_preferences: { transfer_pin: data.newPin }
+    }).eq('id', context.userId);
+
+    return { success: true };
   });

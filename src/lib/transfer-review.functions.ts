@@ -13,7 +13,9 @@ export interface AdminTransferItem {
   recipientName: string;
   recipientBank: string;
   recipientAccount: string;
+  recipientBankAddress?: string;
   destinationCountry: string;
+  transferType?: string;
   amount: number;
   narration: string;
   status: 'Pending' | 'Completed' | 'Rejected';
@@ -117,7 +119,9 @@ export const getAdminTransferQueue = createServerFn({ method: 'GET' })
           recipientName: meta.recipientName || meta.userName || 'Recipient',
           recipientBank: meta.recipientBank || 'AXIOM BANK',
           recipientAccount: meta.recipientAccount || 'Checking Account',
+          recipientBankAddress: meta.recipientBankAddress,
           destinationCountry: meta.destinationCountry || 'Domestic',
+          transferType: meta.transferType,
           amount: Number(t.amount),
           narration: t.narration || meta.narration || 'Transfer',
           status,
@@ -155,7 +159,9 @@ export const getAdminTransferQueue = createServerFn({ method: 'GET' })
               recipientName: payload.recipientName || payload.userName || 'Recipient',
               recipientBank: payload.recipientBank || 'AXIOM BANK',
               recipientAccount: payload.recipientAccount || 'Checking Account',
+              recipientBankAddress: payload.recipientBankAddress,
               destinationCountry: payload.destinationCountry || 'Domestic',
+              transferType: payload.transferType,
               amount: Number(payload.amount),
               narration: payload.narration || 'Transfer',
               status,

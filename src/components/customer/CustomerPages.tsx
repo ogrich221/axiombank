@@ -6,7 +6,7 @@ import { ArrowUpRight, ArrowRight, Eye, EyeOff, CreditCard, ShieldCheck, Globe2,
 import { Button } from '@/components/ui/button';
 import { Field, PasswordField } from './CustomerControls';
 import { useWorkspace, DashboardBack, CustomerAvatar, EmptyFinancial } from './CustomerLayout';
-import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer, getAxiomTransferRecipients } from '@/lib/customer.functions';
+import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, executeCustomerTransfer, getAxiomTransferRecipients, updateCustomerTransferPin } from '@/lib/customer.functions';
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
 import { customerApplicationLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
@@ -361,7 +361,14 @@ export function TransferPage({international=false}:{international?:boolean}) {
   const [selectedMemberId, setSelectedMemberId] = useState<string>('');
   const [stage, setStage] = useState<'details' | 'review' | 'pin' | 'success'>('details');
   const [selectedCountry, setSelectedCountry] = useState('United States');
-  const empty = { recipient: '', bank: 'AXIOM BANK', bankAddress: '', account: '', amount: '', reference: '' };
+  const empty = {
+    recipient: '',
+    bank: international ? '' : 'AXIOM BANK',
+    bankAddress: international ? '' : 'AXIOM Financial Center, New York, NY',
+    account: '',
+    amount: '',
+    reference: ''
+  };
   const [values, setValues] = useState(empty);
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
@@ -377,7 +384,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
   function handleSelectAxiomMember(memberId: string) {
     setSelectedMemberId(memberId);
     if (!memberId || memberId === 'manual') {
-      setValues(v => ({ ...v, recipient: '', account: '', bank: 'AXIOM BANK' }));
+      setValues(v => ({ ...v, recipient: '', account: '', bank: 'AXIOM BANK', bankAddress: 'AXIOM Financial Center, New York, NY' }));
       return;
     }
     const member = axiomMembers.find(m => m.id === memberId);
@@ -387,6 +394,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
         recipient: member.name,
         account: member.accountNumber,
         bank: 'AXIOM BANK',
+        bankAddress: 'AXIOM Financial Center, New York, NY',
       }));
       setError('');
     }
@@ -397,15 +405,34 @@ export function TransferPage({international=false}:{international?:boolean}) {
     setSelectedMemberId('');
     setError('');
     if (type === 'axiom') {
-      setValues({ recipient: '', bank: 'AXIOM BANK', bankAddress: '', account: '', amount: values.amount, reference: values.reference });
+      setValues({
+        recipient: '',
+        bank: 'AXIOM BANK',
+        bankAddress: 'AXIOM Financial Center, New York, NY',
+        account: '',
+        amount: values.amount,
+        reference: values.reference
+      });
     } else {
-      setValues({ recipient: '', bank: '', bankAddress: '', account: '', amount: values.amount, reference: values.reference });
+      setValues({
+        recipient: '',
+        bank: '',
+        bankAddress: '',
+        account: '',
+        amount: values.amount,
+        reference: values.reference
+      });
     }
   }
 
   function submit(event:FormEvent){
     event.preventDefault();
-    const parsed=transferPreviewSchema.safeParse(values);
+    const payload = {
+      ...values,
+      bank: transferType === 'axiom' ? (values.bank || 'AXIOM BANK') : values.bank,
+      bankAddress: transferType === 'axiom' ? (values.bankAddress || 'AXIOM Financial Center, New York, NY') : values.bankAddress,
+    };
+    const parsed = transferPreviewSchema.safeParse(payload);
     if(!parsed.success){
       setError(parsed.error.issues.map(issue=>`${issue.path.join('')}: ${issue.message}`).join(' '));
       return;
@@ -433,7 +460,9 @@ export function TransferPage({international=false}:{international?:boolean}) {
           recipient: values.recipient,
           bank: values.bank || (transferType === 'axiom' ? 'AXIOM BANK' : 'Domestic Bank'),
           account: values.account,
+          bankAddress: values.bankAddress,
           amount,
+          pin,
           reference: values.reference,
           destinationCountry: transferType === 'international' ? selectedCountry : 'Domestic',
           recipientUserId: selectedMemberId && selectedMemberId !== 'manual' ? selectedMemberId : undefined,
@@ -454,7 +483,25 @@ export function TransferPage({international=false}:{international?:boolean}) {
     }
   }
 
-  const domesticFields=[['recipient','Recipient full name'],['bank','Recipient bank name'],['bankAddress','Recipient bank address'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const;
+  const domesticWireFields = [
+    ['recipient', 'Recipient full name / Business'],
+    ['bank', 'Beneficiary bank name'],
+    ['bankAddress', 'Bank address & ABA routing number'],
+    ['account', 'Recipient account number'],
+    ['amount', 'Amount (USD)'],
+    ['reference', 'Wire memo / Reference (optional)']
+  ] as const;
+
+  const internationalWireFields = [
+    ['recipient', 'Beneficiary legal name / Entity'],
+    ['bank', 'Beneficiary bank name'],
+    ['bankAddress', 'Bank address & SWIFT / BIC code'],
+    ['account', 'IBAN or international account number'],
+    ['amount', 'Amount (USD)'],
+    ['reference', 'Wire memo / Invoice reference (optional)']
+  ] as const;
+
+  const activeWireFields = transferType === 'international' ? internationalWireFields : domesticWireFields;
 
   return <>
     <DashboardBack/>
@@ -480,7 +527,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
           }`}
         >
           <Users className="size-3.5" />
-          AXIOM Customer Transfer
+          AXIOM Member Transfer
         </button>
         <button
           type="button"
@@ -492,7 +539,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
           }`}
         >
           <Building2 className="size-3.5" />
-          External Domestic Bank
+          Domestic Wire / ACH
         </button>
         <button
           type="button"
@@ -504,7 +551,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
           }`}
         >
           <Globe2 className="size-3.5" />
-          Worldwide
+          International Wire
         </button>
       </div>
     )}
@@ -627,7 +674,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
             />
           </>
         ) : (
-          domesticFields.map(([key,label]) => (
+          activeWireFields.map(([key,label]) => (
             <Field
               key={key}
               label={label}
@@ -652,11 +699,12 @@ export function TransferPage({international=false}:{international?:boolean}) {
         <h3 className="mt-6 text-sm font-semibold text-primary">Recipient details</h3>
         <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
           {[
-            ['Transfer type', transferType === 'axiom' ? 'AXIOM User-to-User Transfer' : transferType === 'international' ? 'International Worldwide Transfer' : 'Domestic Bank Transfer'],
-            ['Recipient name', values.recipient],
-            ['Destination bank', values.bank || (transferType === 'axiom' ? 'AXIOM BANK' : 'External Bank')],
-            ['Account', `•••• ${values.account.slice(-4)}`],
-            ['Settlement', transferType === 'axiom' ? 'Instant Peer-to-Peer Credit' : 'Within 1 business day'],
+            ['Transfer type', transferType === 'axiom' ? 'AXIOM Member-to-Member Transfer' : transferType === 'international' ? `International Wire Transfer (${selectedCountry})` : 'Domestic Wire / ACH Transfer'],
+            ['Beneficiary / Recipient', values.recipient],
+            ['Destination bank', values.bank || (transferType === 'axiom' ? 'AXIOM BANK' : 'Beneficiary Bank')],
+            ['Bank address & routing', values.bankAddress || 'AXIOM Headquarters, New York, NY'],
+            ['Account / IBAN', values.account],
+            ['Settlement status', 'Funds held immediately · Awaiting administrative approval'],
             ['Narration / Reference', values.reference || 'None']
           ].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-sm font-medium">{value}</dd></div>)}
         </dl>
@@ -691,7 +739,7 @@ export function TransferPage({international=false}:{international?:boolean}) {
               autoFocus
             />
           </label>
-          <p className="text-xs text-muted-foreground">Enter your authorization PIN (e.g. 1234 or any 4 digits) to confirm and settle this transaction.</p>
+          <p className="text-xs text-muted-foreground">Enter the 4-digit transfer PIN created with your account to authorize this transaction.</p>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <div className="flex gap-3 pt-2">
             <Button type="submit" className="h-11" disabled={busy || pin.length < 4}>
@@ -877,6 +925,13 @@ export function TransactionsPage(){
 
 export function SecurityPage(){
   const [current,setCurrent]=useState('');const [password,setPassword]=useState('');const [message,setMessage]=useState('');const [busy,setBusy]=useState(false);const {email,emailVerified}=useWorkspace();
+  const updatePinFn = useServerFn(updateCustomerTransferPin);
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [pinMessage, setPinMessage] = useState('');
+  const [pinBusy, setPinBusy] = useState(false);
+
   async function change(event:FormEvent){
     event.preventDefault();
     if(password.length<12||password.length>128){setMessage('Use a passphrase between 12 and 128 characters.');return;}
@@ -890,24 +945,100 @@ export function SecurityPage(){
       setMessage('Password could not be changed. Check your current password and try again.');
     }finally{setBusy(false);}
   }
+
+  async function handlePinChange(event: FormEvent) {
+    event.preventDefault();
+    if (!/^\d{4}$/.test(newPin)) {
+      setPinMessage('New transfer PIN must be exactly 4 digits.');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setPinMessage('New PIN and confirmation PIN do not match.');
+      return;
+    }
+    setPinBusy(true);
+    setPinMessage('');
+    try {
+      await updatePinFn({
+        data: {
+          currentPin: currentPin || undefined,
+          newPin,
+        }
+      });
+      setPinMessage('Transfer PIN successfully updated.');
+      setCurrentPin('');
+      setNewPin('');
+      setConfirmPin('');
+    } catch (err) {
+      setPinMessage(err instanceof Error ? err.message : 'Transfer PIN could not be updated.');
+    } finally {
+      setPinBusy(false);
+    }
+  }
+
   return <>
     <DashboardBack/>
     <h1 className="text-3xl font-bold">Security & privacy</h1>
-    <div className="mt-8 grid gap-10 md:grid-cols-2">
-      <section>
+    <div className="mt-8 grid gap-10 lg:grid-cols-3">
+      <section className="rounded-xl border border-border bg-card p-6">
+        <h2 className="mb-5 text-lg font-semibold">Transfer Authorization PIN</h2>
+        <p className="mb-4 text-xs text-muted-foreground">Your 4-digit PIN is required to authorize all outgoing transfers and wire transactions.</p>
+        <form onSubmit={handlePinChange} className="space-y-4">
+          <label className="block text-sm font-medium">Current PIN (optional if not set)
+            <input
+              type="password"
+              inputMode="numeric"
+              maxLength={4}
+              value={currentPin}
+              onChange={e=>setCurrentPin(e.target.value.replace(/\D/g, ''))}
+              placeholder="••••"
+              className="customer-field mt-1 font-mono tracking-widest text-center"
+            />
+          </label>
+          <label className="block text-sm font-medium">New 4-Digit PIN
+            <input
+              type="password"
+              inputMode="numeric"
+              maxLength={4}
+              value={newPin}
+              onChange={e=>setNewPin(e.target.value.replace(/\D/g, ''))}
+              placeholder="••••"
+              className="customer-field mt-1 font-mono tracking-widest text-center"
+              required
+            />
+          </label>
+          <label className="block text-sm font-medium">Confirm New PIN
+            <input
+              type="password"
+              inputMode="numeric"
+              maxLength={4}
+              value={confirmPin}
+              onChange={e=>setConfirmPin(e.target.value.replace(/\D/g, ''))}
+              placeholder="••••"
+              className="customer-field mt-1 font-mono tracking-widest text-center"
+              required
+            />
+          </label>
+          <Button type="submit" disabled={pinBusy || newPin.length < 4 || confirmPin.length < 4} className="w-full">
+            {pinBusy ? 'Updating PIN…' : 'Update Transfer PIN'}
+          </Button>
+          {pinMessage && <p role="status" className="text-sm text-primary">{pinMessage}</p>}
+        </form>
+      </section>
+      <section className="rounded-xl border border-border bg-card p-6">
         <h2 className="mb-5 text-lg font-semibold">Change password</h2>
         <form onSubmit={change} className="space-y-5">
           <PasswordField label="Current password" value={current} onChange={e=>setCurrent(e.target.value)} required autoComplete="current-password" maxLength={128}/>
           <PasswordField label="New password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={12} maxLength={128} autoComplete="new-password"/>
-          <Button type="submit" disabled={busy}>{busy?'Updating…':'Update password'}</Button>
+          <Button type="submit" disabled={busy} className="w-full">{busy?'Updating…':'Update password'}</Button>
           {message&&<p role="status" className="text-sm">{message}</p>}
         </form>
       </section>
-      <section>
+      <section className="rounded-xl border border-border bg-card p-6">
         <ShieldCheck className="size-8 text-primary"/>
         <h2 className="mt-4 text-lg font-semibold">Your verification</h2>
-        <p className="mt-3 break-words text-sm">{email}</p>
-        <p className="mt-2 text-sm text-primary">Email {emailVerified?'confirmed':'unverified'}</p>
+        <p className="mt-3 break-words text-sm font-medium">{email}</p>
+        <p className="mt-2 text-sm text-primary font-semibold">Email {emailVerified?'confirmed':'unverified'}</p>
         <p className="mt-5 text-sm leading-7 text-muted-foreground">Your account is safeguarded with end-to-end TLS encryption, two-factor authentication, and proactive fraud alerts.</p>
         <Button asChild variant="link" className="mt-3 px-0"><Link to="/privacy">Privacy policy<ArrowRight/></Link></Button>
       </section>

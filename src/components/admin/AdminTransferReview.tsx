@@ -340,9 +340,13 @@ export function TransferReviewPage() {
                           <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary border border-primary/20">
                             AXIOM Member Transfer
                           </span>
-                        ) : (
+                        ) : item.destinationCountry === 'Domestic' ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-xs font-semibold text-muted-foreground border border-border">
-                            {item.destinationCountry === 'Domestic' ? 'Domestic ACH / Wire' : `International (${item.destinationCountry})`}
+                            Domestic Wire Transfer
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary border border-primary/20">
+                            International Wire ({item.destinationCountry})
                           </span>
                         )}
                       </div>
@@ -375,8 +379,11 @@ export function TransferReviewPage() {
                         <Building className="size-3.5 text-primary" /> RECIPIENT & DESTINATION
                       </p>
                       <p className="font-medium text-foreground text-sm">{item.recipientName}</p>
-                      <p className="text-muted-foreground">{item.recipientBank}</p>
-                      <p className="font-mono text-muted-foreground mt-0.5">Account: {item.recipientAccount}</p>
+                      <p className="text-muted-foreground">{item.recipientBank}{item.destinationCountry && item.destinationCountry !== 'Domestic' && item.destinationCountry !== 'Internal' ? ` · ${item.destinationCountry}` : ''}</p>
+                      {item.recipientBankAddress && (
+                        <p className="text-muted-foreground text-[11px] mt-0.5">Wire Routing / SWIFT: {item.recipientBankAddress}</p>
+                      )}
+                      <p className="font-mono text-muted-foreground mt-0.5">Account / IBAN: {item.recipientAccount}</p>
                     </div>
 
                     <div className="sm:col-span-2 lg:col-span-1">
