@@ -1,5 +1,6 @@
 import { Logo } from "./Logo";
 import { Link } from "@tanstack/react-router";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE, SUPPORT_PHONE_TEL, OFFICE_ADDRESS } from "@/lib/contact";
 
 const cols = [
   { title: "Personal Banking", links: [["Accounts", "/personal-banking"], ["Savings", "/savings"], ["Cards", "/cards"], ["Spending Insights", "/spending-insights"]] },
