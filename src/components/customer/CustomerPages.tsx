@@ -14,76 +14,75 @@ import heroBuilding from '@/assets/axiom-hero-building.jpg.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 
 export function PaymentCard() {
+  const { profile, application } = useWorkspace();
   const [rotation, setRotation] = useState(0);
-  const rotate360 = () => {
-    setRotation(r => r + 360);
-  };
-  const flip = () => {
-    setRotation(r => r + 180);
-  };
+  const [showNumber, setShowNumber] = useState(false);
+  const rotate360 = () => setRotation(r => r + 360);
+  const flip = () => setRotation(r => r + 180);
   const isBack = Math.round(rotation / 180) % 2 !== 0;
+  const holder = ([profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Cardholder').toUpperCase();
+  const account = accountNumberFor(profile?.id);
+  const cardNumber = `4${account.slice(0, 5)}${account.slice(0, 6).split('').reverse().join('')}${account.slice(-4)}`.slice(0, 16);
+  const groups = cardNumber.match(/.{4}/g) ?? [];
+  const shownNumber = showNumber ? groups.join('  ') : `••••  ••••  ••••  ${groups[3] ?? ''}`;
+  const issued = new Date((application as { created_at?: string } | null)?.created_at ?? Date.now());
+  const expiry = `${String(issued.getMonth() + 1).padStart(2, '0')}/${String((issued.getFullYear() + 4) % 100).padStart(2, '0')}`;
+  const city = [profile?.city, profile?.country].filter(Boolean).join(', ');
 
   return (
     <div className="max-w-md">
-      <div 
-        style={{ perspective: '1200px' }} 
-        className="cursor-pointer select-none"
-        onClick={rotate360}
-        title="Click to rotate card 360°"
-      >
-        <div 
-          className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]"
-          style={{ transform: `rotateY(${rotation}deg)` }}
-        >
-          <div className="customer-payment-card absolute inset-0 rounded-2xl text-navy-foreground shadow-lift bg-gradient-to-br from-navy via-navy to-navy/95 border border-white/10 overflow-hidden [transform-style:preserve-3d]">
-            {/* Front Face */}
-            <div className="absolute inset-0 flex flex-col justify-between p-6 [backface-visibility:hidden]">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xl font-bold tracking-wide">AXIOM BANK</span>
-                  <p className="mt-1 text-xs opacity-70 tracking-widest uppercase">Transparent by Design</p>
+      <div style={{ perspective: '1200px' }} className="cursor-pointer select-none" onClick={rotate360} title="Click to rotate card 360°">
+        <div className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]" style={{ transform: `rotateY(${rotation}deg)` }}>
+          <div className="customer-payment-card absolute inset-0 overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-navy via-navy to-navy/90 text-navy-foreground shadow-lift [transform-style:preserve-3d]">
+            {/* Front */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6 [backface-visibility:hidden]">
+              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-primary/15 blur-2xl" />
+              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative grid size-8 place-items-center rounded-md bg-background/10 font-bold">A<span className="absolute top-[55%] h-0.5 w-3 bg-primary" /></span>
+                  <div>
+                    <span className="block text-base font-bold tracking-[0.18em]">AXIOM BANK</span>
+                    <span className="block text-[9px] uppercase tracking-[0.25em] opacity-60">Transparent by Design</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CreditCard className="size-6 text-primary" />
-                </div>
+                <span className="rounded-full border border-primary/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary">Debit</span>
               </div>
-              
-              <div className="my-auto flex items-center gap-4">
-                <div className="h-9 w-12 rounded-md bg-amber-400/90 border border-amber-300 shadow-inner" />
-                <svg className="size-6 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M8.5 16.5a5 5 0 0 1 0-9" />
-                  <path d="M12 19a8.5 8.5 0 0 1 0-14" />
-                  <path d="M15.5 21.5a12 12 0 0 1 0-19" />
-                </svg>
-              </div>
-
-              <div>
-                <div className="text-xl tracking-[0.2em] font-mono font-medium drop-shadow-sm">
-                  •••• &nbsp;•••• &nbsp;•••• &nbsp;4821
+              <div className="relative flex items-center gap-4">
+                <div className="grid h-9 w-12 grid-cols-3 gap-px overflow-hidden rounded-md border border-primary/70 bg-primary/80 p-1">
+                  {Array.from({ length: 6 }).map((_, i) => <span key={i} className="rounded-[2px] bg-primary-foreground/15" />)}
                 </div>
-                <div className="mt-3 flex items-center justify-between text-xs tracking-wider">
-                  <span className="uppercase font-medium text-white/90">VALUED CARDHOLDER</span>
-                  <span className="font-semibold text-primary uppercase">DEBIT</span>
+                <svg className="size-6 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 16.5a5 5 0 0 1 0-9"/><path d="M12 19a8.5 8.5 0 0 1 0-14"/><path d="M15.5 21.5a12 12 0 0 1 0-19"/></svg>
+              </div>
+              <div className="relative">
+                <div className="font-mono text-lg font-medium tracking-[0.12em] tabular-nums sm:text-xl">{shownNumber}</div>
+                <div className="mt-3 flex items-end justify-between gap-3 text-xs">
+                  <div className="min-w-0">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Cardholder</span>
+                    <span className="block truncate font-medium uppercase tracking-wider">{holder}</span>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Valid thru</span>
+                    <span className="block font-mono font-semibold">{expiry}</span>
+                  </div>
                 </div>
               </div>
             </div>
-
-            {/* Back Face */}
-            <div className="absolute inset-0 flex flex-col justify-between py-6 bg-navy [transform:rotateY(180deg)] [backface-visibility:hidden]">
-              <div className="h-10 w-full bg-black/80" />
+            {/* Back */}
+            <div className="absolute inset-0 flex flex-col justify-between bg-navy py-5 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+              <div className="h-10 w-full bg-background/10" />
               <div className="px-6">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 flex-1 bg-white/90 rounded-sm flex items-center justify-end px-3">
-                    <span className="font-mono text-xs font-bold text-navy">CVV 832</span>
-                  </div>
+                <div className="flex h-8 items-center justify-between rounded-sm bg-background px-3">
+                  <span className="truncate font-serif text-sm italic text-foreground">{holder}</span>
+                  <span className="font-mono text-xs font-bold text-foreground">CVV •••</span>
                 </div>
-                <p className="mt-4 text-[10px] leading-relaxed text-white/60">
-                  This card is property of AXIOM BANK. Authorized signature required. 24/7 Support: +1 (800) 555-0199.
+                <p className="mt-3 text-[10px] leading-relaxed opacity-60">
+                  Issued to {holder}{city ? ` · ${city}` : ''}. Linked account {formatAccountNumber(account, true)}. Property of AXIOM BANK. 24/7 Support: +1 (800) 555-0199.
                 </p>
               </div>
-              <div className="px-6 flex items-center justify-between text-xs text-white/70">
+              <div className="flex items-center justify-between px-6 text-xs opacity-70">
                 <span>AXIOM · DEBIT</span>
-                <span className="font-mono">VALID THRU 09/29</span>
+                <span className="font-mono">VALID THRU {expiry}</span>
               </div>
             </div>
           </div>
@@ -92,7 +91,10 @@ export function PaymentCard() {
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
         <span>Active contactless debit card</span>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" size="sm" onClick={()=>setShowNumber(v=>!v)} aria-label={showNumber?'Hide card number':'Show card number'}>
+            {showNumber?<EyeOff className="mr-1.5 size-3.5"/>:<Eye className="mr-1.5 size-3.5"/>}{showNumber?'Hide':'Show'} number
+          </Button>
           <Button variant="outline" size="sm" onClick={rotate360} title="Rotate 360 degrees">
             <RotateCw className="mr-1.5 size-3.5" />
             Rotate 360°
@@ -211,7 +213,7 @@ export function ProfilePage() {
   useEffect(()=>{if(!editing)setValues(editableProfile(profile));},[profile,editing]);
   const required=['first_name','last_name','date_of_birth','nationality','country','address','city','postal_code','phone'] as const;
   const completeness=Math.round((required.filter(k=>String(profile?.[k]??'').trim()).length+(workspace.avatarUrl?1:0))/(required.length+1)*100);
-  return <><DashboardBack/><section className="relative isolate mb-8 flex flex-col items-start gap-6 overflow-hidden border-b border-border bg-secondary p-6 sm:flex-row sm:flex-wrap sm:items-center"><img src={heroBuilding.url} alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover object-[70%_center] opacity-[0.08]"/><CustomerAvatar size="large"/><div className="min-w-0 w-full sm:w-auto sm:flex-1"><p className="text-xs font-medium text-primary">Your personal profile</p><h1 className="mt-2 break-words text-3xl font-bold">{profile?.display_name||`${profile?.first_name??''} ${profile?.last_name??''}`.trim()||'Complete your profile'}</h1><p className="mt-2 text-sm text-muted-foreground">Signed in securely</p><div className="mt-4 max-w-sm"><div className="flex justify-between text-xs"><span>Profile completeness</span><span className="font-semibold text-primary">{completeness}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-background" role="progressbar" aria-label="Profile completeness" aria-valuenow={completeness} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-primary transition-all" style={{width:`${completeness}%`}}/></div></div></div><Button disabled={busy} onClick={()=>editing?cancelEditing():startEditing()} variant="outline">{editing?'Cancel editing':'Edit profile'}</Button></section>
+  return <><DashboardBack/><section className="relative isolate mb-8 flex min-h-72 flex-col items-start gap-6 overflow-hidden rounded-2xl border border-primary/30 bg-background p-6 shadow-lift sm:flex-row sm:flex-wrap sm:items-center sm:p-8"><img src={heroBuilding.url} alt="AXIOM BANK headquarters" className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-105 object-cover object-[70%_center]"/><div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/20"/><div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-background/90 to-transparent"/><div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-primary"/><span aria-hidden className="pointer-events-none absolute -bottom-6 right-4 -z-10 select-none text-7xl font-black tracking-[0.2em] text-primary/15 sm:text-8xl">AXIOM</span><span className="absolute right-4 top-4 rounded-full border border-primary/50 bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary backdrop-blur">AXIOM BANK · Headquarters</span><CustomerAvatar size="large"/><div className="min-w-0 w-full sm:w-auto sm:flex-1"><p className="text-xs font-medium text-primary">Your personal profile</p><h1 className="mt-2 break-words text-3xl font-bold">{profile?.display_name||`${profile?.first_name??''} ${profile?.last_name??''}`.trim()||'Complete your profile'}</h1><p className="mt-2 text-sm text-muted-foreground">Signed in securely</p><div className="mt-4 max-w-sm"><div className="flex justify-between text-xs"><span>Profile completeness</span><span className="font-semibold text-primary">{completeness}%</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-background" role="progressbar" aria-label="Profile completeness" aria-valuenow={completeness} aria-valuemin={0} aria-valuemax={100}><div className="h-full bg-primary transition-all" style={{width:`${completeness}%`}}/></div></div></div><Button disabled={busy} onClick={()=>editing?cancelEditing():startEditing()} variant="outline">{editing?'Cancel editing':'Edit profile'}</Button></section>
     <div className="mb-8 flex flex-wrap gap-3"><input type="file" accept="image/jpeg,image/png,image/webp" ref={fileInput} aria-label="Profile photo" className="hidden" onChange={event=>{const file=event.target.files?.[0];event.target.value='';void choosePhoto(file);}}/><Button variant="outline" disabled={busy} onClick={()=>fileInput.current?.click()}><Upload/>{workspace.avatarUrl?'Change photo':'Upload photo'}</Button>{workspace.avatarUrl&&<Button variant="ghost" onClick={()=>savePhoto(true)} disabled={busy}>Remove photo</Button>}</div>
     {image&&<section className="mb-8 max-w-md border border-border p-5"><h2 className="mb-4 font-semibold">Adjust your photo</h2><canvas ref={canvas} width={384} height={384} className="mx-auto aspect-square w-full max-w-64 rounded-full"/>{[['Zoom',zoom,1,3,.05,(value:number)=>setZoom(value)],['Horizontal position',x,0,100,1,(value:number)=>setX(value)],['Vertical position',y,0,100,1,(value:number)=>setY(value)]].map(([label,value,min,max,step,handler])=><label key={String(label)} className="mt-4 block text-sm">{String(label)}<input type="range" min={Number(min)} max={Number(max)} step={Number(step)} value={Number(value)} className="mt-2 w-full" onChange={event=>{if(typeof handler==='function')handler(Number(event.target.value));}}/></label>)}<div className="mt-5 flex gap-3"><Button onClick={()=>savePhoto()} disabled={busy}>Save photo</Button><Button variant="ghost" disabled={busy} onClick={()=>setImage(null)}>Cancel</Button></div></section>}
     {message&&<p className="mb-6 rounded-md bg-secondary p-4 text-sm" role="status">{message}</p>}
