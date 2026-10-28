@@ -292,6 +292,18 @@ function Index() {
                   <Link to="/open-account">Open Your Account</Link>
                 </Button>
               </div>
+              <div className="mt-8 border-t border-navy-foreground/25 pt-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-navy-foreground/70">Webmail</p>
+                <a href={SUPPORT_MAILTO} className="mt-3 inline-flex max-w-full items-center gap-2.5 text-base font-semibold text-navy-foreground hover:text-primary sm:text-lg">
+                  <Mail className="size-5 shrink-0 text-primary" aria-hidden="true" />
+                  <span className="break-all">{SUPPORT_EMAIL}</span>
+                </a>
+                <p className="mt-3 text-sm text-navy-foreground/70">
+                  <a href={WEBMAIL_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">Open webmail</a>
+                  <span className="px-2 text-navy-foreground/40">·</span>
+                  <a href={SUPPORT_PHONE_TEL} className="hover:text-primary">Call {SUPPORT_PHONE}</a>
+                </p>
+              </div>
             </div>
           </div>
           <div className="flag-stripes h-1.5" aria-hidden="true" />
