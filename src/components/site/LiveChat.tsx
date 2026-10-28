@@ -45,7 +45,6 @@ export function LiveChat() {
     script.async = true;
     script.src = 'https://embed.tawk.to/6ae2294774f6483475d75622/1k61n2ggn';
     script.charset = 'UTF-8';
-    script.setAttribute('crossorigin', '*');
     document.head.appendChild(script);
   }, [isAdmin]);
 
