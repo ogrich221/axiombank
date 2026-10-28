@@ -134,8 +134,8 @@ describe('User-to-User Transfers & Pending Approval Balance Accounting', () => {
   }
 
   it('immediately moves funds from available balance when user initiates transfer (Pending status)', () => {
-    const userLedger = [
-      { type: 'credit' as const, amount: 10000, status: 'Completed' } // Initial deposit
+    const userLedger: Array<{ type: 'credit' | 'debit'; amount: number; status: string }> = [
+      { type: 'credit', amount: 10000, status: 'Completed' } // Initial deposit
     ];
     expect(computeBalanceSimulation(userLedger)).toBe(10000);
 

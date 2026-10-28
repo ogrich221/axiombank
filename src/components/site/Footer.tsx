@@ -1,5 +1,6 @@
 import { Logo } from "./Logo";
 import { Link } from "@tanstack/react-router";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE, SUPPORT_PHONE_TEL, OFFICE_ADDRESS } from "@/lib/contact";
 
 const cols = [
   { title: "Personal Banking", links: [["Accounts", "/personal-banking"], ["Savings", "/savings"], ["Cards", "/cards"], ["Spending Insights", "/spending-insights"]] },
@@ -31,8 +32,8 @@ export function Footer() {
         ))}
       </div>
       <div className="container-x border-t border-border py-6 text-xs leading-relaxed text-muted-foreground">
-        <p>© {new Date().getFullYear()} AXIOM BANK · 1200 Liberty Avenue, Suite 400, New York, NY 10001, USA</p>
-        <p className="mt-2">Support: +1 (800) 555-0199 · support@axiombank.com</p>
+        <p>© {new Date().getFullYear()} AXIOM BANK · {OFFICE_ADDRESS}</p>
+        <p className="mt-2">Support: <a href={SUPPORT_PHONE_TEL} className="hover:text-navy">{SUPPORT_PHONE}</a> · <a href={SUPPORT_MAILTO} className="break-all hover:text-navy">{SUPPORT_EMAIL}</a></p>
       </div>
     </footer>
   );
