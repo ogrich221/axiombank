@@ -5,6 +5,10 @@ export const zeroBalances = { available: '0.00', total: '0.00' } as const;
 export function applicationReviewLabel(status?: string | null) {
   return status === 'confirmed' ? 'Confirmed by admin' : status === 'rejected' ? 'Application declined' : status === 'pending' ? 'Awaiting admin confirmation' : 'Not submitted';
 }
+// Customer-facing wording: never mentions the admin review.
+export function customerApplicationLabel(status?: string | null) {
+  return status === 'confirmed' ? 'Account opened' : status === 'rejected' ? 'Application declined' : status === 'pending' ? 'Awaiting confirmation' : 'Not submitted';
+}
 export const confirmApplicationSchema = z.object({ id: z.string().uuid() });
 export function canConfirmApplication(status: string) { return status === 'pending'; }
 export type AdminApplication = {
