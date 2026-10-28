@@ -27,7 +27,13 @@ describe('bank contact details', () => {
   });
 
   it('keeps phone and office details separate from the mailbox', () => {
-    expect(SUPPORT_PHONE).toBe('+1 (800) 555-0199');
+    expect(SUPPORT_PHONE).toBe('+1800AXB');
     expect(OFFICE_ADDRESS).toContain('New York');
+  });
+
+  it('uses the same support number on the debit card and drops the old one', () => {
+    const card = readFileSync('src/components/customer/CustomerPages.tsx', 'utf8');
+    expect(card).toContain('{SUPPORT_PHONE}');
+    expect(card).not.toContain('555-0199');
   });
 });
