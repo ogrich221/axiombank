@@ -88,8 +88,8 @@ export const bankPages = {
     { title: 'Browser controls', body: 'Your browser can clear cookies and site data or block storage. Doing so may remove settings or affect functionality. For information about personal data, review the privacy policy.' }
   ] },
   disclosures: { title: 'Regulatory Disclosures', category: 'Important information', description: 'Verify the legal entity, licensing and deposit protection before making a financial decision.', draft: true, sections: [
-    { title: 'Bank identity and licensing', body: 'The displayed AXIOM BANK, N.A. name, New York address and NMLS ID #2489105 are unverified placeholders. They must not be treated as evidence of registration, authorization or a regulated banking relationship.' },
-    { title: 'Deposit protection', body: 'References on this site to FDIC membership and $250,000 protection are draft claims that require verification. Actual coverage depends on the insured institution, depositor, ownership category and account structure. Non-US customers should not assume US protection applies.' },
+    { title: 'Bank identity and licensing', body: 'AXIOM BANK does not currently hold a banking charter, deposit insurance or lending license, and no such registration should be assumed.' },
+    { title: 'Deposit protection', body: 'Funds shown on this site are not FDIC-insured or protected by any government deposit scheme.' },
     { title: 'International availability', body: 'The proposed eligible-country list is not proof of local authorization. Products, currency support, consumer protection and tax obligations can vary. Final jurisdiction-specific disclosures are required.' },
     { title: 'No offer or financial advice', body: 'This website is draft informational content, not a binding offer, an investment recommendation or evidence of an active banking service. Confirm all rates, fees and legal details before use.' }
   ] },
