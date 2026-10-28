@@ -299,8 +299,6 @@ function Index() {
                   <span className="break-all">{SUPPORT_EMAIL}</span>
                 </a>
                 <p className="mt-3 text-sm text-navy-foreground/70">
-                  <a href={WEBMAIL_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">Open webmail</a>
-                  <span className="px-2 text-navy-foreground/40">·</span>
                   <a href={SUPPORT_PHONE_TEL} className="hover:text-primary">Call {SUPPORT_PHONE}</a>
                 </p>
               </div>
