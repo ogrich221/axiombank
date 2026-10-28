@@ -36,4 +36,4 @@
 
 - [x] Add the new money-changer photo as the hero for the "Feel Good About Your Money" segment, with the bank logo
 
-- [ ] Show a maskable account number below the single available balance on the overview (in progress)
+- [x] Show a maskable account number below the single available balance on the overview (verified signed-in: masked •••• 1042 and revealed views, both eye toggles)
