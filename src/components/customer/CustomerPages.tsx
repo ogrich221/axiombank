@@ -129,28 +129,39 @@ function BalanceSummary() {
 
 export function Overview() {
   const workspace=useWorkspace();
-  const {profile,application,emailVerified}=workspace;
+  const {profile}=workspace;
   const recentTx = ((workspace as any).transactions || []).slice(0, 5);
   return <>
-    <div className="mb-9 flex items-start justify-between gap-4">
-      <div>
-        <p className="text-xs font-medium text-primary">Your personal overview</p>
-        <h1 className="mt-3 text-3xl font-bold">Welcome back, {profile?.first_name||'there'}.</h1>
-        <p className="mt-3 text-sm text-muted-foreground">Your money, your goals, your clarity.</p>
+    <section className="relative isolate mb-8 overflow-hidden rounded-2xl border border-primary/30 bg-background p-6 shadow-lift md:p-8">
+      <img
+        src={heroBuilding.url}
+        alt="AXIOM BANK headquarters"
+        className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-105 object-cover object-[70%_center]"
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/85 to-background/30" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-background/90 to-transparent" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-primary" />
+      <span aria-hidden className="pointer-events-none absolute -bottom-6 right-4 -z-10 select-none text-7xl font-black tracking-[0.2em] text-primary/10 sm:text-8xl">AXIOM</span>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-primary/50 bg-background/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary backdrop-blur">
+              AXIOM Online Banking
+            </span>
+            <span className="text-xs text-muted-foreground">Checking · •••• 1042</span>
+          </div>
+          <h1 className="mt-2.5 text-3xl font-bold tracking-tight">Welcome back, {profile?.first_name||'there'}.</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Your money, your goals, your clarity.</p>
+        </div>
+        <CustomerAvatar size="large"/>
       </div>
-      <CustomerAvatar/>
-    </div>
+    </section>
     <BalanceSummary/>
     <div className="mt-8 grid gap-8 xl:grid-cols-[1.4fr_1fr]">
       <section>
         <h2 className="mb-5 text-lg font-semibold">Quick actions</h2>
         <div className="grid grid-cols-3 gap-3">
           {[{to:'/dashboard/transfer',title:'Send money',icon:ArrowUpRight},{to:'/dashboard/international',title:'Worldwide',icon:Globe2},{to:'/dashboard/bills',title:'Pay bills',icon:Wallet}].map(({to,title,icon:Icon})=><Button key={to} asChild variant="outline" className="h-24 flex-col whitespace-normal text-center"><Link to={to}><Icon className="mb-1 size-5"/>{title}</Link></Button>)}
-        </div>
-        <div className="mt-8 border-l-2 border-primary bg-secondary p-5">
-          <p className="text-sm font-semibold">{application?customerApplicationLabel(application.admin_review_status):'Account in good standing'}</p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">{emailVerified?'Email confirmed. ':'Email confirmation required. '}Your account is verified and ready for everyday banking.</p>
-          <Button asChild variant="link" className="mt-2 px-0"><Link to="/dashboard/profile">Review your profile<ArrowRight/></Link></Button>
         </div>
       </section>
       <section>
@@ -219,7 +230,43 @@ export function ProfilePage() {
     {message&&<p className="mb-6 rounded-md bg-secondary p-4 text-sm" role="status">{message}</p>}
     <section className="mb-9">{editing?<form onSubmit={submit} noValidate className="space-y-8">{profileGroups.map(group=><fieldset key={group.title} className="border-t border-border pt-6"><legend className="pr-4 text-lg font-semibold">{group.title}</legend><div className="mt-4 grid gap-5 sm:grid-cols-2">{group.keys.map(key=>key==='country'?<label key={key} className="block text-sm font-medium">Country of residence<select className="customer-field mt-2" disabled={busy} aria-invalid={Boolean(fieldErrors.country)} value={values.country} onChange={event=>setValues(old=>({...old,country:event.target.value}))}><option value="">Choose country</option>{residenceCountries.map(country=><option key={country} value={country}>{country}</option>)}</select>{fieldErrors.country&&<span className="mt-1 block text-xs text-destructive">{fieldErrors.country}</span>}</label>:<Field key={key} disabled={busy} error={fieldErrors[key as keyof CustomerProfileInput]} label={fieldLabels[key]??key} value={values[key as keyof CustomerProfileInput]} type={key==='date_of_birth'?'date':key==='phone'?'tel':'text'} autoComplete={key==='phone'?'tel':key==='address'?'street-address':undefined} maxLength={key==='address'?250:key==='phone'?30:key==='postal_code'?20:80} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}</div>{group.title==='Contact details'&&<p className="mt-5 break-words text-sm text-muted-foreground">Email: {email} · {emailVerified?'Confirmed':'Unverified'}</p>}</fieldset>)}<div className="flex gap-3 border-t border-border pt-6"><Button disabled={busy} type="submit"><Check/>{busy?'Saving…':'Save changes'}</Button><Button disabled={busy} variant="ghost" type="button" onClick={cancelEditing}>Cancel</Button></div></form>:<div className="grid gap-8 lg:grid-cols-2"><section><h2 className="mb-5 border-b border-border pb-4 text-lg font-semibold">Personal details</h2><dl className="grid gap-6 sm:grid-cols-2">{[['Full name',[profile?.first_name,profile?.middle_name,profile?.last_name].filter(Boolean).join(' ')||'Not set'],['Preferred name',profile?.display_name||'Not set'],['Date of birth',profile?.date_of_birth||'Not set'],['Nationality',profile?.nationality||'Not set']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}</dl></section><section><h2 className="mb-5 border-b border-border pb-4 text-lg font-semibold">Contact & residence</h2><dl className="space-y-6">{[['Email',email],['Phone',profile?.phone||'Not set'],['Residential address',[profile?.address,profile?.city,profile?.region,profile?.postal_code,profile?.country].filter(Boolean).join(', ')||'Not set']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd>{label==='Email'&&<p className="mt-1 text-xs text-primary">{emailVerified?'Email confirmed':'Email unverified'}</p>}</div>)}</dl></section></div>}</section>
     {!application&&<section className="mb-8 border-t border-border pt-6"><label className="flex items-start gap-3 text-sm"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)}/><span>I acknowledge the <Link to="/terms" className="text-primary underline">terms</Link> and <Link to="/privacy" className="text-primary underline">privacy policy</Link>.</span></label><Button className="mt-4" disabled={!consent||busy} onClick={async()=>{setBusy(true);try{await apply({data:{terms:true}});await queryClient.invalidateQueries({queryKey:['customer-workspace']});setMessage('Application submitted. Awaiting confirmation.');}catch{setMessage('Complete and save your profile before submitting.');}finally{setBusy(false);}}}>Submit application</Button></section>}
-    <section className="mb-8 border-t border-border pt-6"><h2 className="mb-5 text-lg font-semibold">Account information</h2><dl className="grid gap-6 sm:grid-cols-2"><div><dt className="text-xs text-muted-foreground">Customer ID</dt><dd className="mt-2 break-all text-sm">{profile?.id}</dd></div><div><dt className="text-xs text-muted-foreground">Account status</dt><dd className="mt-2 text-sm">{customerApplicationLabel(application?.admin_review_status)}</dd></div><div><dt className="text-xs text-muted-foreground">Bank account</dt><dd className="mt-2 text-sm">Everyday Checking · •••• 1042</dd></div></dl></section><div className="flex flex-wrap gap-3 border-t border-border pt-6"><Button asChild variant="outline"><Link to="/dashboard/security"><ShieldCheck/>Security & privacy</Link></Button><Button asChild variant="ghost"><Link to="/dashboard/support">Help & support<ArrowRight/></Link></Button></div></>;
+    <section className="relative isolate mb-8 overflow-hidden rounded-2xl border border-primary/30 bg-background p-6 shadow-lift sm:p-8">
+      <img
+        src={heroBuilding.url}
+        alt="AXIOM BANK headquarters"
+        className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-105 object-cover object-[70%_center] opacity-25"
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/95 to-background/80" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-primary" />
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+        <div>
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-primary">Banking Credentials</span>
+          <h2 className="text-xl font-bold">Account & Security Information</h2>
+        </div>
+        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+          {customerApplicationLabel(application?.admin_review_status)} · Active Client
+        </span>
+      </div>
+      <dl className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg border border-border/80 bg-background/60 p-4 backdrop-blur">
+          <dt className="text-xs text-muted-foreground">Customer ID</dt>
+          <dd className="mt-1.5 break-all font-mono text-xs font-semibold text-foreground">{profile?.id}</dd>
+        </div>
+        <div className="rounded-lg border border-border/80 bg-background/60 p-4 backdrop-blur">
+          <dt className="text-xs text-muted-foreground">Primary Account</dt>
+          <dd className="mt-1.5 font-mono text-xs font-semibold text-foreground">•••• 1042 (Checking)</dd>
+        </div>
+        <div className="rounded-lg border border-border/80 bg-background/60 p-4 backdrop-blur">
+          <dt className="text-xs text-muted-foreground">Routing / ABA</dt>
+          <dd className="mt-1.5 font-mono text-xs font-semibold text-foreground">021000021</dd>
+        </div>
+        <div className="rounded-lg border border-border/80 bg-background/60 p-4 backdrop-blur">
+          <dt className="text-xs text-muted-foreground">Verification Status</dt>
+          <dd className="mt-1.5 text-xs font-semibold text-primary">Verified & Protected</dd>
+        </div>
+      </dl>
+    </section>
+    <div className="flex flex-wrap gap-3 border-t border-border pt-6"><Button asChild variant="outline"><Link to="/dashboard/security"><ShieldCheck/>Security & privacy</Link></Button><Button asChild variant="ghost"><Link to="/dashboard/support">Help & support<ArrowRight/></Link></Button></div></>;
 }
 
 export function AccountsPage(){
@@ -227,17 +274,24 @@ export function AccountsPage(){
     <DashboardBack/>
     <h1 className="mb-8 text-3xl font-bold">Your accounts</h1>
     <BalanceSummary/>
-    <section className="mt-8 rounded-lg border border-border bg-background p-6">
+    <section className="relative isolate mt-8 overflow-hidden rounded-2xl border border-primary/30 bg-background p-6 shadow-lift sm:p-8">
+      <img
+        src={heroBuilding.url}
+        alt="AXIOM BANK headquarters"
+        className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-105 object-cover object-[70%_center] opacity-35"
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-background via-background/90 to-background/60" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-primary" />
       <div className="flex items-start justify-between">
         <div>
-          <span className="text-xs font-semibold uppercase text-primary">Everyday Banking</span>
-          <h2 className="mt-1 text-xl font-bold">Primary Checking Account</h2>
-          <p className="mt-1 text-xs text-muted-foreground">Account: •••• 1042 · Routing: 021000021</p>
+          <span className="rounded-full border border-primary/40 bg-background/80 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary backdrop-blur">Everyday Banking</span>
+          <h2 className="mt-2 text-2xl font-bold">Primary Checking Account</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Account: •••• 1042 · Routing: 021000021 · Wire: AXIOMUS33</p>
         </div>
-        <span className="rounded bg-secondary px-2.5 py-1 text-xs font-semibold text-primary">Active</span>
+        <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">Active & Verified</span>
       </div>
       <div className="mt-6 flex flex-wrap gap-3">
-        <Button asChild variant="outline"><Link to="/dashboard/transfer">Transfer money</Link></Button>
+        <Button asChild variant="default"><Link to="/dashboard/transfer">Transfer money</Link></Button>
         <Button asChild variant="outline"><Link to="/dashboard/transactions">View statements</Link></Button>
       </div>
     </section>
