@@ -18,7 +18,7 @@ async function passcodeMatches(input: string, expected: string) {
   return diff === 0;
 }
 
-async function requireUnlocked() {
+export async function requireUnlocked() {
   setResponseHeader('Cache-Control', 'no-store');
   const session = await useSession<GateSession>(sessionConfig());
   if (!session.data.unlocked) throw new Error('Admin passcode required');
