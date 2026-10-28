@@ -111,7 +111,7 @@ function BalanceSummary() {
   const [hidden,setHidden]=useState(false);
   const [numHidden,setNumHidden]=useState(true);
   const accountNumber=accountNumberFor(profile?.id);
-  return <div className="grid gap-6 border-b border-border pb-6 sm:grid-cols-2">
+  return <div className="grid max-w-xl gap-4 border-b border-border pb-6">
     <div className="min-w-0">
       <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Available balance</p><Button variant="ghost" size="icon" onClick={()=>setHidden(!hidden)} aria-label={hidden?'Show balance':'Hide balance'} title={hidden?'Show balance':'Hide balance'}>{hidden?<EyeOff/>:<Eye/>}</Button></div>
       <p className="mt-3 text-2xl font-semibold">{hidden?'••••••':`$${balances.available}`}</p>
@@ -119,8 +119,8 @@ function BalanceSummary() {
     </div>
     <div className="min-w-0">
       <div className="flex h-8 items-center justify-between"><p className="text-xs text-muted-foreground">Account number</p><Button variant="ghost" size="icon" onClick={()=>setNumHidden(!numHidden)} aria-label={numHidden?'Show account number':'Hide account number'} title={numHidden?'Show account number':'Hide account number'}>{numHidden?<EyeOff/>:<Eye/>}</Button></div>
-      <p className="mt-3 text-2xl font-semibold tabular-nums tracking-wider">{formatAccountNumber(accountNumber,numHidden)}</p>
-      <p className="mt-2 text-xs text-muted-foreground">Personal checking account</p>
+      <p className="mt-1 text-lg font-semibold tabular-nums tracking-wider">{formatAccountNumber(accountNumber,numHidden)}</p>
+      <p className="mt-1 text-xs text-muted-foreground">Personal checking account</p>
     </div>
   </div>;
 }
