@@ -41,7 +41,7 @@ const features = [
   { icon: PieChart, t: "Spending Insights", d: "Understand your spending patterns with intuitive summaries, helpful categories, and clear visual reports.", to: "/spending-insights" },
 ] as const;
 const pillars = [
-  { icon: Lock, t: "Security by Design", d: "256-bit TLS encryption, two-factor sign-in, biometric login, real-time fraud alerts and instant card freezing. Eligible US deposits are FDIC-insured up to $250,000 through our partner bank.", link: "Security information" },
+  { icon: Lock, t: "Security by Design", d: "256-bit TLS encryption, two-factor sign-in, biometric login, real-time fraud alerts and instant card freezing.", link: "Security information" },
   { icon: Eye, t: "Privacy With Purpose", d: "We never sell your personal data. We collect only what we need to run your account and meet legal requirements, and you can download or delete your data anytime.", link: "Privacy policy" },
   { icon: ShieldCheck, t: "Transparency at Every Step", d: "Every fee is listed in one simple schedule, shown before you confirm any transaction. We give you 30 days' notice before any change to your terms.", link: "Account terms" },
 ];
