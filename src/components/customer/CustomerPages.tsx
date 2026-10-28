@@ -14,78 +14,78 @@ import heroBuilding from '@/assets/axiom-hero-building.jpg.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 
 export function PaymentCard() {
+  const { profile, application } = useWorkspace();
   const [rotation, setRotation] = useState(0);
-  const rotate360 = () => {
-    setRotation(r => r + 360);
-  };
-  const flip = () => {
-    setRotation(r => r + 180);
-  };
+  const [showNumber, setShowNumber] = useState(false);
+  const rotate360 = () => setRotation(r => r + 360);
+  const flip = () => setRotation(r => r + 180);
   const isBack = Math.round(rotation / 180) % 2 !== 0;
+  const holder = ([profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Cardholder').toUpperCase();
+  const account = accountNumberFor(profile?.id);
+  const cardNumber = `4${account.slice(0, 5)}${account.slice(0, 6).split('').reverse().join('')}${account.slice(-4)}`.slice(0, 16);
+  const groups = cardNumber.match(/.{4}/g) ?? [];
+  const shownNumber = showNumber ? groups.join('  ') : `••••  ••••  ••••  ${groups[3] ?? ''}`;
+  const issued = new Date((application as { created_at?: string } | null)?.created_at ?? Date.now());
+  const expiry = `${String(issued.getMonth() + 1).padStart(2, '0')}/${String((issued.getFullYear() + 4) % 100).padStart(2, '0')}`;
+  const city = [profile?.city, profile?.country].filter(Boolean).join(', ');
 
   return (
     <div className="max-w-md">
-      <div 
-        style={{ perspective: '1200px' }} 
-        className="cursor-pointer select-none"
-        onClick={rotate360}
-        title="Click to rotate card 360°"
-      >
-        <div 
-          className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]"
-          style={{ transform: `rotateY(${rotation}deg)` }}
-        >
-          <div className="customer-payment-card absolute inset-0 rounded-2xl text-navy-foreground shadow-lift bg-gradient-to-br from-navy via-navy to-navy/95 border border-white/10 overflow-hidden [transform-style:preserve-3d]">
-            {/* Front Face */}
-            <div className="absolute inset-0 flex flex-col justify-between p-6 [backface-visibility:hidden]">
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xl font-bold tracking-wide">AXIOM BANK</span>
-                  <p className="mt-1 text-xs opacity-70 tracking-widest uppercase">Transparent by Design</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CreditCard className="size-6 text-primary" />
-                </div>
-              </div>
-              
-              <div className="my-auto flex items-center gap-4">
-                <div className="h-9 w-12 rounded-md bg-amber-400/90 border border-amber-300 shadow-inner" />
-                <svg className="size-6 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M8.5 16.5a5 5 0 0 1 0-9" />
-                  <path d="M12 19a8.5 8.5 0 0 1 0-14" />
-                  <path d="M15.5 21.5a12 12 0 0 1 0-19" />
-                </svg>
-              </div>
-
-              <div>
-                <div className="text-xl tracking-[0.2em] font-mono font-medium drop-shadow-sm">
-                  •••• &nbsp;•••• &nbsp;•••• &nbsp;4821
-                </div>
-                <div className="mt-3 flex items-center justify-between text-xs tracking-wider">
-                  <span className="uppercase font-medium text-white/90">VALUED CARDHOLDER</span>
-                  <span className="font-semibold text-primary uppercase">DEBIT</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Back Face */}
-            <div className="absolute inset-0 flex flex-col justify-between py-6 bg-navy [transform:rotateY(180deg)] [backface-visibility:hidden]">
-              <div className="h-10 w-full bg-black/80" />
-              <div className="px-6">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 flex-1 bg-white/90 rounded-sm flex items-center justify-end px-3">
-                    <span className="font-mono text-xs font-bold text-navy">CVV 832</span>
+      <div style={{ perspective: '1200px' }} className="cursor-pointer select-none" onClick={rotate360} title="Click to rotate card 360°">
+        <div className="relative aspect-[1.586] w-full transition-transform duration-700 [transform-style:preserve-3d]" style={{ transform: `rotateY(${rotation}deg)` }}>
+          <div className="customer-payment-card absolute inset-0 overflow-hidden rounded-2xl border border-primary/40 bg-gradient-to-br from-navy via-navy to-navy/90 text-navy-foreground shadow-lift [transform-style:preserve-3d]">
+            {/* Front */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6 [backface-visibility:hidden]">
+              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-primary/15 blur-2xl" />
+              <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-1 bg-primary" />
+              <div className="relative flex items-start justify-between">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative grid size-8 place-items-center rounded-md bg-background/10 font-bold">A<span className="absolute top-[55%] h-0.5 w-3 bg-primary" /></span>
+                  <div>
+                    <span className="block text-base font-bold tracking-[0.18em]">AXIOM BANK</span>
+                    <span className="block text-[9px] uppercase tracking-[0.25em] opacity-60">Transparent by Design</span>
                   </div>
                 </div>
-                <p className="mt-4 text-[10px] leading-relaxed text-white/60">
-                  This card is property of AXIOM BANK. Authorized signature required. 24/7 Support: +1 (800) 555-0199.
-                </p>
+                <span className="rounded-full border border-primary/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary">Debit</span>
               </div>
-              <div className="px-6 flex items-center justify-between text-xs text-white/70">
-                <span>AXIOM · DEBIT</span>
-                <span className="font-mono">VALID THRU 09/29</span>
+              <div className="relative flex items-center gap-4">
+                <div className="grid h-9 w-12 grid-cols-3 gap-px overflow-hidden rounded-md border border-primary/70 bg-primary/80 p-1">
+                  {Array.from({ length: 6 }).map((_, i) => <span key={i} className="rounded-[2px] bg-primary-foreground/15" />)}
+                </div>
+                <svg className="size-6 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8.5 16.5a5 5 0 0 1 0-9"/><path d="M12 19a8.5 8.5 0 0 1 0-14"/><path d="M15.5 21.5a12 12 0 0 1 0-19"/></svg>
+              </div>
+              <div className="relative">
+                <div className="font-mono text-lg font-medium tracking-[0.12em] tabular-nums sm:text-xl">{shownNumber}</div>
+                <div className="mt-3 flex items-end justify-between gap-3 text-xs">
+                  <div className="min-w-0">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Cardholder</span>
+                    <span className="block truncate font-medium uppercase tracking-wider">{holder}</span>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className="block text-[9px] uppercase tracking-widest opacity-60">Valid thru</span>
+                    <span className="block font-mono font-semibold">{expiry}</span>
+                  </div>
+                </div>
               </div>
             </div>
+            {/* Back */}
+            <div className="absolute inset-0 flex flex-col justify-between bg-navy py-5 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+              <div className="h-10 w-full bg-background/10" />
+              <div className="px-6">
+                <div className="flex h-8 items-center justify-between rounded-sm bg-background px-3">
+                  <span className="truncate font-serif text-sm italic text-foreground">{holder}</span>
+                  <span className="font-mono text-xs font-bold text-foreground">CVV •••</span>
+                </div>
+                <p className="mt-3 text-[10px] leading-relaxed opacity-60">
+                  Issued to {holder}{city ? ` · ${city}` : ''}. Linked account {formatAccountNumber(account, true)}. Property of AXIOM BANK. 24/7 Support: +1 (800) 555-0199.
+                </p>
+              </div>
+              <div className="flex items-center justify-between px-6 text-xs opacity-70">
+                <span>AXIOM · DEBIT</span>
+                <span className="font-mono">VALID THRU {expiry}</span>
+              </div>
+            </div>
+          </div>
           </div>
         </div>
       </div>
