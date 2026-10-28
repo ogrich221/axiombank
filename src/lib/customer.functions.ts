@@ -4,9 +4,19 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { profileSchema, registrationSchema } from './customer-schemas';
 import { zeroBalances, accountNumberFor, formatAccountNumber } from './customer-account-state';
 
+function decodeAvatarPng(image: string) {
+  if (!image.startsWith('data:image/png;base64,')) throw new Error('Choose a valid profile photo.');
+  const bytes = Uint8Array.from(atob(image.slice(22)), character => character.charCodeAt(0));
+  if (bytes.length > 2 * 1024 * 1024 || bytes.length < 24 || ![137,80,78,71,13,10,26,10].every((value, index) => bytes[index] === value)) throw new Error('Choose a photo smaller than 2 MB.');
+  const dimensions = new DataView(bytes.buffer);
+  if (dimensions.getUint32(16) > 1024 || dimensions.getUint32(20) > 1024) throw new Error('Photo is too large.');
+  return bytes;
+}
+
 export const registerCustomer = createServerFn({ method: 'POST' })
-  .inputValidator((input: unknown) => registrationSchema.parse(input))
+  .inputValidator((input: unknown) => ({ ...registrationSchema.parse(input), photo: z.string().max(2800000).parse((input as { photo?: unknown })?.photo) }))
   .handler(async ({ data }) => {
+    const photoBytes = decodeAvatarPng(data.photo);
     const input = registrationSchema.parse(data);
     const { createClient } = await import('@supabase/supabase-js');
     const { getRequest, setResponseHeader } = await import('@tanstack/react-start/server');
@@ -35,6 +45,9 @@ export const registerCustomer = createServerFn({ method: 'POST' })
         await supabaseAdmin.from('profiles').update({
           notification_preferences: { transfer_pin: input.transfer_pin }
         }).eq('id', signUpData.user.id);
+        const path = `${signUpData.user.id}/${crypto.randomUUID()}.png`;
+        const { error: uploadError } = await supabaseAdmin.storage.from('customer-avatars').upload(path, photoBytes, { contentType: 'image/png' });
+        if (!uploadError) await supabaseAdmin.from('profiles').update({ avatar_path: path }).eq('id', signUpData.user.id);
       } catch {}
     }
     return { confirmationRequired: true };
@@ -163,11 +176,7 @@ export const saveCustomerAvatar = createServerFn({ method: 'POST' }).middleware(
   const { data: profile } = await context.supabase.from('profiles').select('avatar_path').eq('id', context.userId).maybeSingle();
   let path: string | null = null;
   if (data.image) {
-    if (!data.image.startsWith('data:image/png;base64,')) throw new Error('Choose a valid image.');
-    const bytes = Uint8Array.from(atob(data.image.slice(22)), character => character.charCodeAt(0));
-    if (bytes.length > 2 * 1024 * 1024 || bytes.length < 24 || ![137,80,78,71,13,10,26,10].every((value, index) => bytes[index] === value)) throw new Error('Choose a PNG smaller than 2 MB.');
-    const dimensions = new DataView(bytes.buffer);
-    if (dimensions.getUint32(16) > 1024 || dimensions.getUint32(20) > 1024) throw new Error('Image is too large.');
+    const bytes = decodeAvatarPng(data.image);
     path = `${context.userId}/${crypto.randomUUID()}.png`;
     const { error } = await context.supabase.storage.from('customer-avatars').upload(path, bytes, { contentType: 'image/png' });
     if (error) throw new Error('Your photo could not be uploaded.');
