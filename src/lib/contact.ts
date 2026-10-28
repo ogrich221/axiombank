@@ -6,8 +6,6 @@ export const SUPPORT_EMAIL = "axiombank@axiomfinancialinstitution.online";
 /** Opens the visitor's mail app with the bank's mailbox pre-filled. */
 export const SUPPORT_MAILTO = `mailto:${SUPPORT_EMAIL}`;
 
-/** Webmail sign-in page for the mailbox above (update if the host uses a different address). */
-export const WEBMAIL_URL = "https://axiomfinancialinstitution.online/webmail";
 
 export const SUPPORT_PHONE = "+1 (800) 555-0199";
 export const SUPPORT_PHONE_TEL = "tel:+18005550199";

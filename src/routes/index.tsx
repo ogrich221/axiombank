@@ -3,7 +3,7 @@ import {
   ArrowRight, Receipt, Activity, SlidersHorizontal, Wallet, PiggyBank, CreditCard, PieChart,
   ShieldCheck, Lock, Eye, ChevronDown, Globe2, Mail,
 } from "lucide-react";
-import { SUPPORT_EMAIL, SUPPORT_MAILTO, WEBMAIL_URL, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from "@/lib/contact";
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from "@/lib/contact";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -299,8 +299,6 @@ function Index() {
                   <span className="break-all">{SUPPORT_EMAIL}</span>
                 </a>
                 <p className="mt-3 text-sm text-navy-foreground/70">
-                  <a href={WEBMAIL_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">Open webmail</a>
-                  <span className="px-2 text-navy-foreground/40">·</span>
                   <a href={SUPPORT_PHONE_TEL} className="hover:text-primary">Call {SUPPORT_PHONE}</a>
                 </p>
               </div>
