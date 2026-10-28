@@ -10,6 +10,7 @@ import { updateCustomerProfile, saveCustomerAvatar, submitCustomerApplication, e
 import { profileSchema, transferPreviewSchema, residenceCountries, type CustomerProfileInput } from '@/lib/customer-schemas';
 import { editableProfile } from '@/lib/customer-profile';
 import { customerApplicationLabel, accountNumberFor, formatAccountNumber } from '@/lib/customer-account-state';
+import { SUPPORT_PHONE } from '@/lib/contact';
 import heroBuilding from '@/assets/axiom-hero-building.jpg.asset.json';
 import { supabase } from '@/integrations/supabase/client';
 
