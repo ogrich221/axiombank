@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { zeroBalances, canConfirmApplication, confirmApplicationSchema } from '@/lib/customer-account-state';
+import { zeroBalances, canConfirmApplication, confirmApplicationSchema, customerAccountStatus } from '@/lib/customer-account-state';
 describe('Customer balances and admin confirmation', () => {
+  it('opens the customer profile only after administrator confirmation', () => {
+    expect(customerAccountStatus('confirmed')).toBe('Opened');
+    expect(customerAccountStatus('pending')).toBe('Awaiting approval');
+    expect(customerAccountStatus('rejected')).toBe('Declined');
+    expect(customerAccountStatus(undefined)).toBe('Not opened');
+  });
   it('sets every customer balance to 0.00', () => {
     expect(zeroBalances.available).toBe('0.00');
     expect(zeroBalances.total).toBe('0.00');
