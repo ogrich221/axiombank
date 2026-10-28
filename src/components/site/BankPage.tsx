@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, ChevronDown, Mail, Phone, MapPin, Search, ShieldCheck } from 'lucide-react';
+import { ArrowRight, ChevronDown, Mail, Phone, MapPin, Search, ShieldCheck, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { SUPPORT_EMAIL, SUPPORT_MAILTO, WEBMAIL_URL, SUPPORT_PHONE, SUPPORT_PHONE_TEL, OFFICE_ADDRESS } from '@/lib/contact';
 import { bankPages, type BankPageKey, type BankPage as PageData } from '@/lib/bank-pages';
 import building from '@/assets/axiom-hero-building.jpg.asset.json';
 import desk from '@/assets/axiom-branch-operations.jpg.asset.json';
