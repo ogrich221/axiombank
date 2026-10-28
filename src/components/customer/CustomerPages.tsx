@@ -281,10 +281,17 @@ export function CardsPage(){
 }
 
 export function TransferPage({international=false}:{international?:boolean}) {
-  const [stage,setStage]=useState<'details'|'review'|'success'>('details');
+  const {balances}=useWorkspace();
+  const [stage,setStage]=useState<'details'|'review'|'pin'>('details');
   const [selectedCountry,setSelectedCountry]=useState('United States');
-  const [values,setValues]=useState({recipient:'',bank:'',account:'',amount:'',reference:''});
+  const empty={recipient:'',bank:'',bankAddress:'',account:'',amount:'',reference:''};
+  const [values,setValues]=useState(empty);
   const [error,setError]=useState('');
+  const currentBalance=Number(balances.available)||0;
+  const amount=Number(values.amount)||0;
+  const fee=0;
+  const newBalance=currentBalance-amount-fee;
+  const money=(n:number)=>`$${n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
   function submit(event:FormEvent){
     event.preventDefault();
     const parsed=transferPreviewSchema.safeParse(values);
@@ -295,23 +302,13 @@ export function TransferPage({international=false}:{international?:boolean}) {
     setError('');
     setStage('review');
   }
+  const fields=[['recipient','Recipient full name'],['bank','Recipient bank name'],['bankAddress','Recipient bank address'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const;
   return <>
     <DashboardBack/>
     <p className="text-xs font-semibold text-primary">{international?'Worldwide transfer':'Fast domestic transfer'}</p>
     <h1 className="mt-3 text-3xl font-bold">{international?'Send Money Worldwide':'Transfer money'}</h1>
-    <p className="mb-8 mt-4 max-w-xl text-sm leading-7 text-muted-foreground">{international?'Choose your destination country, review real-time exchange rates, and send money securely.':'Transfer funds instantly to any verified bank account with zero fees.'}</p>
-    {stage==='success' ? (
-      <div className="max-w-xl rounded-lg border border-border bg-secondary p-8 text-center">
-        <ShieldCheck className="mx-auto size-12 text-primary" />
-        <h2 className="mt-4 text-2xl font-bold">Transfer Initiated</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Your transfer of ${Number(values.amount).toFixed(2)} USD to {values.recipient} has been scheduled successfully.</p>
-        <p className="mt-4 font-mono text-xs text-muted-foreground">Reference: TR-{crypto.randomUUID().slice(0,8).toUpperCase()}</p>
-        <div className="mt-6 flex justify-center gap-3">
-          <Button onClick={()=>{setStage('details');setValues({recipient:'',bank:'',account:'',amount:'',reference:''});}}>Make another transfer</Button>
-          <Button asChild variant="outline"><Link to="/dashboard/transactions">View transactions</Link></Button>
-        </div>
-      </div>
-    ) : stage==='details' ? (
+    <p className="mb-8 mt-4 max-w-xl text-sm leading-7 text-muted-foreground">{international?'Choose your destination country, review the details, and send money securely.':'Transfer funds to any verified bank account.'}</p>
+    {stage==='details' ? (
       <form onSubmit={submit} className="max-w-2xl space-y-5">
         {international && (
           <label className="block text-sm font-medium">Destination country
@@ -322,24 +319,43 @@ export function TransferPage({international=false}:{international?:boolean}) {
         )}
         <label className="block text-sm font-medium">Source account
           <select className="customer-field mt-2">
-            <option>AXIOM Everyday Checking (•••• 1042) — $0.00</option>
+            <option>AXIOM Everyday Checking (•••• 1042) — {money(currentBalance)}</option>
           </select>
         </label>
-        {([['recipient','Recipient full name'],['bank','Destination bank'],['account','Recipient account or IBAN number'],['amount','Amount (USD)'],['reference','Payment reference (optional)']] as const).map(([key,label])=><Field key={key} label={label} value={values[key as keyof typeof values]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
+        {fields.map(([key,label])=><Field key={key} label={label} value={values[key]} type={key==='amount'?'number':'text'} min={key==='amount'?'0.01':undefined} step={key==='amount'?'0.01':undefined} maxLength={key==='account'?34:key==='bankAddress'?200:140} required={key!=='reference'} onChange={event=>setValues(old=>({...old,[key]:event.target.value}))}/>)}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <Button type="submit" className="h-11">Review transfer<ArrowRight/></Button>
       </form>
-    ) : (
+    ) : stage==='review' ? (
       <section className="max-w-2xl">
         <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('details')}><ArrowLeft/>Back to transfer details</Button>
-        <h2 className="text-xl font-semibold">Review transfer details</h2>
-        <dl className="mt-6 grid gap-6 sm:grid-cols-2">
-          {[['Recipient',values.recipient],['Bank',values.bank],['Account',`•••• ${values.account.slice(-4)}`],['Amount',`$${Number(values.amount).toFixed(2)} USD`],['Transfer fee','$0.00 (Zero fee)'],['Estimated arrival','Within 1 business day'],['Reference',values.reference||'None'],['Destination',international?selectedCountry:'Domestic']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 break-words text-sm font-medium">{value}</dd></div>)}
+        <h2 className="text-xl font-semibold">Transfer summary</h2>
+        <h3 className="mt-6 text-sm font-semibold text-primary">Recipient details</h3>
+        <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
+          {[['Recipient name',values.recipient],['Bank name',values.bank],['Bank address',values.bankAddress],['Account',`•••• ${values.account.slice(-4)}`],['Destination',international?selectedCountry:'Domestic'],['Reference',values.reference||'None']].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 break-words text-sm font-medium">{value}</dd></div>)}
         </dl>
-        <div className="mt-8 flex gap-3">
-          <Button className="h-11" onClick={()=>setStage('success')}>Confirm and send transfer<ArrowRight/></Button>
-          <Button variant="outline" onClick={()=>setStage('details')}>Cancel</Button>
+        <h3 className="mt-6 text-sm font-semibold text-primary">Your balance</h3>
+        <dl className="mt-3 grid gap-5 rounded-lg border border-border p-5 sm:grid-cols-2">
+          {[['Current balance',money(currentBalance)],['Amount',money(amount)],['Transfer fee',money(fee)],['Total debit',money(amount+fee)]].map(([label,value])=><div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 text-sm font-medium">{value}</dd></div>)}
+          <div className="sm:col-span-2 border-t border-border pt-4"><dt className="text-xs text-muted-foreground">New balance after transfer</dt><dd className={`mt-1 text-2xl font-semibold ${newBalance<0?'text-destructive':''}`}>{money(newBalance)}</dd></div>
+        </dl>
+        {newBalance<0 && <p role="alert" className="mt-4 text-sm text-destructive">Insufficient funds: this transfer exceeds your available balance.</p>}
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button className="h-11" disabled={newBalance<0} onClick={()=>setStage('pin')}>Continue to transfer PIN<ArrowRight/></Button>
+          <Button variant="outline" onClick={()=>setStage('details')}>Edit</Button>
+          <Button variant="ghost" onClick={()=>{setValues(empty);setStage('details');}}>Cancel</Button>
         </div>
+      </section>
+    ) : (
+      <section className="max-w-xl">
+        <Button variant="ghost" className="mb-6 px-0" onClick={()=>setStage('review')}><ArrowLeft/>Back to summary</Button>
+        <h2 className="text-xl font-semibold">Authorize with transfer PIN</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Sending {money(amount)} to {values.recipient} — new balance {money(newBalance)}.</p>
+        <div className="mt-6 rounded-lg border border-border bg-secondary p-5 text-sm">
+          <ShieldCheck className="mb-2 size-6 text-primary"/>
+          Transfer PIN authorization is coming soon. No money has been sent and your balance is unchanged.
+        </div>
+        <Button className="mt-6" variant="outline" onClick={()=>{setValues(empty);setStage('details');}}>Done</Button>
       </section>
     )}
   </>;
