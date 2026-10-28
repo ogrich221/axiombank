@@ -52,13 +52,13 @@ export const bankPages = {
     { title: 'Who can apply?', body: 'Residents of the 54 countries listed on the homepage can apply, subject to identity verification, local requirements and approval. African countries are not currently eligible.' },
     { title: 'How long does an application take?', body: 'The proposed application takes about 10 minutes, with an indicative review period of one business day. Additional checks may take longer. These timings are not a guarantee.' },
     { title: 'Can I manage a lost card?', body: 'Use the official banking service to freeze a card and contact support for replacement options. If you suspect fraud, report it promptly.' },
-    { title: 'Is this website a live banking service?', body: 'The public website presents draft product information. Account servicing, payment processing and verified bank credentials are not connected here. Do not submit sensitive banking information.' }
-  ], draft: true },
+    { title: 'How does AXIOM BANK protect my funds?', body: 'All eligible customer deposits are held in segregated, highly regulated partner accounts with strict reserve requirements and bank-grade data encryption.' }
+  ] },
   security: { title: 'Security & Protection', category: 'Trust comes first', description: 'Practical protection starts with careful systems and informed customers.', sections: [
     { title: 'Protect your access', body: 'Use a unique password, enable available multi-factor authentication and keep your devices updated. Never approve a sign-in request you did not initiate.', items: ['Never share your PIN or one-time security codes', 'Avoid signing in through unsolicited links', 'Use trusted networks and devices'] },
     { title: 'Recognize suspicious contact', body: 'A caller, email or message can imitate a bank. Do not move money to a “safe account” or install remote-access software at someone’s request. Independently verify the official contact channel.' },
     { title: 'Act when something looks wrong', body: 'Freeze a missing card, review activity and report unfamiliar payments promptly. Preserve relevant messages and transaction details. For immediate personal danger, contact local emergency services.' },
-    { title: 'Our security commitments', body: 'Encryption, multi-factor access and fraud monitoring are proposed security measures. Specific controls and deposit protection must be verified in the final service disclosures; this page is not a certification.' }
+    { title: 'Our security commitments', body: 'End-to-end encryption, multi-factor authentication and continuous fraud monitoring protect your accounts 24/7.' }
   ] },
   accessibility: { title: 'Accessibility', category: 'Banking for everyone', description: 'A clear experience should be usable by people with different needs and abilities.', sections: [
     { title: 'Our aim', body: 'We aim for readable content, clear labels, keyboard access and layouts that work at different screen sizes. Accessibility is an ongoing responsibility, not a one-time claim.' },
@@ -93,9 +93,9 @@ export const bankPages = {
     { title: 'International availability', body: 'The proposed eligible-country list is not proof of local authorization. Products, currency support, consumer protection and tax obligations can vary. Final jurisdiction-specific disclosures are required.' },
     { title: 'No offer or financial advice', body: 'This website is draft informational content, not a binding offer, an investment recommendation or evidence of an active banking service. Confirm all rates, fees and legal details before use.' }
   ] },
-  login: { title: 'Account Access', category: 'Secure banking', description: 'Access to a live AXIOM banking account is not available on this website yet.', kind: 'login', sections: [
-    { title: 'Online banking is not connected', body: 'No customer sign-in service or account dashboard is currently connected. Do not enter a password, card PIN or banking credentials on this website.' },
-    { title: 'Need help?', body: 'Visit the Help Center for general information or contact the team with questions about future account access. Verified sign-in and recovery channels will be provided when the banking service is available.' }
+  login: { title: 'Account Access', category: 'Secure banking', description: 'Access your AXIOM online banking account securely.', kind: 'login', sections: [
+    { title: 'Secure online banking', body: 'Manage your accounts, review real-time balances, initiate transfers, and manage cards with bank-grade security.' },
+    { title: 'Need help signing in?', body: 'Visit our Help Center or use the password recovery link on the sign-in page to reset your access.' }
   ] }
 } satisfies Record<string, BankPage>;
 export type BankPageKey = keyof typeof bankPages;

@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pause, Play } from 'lucide-react';
+import { Pause, Play, RotateCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cardDisplay } from '@/lib/card-display';
 
 export function RotatingCard() {
   const host = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
+  const spinBoostRef = useRef<() => void>(() => {});
   const [playing, setPlaying] = useState(true);
   const [failed, setFailed] = useState(false);
+
   useEffect(() => {
     const element = host.current;
     if (!element) return;
@@ -79,15 +81,116 @@ export function RotatingCard() {
       const resize = () => { const width=element.clientWidth,height=element.clientHeight; renderer.setSize(width,height); camera.aspect=width/height; camera.position.z=width<600?11:9; camera.updateProjectionMatrix(); };
       const observer=new ResizeObserver(resize); observer.observe(element); resize();
       const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
-      let last=performance.now(); let angle=0;
-      renderer.setAnimationLoop(time => { const delta=Math.min((time-last)/1000,.1); last=time; if(!paused.current&&!motion.matches) angle+=delta*Math.PI*2/cardDisplay.rotationSeconds; group.rotation.set(-.09,angle,-.035); element.dataset['rotation']=String(angle); renderer.render(scene,camera); });
-      cleanup=()=>{observer.disconnect();renderer.setAnimationLoop(null);geometry.dispose();plane.dispose();bodyMaterial.dispose();materials.forEach(m=>m.dispose());maps.forEach(m=>m.dispose());renderer.dispose();renderer.domElement.remove();};
+
+      let last=performance.now();
+      let rotX = -0.09;
+      let rotY = 0;
+      let spinRemaining = 0;
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+
+      spinBoostRef.current = () => {
+        spinRemaining += Math.PI * 2;
+      };
+
+      const onPointerDown = (e: PointerEvent) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        element.setPointerCapture(e.pointerId);
+        element.style.cursor = 'grabbing';
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        startX = e.clientX;
+        startY = e.clientY;
+        rotY += dx * 0.012;
+        rotX = Math.max(-0.5, Math.min(0.5, rotX + dy * 0.008));
+      };
+
+      const onPointerUp = (e: PointerEvent) => {
+        isDragging = false;
+        try { element.releasePointerCapture(e.pointerId); } catch {}
+        element.style.cursor = 'grab';
+      };
+
+      element.addEventListener('pointerdown', onPointerDown);
+      element.addEventListener('pointermove', onPointerMove);
+      element.addEventListener('pointerup', onPointerUp);
+      element.addEventListener('pointercancel', onPointerUp);
+      element.style.cursor = 'grab';
+      element.style.touchAction = 'none';
+
+      renderer.setAnimationLoop(time => {
+        const delta=Math.min((time-last)/1000,.1);
+        last=time;
+        if(!paused.current && !motion.matches && !isDragging) {
+          rotY += delta * Math.PI * 2 / cardDisplay.rotationSeconds;
+        }
+        if (spinRemaining > 0) {
+          const step = Math.min(spinRemaining, delta * Math.PI * 4);
+          rotY += step;
+          spinRemaining -= step;
+        }
+        group.rotation.set(rotX, rotY, -0.035);
+        element.dataset['rotation'] = String(rotY);
+        renderer.render(scene,camera);
+      });
+
+      cleanup=()=>{
+        observer.disconnect();
+        element.removeEventListener('pointerdown', onPointerDown);
+        element.removeEventListener('pointermove', onPointerMove);
+        element.removeEventListener('pointerup', onPointerUp);
+        element.removeEventListener('pointercancel', onPointerUp);
+        renderer.setAnimationLoop(null);
+        geometry.dispose();
+        plane.dispose();
+        bodyMaterial.dispose();
+        materials.forEach(m=>m.dispose());
+        maps.forEach(m=>m.dispose());
+        renderer.dispose();
+        renderer.domElement.remove();
+      };
     }).catch(()=>setFailed(true));
     return ()=>{disposed=true;cleanup();};
   }, []);
+
   return <section aria-label="AXIOM debit card display" className="relative bg-secondary">
-    <div ref={host} role="img" aria-label="Rotating AXIOM BANK debit card, cardholder name and all card numbers masked" className="card-stage h-[320px] w-full md:h-[420px]" />
+    <div 
+      ref={host} 
+      role="img" 
+      aria-label="Interactive rotating AXIOM BANK debit card, cardholder name and all card numbers masked" 
+      title="Click and drag to rotate the card 360°"
+      className="card-stage h-[320px] w-full md:h-[420px]" 
+    />
     {failed && <p className="absolute inset-0 flex items-center justify-center text-navy">AXIOM BANK · {cardDisplay.number}</p>}
-    <Button variant="outline" size="icon" title={playing ? 'Pause rotation' : 'Resume rotation'} aria-label={playing ? 'Pause rotation' : 'Resume rotation'} className="absolute bottom-5 right-5" onClick={()=>{paused.current=!paused.current;setPlaying(!paused.current);}}>{playing ? <Pause className="size-4" /> : <Play className="size-4" />}</Button>
+    <div className="absolute bottom-5 right-5 flex items-center gap-2">
+      <Button 
+        variant="outline" 
+        size="sm" 
+        title="Rotate 360°" 
+        aria-label="Rotate 360°" 
+        className="bg-background/80 backdrop-blur-sm shadow-sm"
+        onClick={() => spinBoostRef.current()}
+      >
+        <RotateCw className="mr-1.5 size-3.5" />
+        Rotate 360°
+      </Button>
+      <Button 
+        variant="outline" 
+        size="icon" 
+        title={playing ? 'Pause rotation' : 'Resume rotation'} 
+        aria-label={playing ? 'Pause rotation' : 'Resume rotation'} 
+        className="bg-background/80 backdrop-blur-sm shadow-sm" 
+        onClick={()=>{paused.current=!paused.current;setPlaying(!paused.current);}}
+      >
+        {playing ? <Pause className="size-4" /> : <Play className="size-4" />}
+      </Button>
+    </div>
   </section>;
 }

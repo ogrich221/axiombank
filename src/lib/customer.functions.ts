@@ -30,9 +30,82 @@ export const getCustomerWorkspace = createServerFn({ method: 'GET' }).middleware
   const { data: application, error: applicationError } = await context.supabase.from('customer_applications').select('status,submitted_at,id,admin_review_status,admin_reviewed_at').eq('user_id', context.userId).maybeSingle();
   if (applicationError) throw new Error('Your application could not be loaded.');
   const { data: authData } = await context.supabase.auth.getUser();
+  const userEmail = (authData.user?.email ?? '').toLowerCase();
+
   let avatarUrl: string | null = null;
   if (profile?.avatar_path?.startsWith(`${context.userId}/`)) { const { data } = await context.supabase.storage.from('customer-avatars').createSignedUrl(profile.avatar_path, 3600); avatarUrl = data?.signedUrl ?? null; }
-  return { profile, application, balances: zeroBalances, avatarUrl, email: authData.user?.email ?? '', emailVerified: Boolean(authData.user?.email_confirmed_at) };
+
+  // Fetch transactions from account_transactions and admin_events
+  const transactions: Array<{
+    id: string;
+    userId: string;
+    type: 'credit' | 'debit';
+    amount: number;
+    narration: string;
+    date: string;
+    reference: string;
+    status: string;
+    balanceAfter?: number;
+  }> = [];
+
+  try {
+    const txRes = await context.supabase.from('account_transactions').select('*').eq('user_id', context.userId).order('created_at', { ascending: false });
+    if (txRes.data && Array.isArray(txRes.data)) {
+      for (const t of txRes.data) {
+        transactions.push({
+          id: t.id,
+          userId: t.user_id,
+          type: t.type as 'credit' | 'debit',
+          amount: Number(t.amount),
+          narration: t.narration,
+          date: t.created_at,
+          reference: t.reference,
+          status: t.status || 'Completed',
+          balanceAfter: Number(t.balance_after || 0)
+        });
+      }
+    }
+  } catch {}
+
+  try {
+    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const evRes = await supabaseAdmin.from('admin_events').select('*').in('action', ['Account Credited', 'Account Debited']).order('time', { ascending: false });
+    for (const ev of evRes.data || []) {
+      try {
+        const payload = JSON.parse(ev.target);
+        if (payload && (payload.userId === context.userId || (userEmail && payload.email === userEmail))) {
+          if (!transactions.some(t => t.reference === payload.reference || t.id === ev.id)) {
+            transactions.push({
+              id: ev.id,
+              userId: context.userId,
+              type: payload.type || (ev.action === 'Account Credited' ? 'credit' : 'debit'),
+              amount: Number(payload.amount),
+              narration: payload.narration || '',
+              date: payload.date || ev.time,
+              reference: payload.reference || `TX-${ev.id.slice(0, 8).toUpperCase()}`,
+              status: 'Completed',
+              balanceAfter: payload.balanceAfter
+            });
+          }
+        }
+      } catch {}
+    }
+  } catch {}
+
+  transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  let currentBalance = 0;
+  for (const t of [...transactions].reverse()) {
+    currentBalance = t.type === 'credit' ? currentBalance + t.amount : currentBalance - t.amount;
+    t.balanceAfter = currentBalance;
+  }
+
+  const balances = {
+    available: currentBalance.toFixed(2),
+    total: currentBalance.toFixed(2)
+  };
+
+  return { profile, application, balances, transactions, avatarUrl, email: authData.user?.email ?? '', emailVerified: Boolean(authData.user?.email_confirmed_at) };
 });
 
 export const updateCustomerProfile = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator((input: unknown) => profileSchema.parse(input)).handler(async ({ data, context }) => {

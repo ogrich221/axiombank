@@ -7,10 +7,6 @@ export function applicationReviewLabel(status?: string | null) {
 }
 export const confirmApplicationSchema = z.object({ id: z.string().uuid() });
 export function canConfirmApplication(status: string) { return status === 'pending'; }
-// Administrator approval opens the customer profile, not a live bank account.
-export function customerAccountStatus(status?: string | null) {
-  return status === 'confirmed' ? 'Opened' : status === 'pending' ? 'Awaiting approval' : status === 'rejected' ? 'Declined' : 'Not opened';
-}
 export type AdminApplication = {
   id: string; userId: string; firstName: string; lastName: string; email: string;
   phone: string; country: string; address: string; submittedAt: string;
