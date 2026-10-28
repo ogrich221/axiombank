@@ -40,3 +40,4 @@
 
 - [ ] User-to-user money transfers with admin approval — blocked: needs the licensed banking/payment provider connected (provider name pending)
 - [x] Creative bank-building background on user profile
+- [ ] Provider-backed transfers (user-to-user + external) with admin approval — blocked: waiting on banking provider name from user

@@ -21,3 +21,4 @@
 
 - Keep administrator customer-application review on customer_applications, separate from identity verification and directory roles; use a passcode-gated service-only atomic function to confirm and audit each pending application.
 - Self-registered accounts get an admin_users directory row (id = auth user id, status Pending) from the signup trigger; application confirmation activates it and directory deletion also removes the application, so admin tools and approvals stay in sync.
+- Admin AI transfer review runs through a passcode-gated server function that calls Lovable AI server-side and returns a structured summary only; it never stores, approves or moves transfers, so the admin stays the decision-maker.
