@@ -1,6 +1,7 @@
 # Roadmap
 
-- [ ] Connect supplied Tawk.to live chat and update all shared contact phone displays and dialing links to +1 213 304 6709; verify the widget and contact links
+- [x] Add supplied Tawk.to chat script and update shared contact displays and dialing links to +1 213 304 6709 (6 contact tests passed; visible phone and links verified)
+- [ ] Verify Tawk.to chat opens (blocked: Tawk.to script is blocked by the browser during preview testing; no chat button rendered)
 
 - [x] Show the bank's webmail mailbox (axiombank@axiomfinancialinstitution.online) as the contact email on the home page, contact page and footer
 - [ ] Confirm the real webmail sign-in address (the linked address currently returns "page not found" from the site host)
