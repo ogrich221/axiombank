@@ -125,12 +125,13 @@ export const getAdminData = createServerFn({ method: 'GET' }).handler(async () =
   });
 
   const profileMap = new Map(profiles.data.map(p => [p.id, p]));
-  const customerApplications: AdminApplication[] = await Promise.all(applications.data.map(async a => {
+  const loaded = await Promise.all(applications.data.map(async a => {
     const p = profileMap.get(a.user_id);
     const { data, error } = await client.auth.admin.getUserById(a.user_id);
-    if (error) throw new Error('Could not load an applicant');
-    return { id: a.id, userId: a.user_id, firstName: p?.first_name ?? '', lastName: p?.last_name ?? '', phone: p?.phone ?? '', country: p?.country ?? '', address: [p?.address, p?.city].filter(Boolean).join(', '), email: data.user.email ?? '', emailVerified: Boolean(data.user.email_confirmed_at), submittedAt: a.submitted_at, reviewStatus: a.admin_review_status, reviewedAt: a.admin_reviewed_at };
+    if (error || !data?.user) return null; // account was removed
+    return { id: a.id, userId: a.user_id, firstName: p?.first_name ?? '', lastName: p?.last_name ?? '', phone: p?.phone ?? '', country: p?.country ?? '', address: [p?.address, p?.city].filter(Boolean).join(', '), email: data.user.email ?? '', emailVerified: Boolean(data.user.email_confirmed_at), submittedAt: a.submitted_at, reviewStatus: a.admin_review_status, reviewedAt: a.admin_reviewed_at } as AdminApplication;
   }));
+  const customerApplications: AdminApplication[] = loaded.filter((a): a is AdminApplication => a !== null);
   return { users: enrichedUsers, events: events.data as AdminEvent[], applications: customerApplications, transactions };
 });
 
@@ -167,6 +168,11 @@ export const saveAdminUser = createServerFn({ method: 'POST' })
       : await client.from('admin_users').update(row).eq('id', u.id).select('*').single();
     if (result.error) { console.error(result.error); return { ok: false as const, error: result.error.code === '23505' ? 'A user with this email already exists.' : 'Could not save this user.' }; }
     const saved = toUser(result.data as Row);
+    // Activating a registered account from the directory also confirms its pending application.
+    if (!data.isNew && saved.status === 'Active' && /^[0-9a-f-]{36}$/i.test(saved.id)) {
+      const { data: app } = await client.from('customer_applications').select('id').eq('user_id', saved.id).eq('admin_review_status', 'pending').maybeSingle();
+      if (app) await client.rpc('confirm_customer_application', { application_id: app.id });
+    }
     await client.from('admin_events').insert({ actor: 'Administrator', action: data.isNew ? 'User created' : 'Profile updated', target: `${saved.firstName} ${saved.lastName}` });
     return { ok: true as const, user: saved };
   });
@@ -181,6 +187,7 @@ export const deleteAdminUser = createServerFn({ method: 'POST' })
 
     // If an auth user or profile exists with this ID, remove from auth as well
     if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.id)) {
+      await client.from('customer_applications').delete().eq('user_id', data.id);
       await client.auth.admin.deleteUser(data.id).catch(() => {});
     }
 
