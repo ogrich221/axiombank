@@ -32,6 +32,7 @@ export const Route = createFileRoute("/")({
 });
 
 const countries = ["United States", "Canada", "Mexico", "United Kingdom", "Ireland", "France", "Germany", "Spain", "Portugal", "Italy", "Netherlands", "Belgium", "Luxembourg", "Switzerland", "Austria", "Denmark", "Sweden", "Norway", "Finland", "Iceland", "Poland", "Czechia", "Slovakia", "Hungary", "Slovenia", "Croatia", "Estonia", "Latvia", "Lithuania", "Greece", "Cyprus", "Malta", "Romania", "Bulgaria", "Japan", "South Korea", "Singapore", "Hong Kong", "Taiwan", "Australia", "New Zealand", "United Arab Emirates", "Qatar", "Saudi Arabia", "Israel", "India", "Malaysia", "Brazil", "Chile", "Argentina", "Colombia", "Peru", "Uruguay", "Costa Rica"];
+const countryCodes = ["US", "CA", "MX", "UK", "IE", "FR", "DE", "ES", "PT", "IT", "NL", "BE", "LU", "CH", "AT", "DK", "SE", "NO", "FI", "IS", "PL", "CZ", "SK", "HU", "SI", "HR", "EE", "LV", "LT", "GR", "CY", "MT", "RO", "BG", "JP", "KR", "SG", "HK", "TW", "AU", "NZ", "AE", "QA", "SA", "IL", "IN", "MY", "BR", "CL", "AR", "CO", "PE", "UY", "CR"];
 const promises = [
   { n: "01", icon: Receipt, t: "Clear Fees", d: "Know what you pay before you commit. We make account charges, card fees, and applicable conditions easy to find and understand." },
   { n: "02", icon: Activity, t: "Real-Time Clarity", d: "See your transactions, monitor your spending, and understand your available balance in one intuitive place." },
@@ -256,7 +257,7 @@ function Index() {
             <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Available in 54 countries.</h2>
             <p className="mx-auto mt-4 max-w-xl text-navy-foreground/70">Residents of these countries can apply. Residents of African countries are not currently eligible.</p>
             <div className="relative mx-auto mt-12 aspect-square w-full max-w-[640px]">
-              <img src={earthGlobe} alt="Earth with blue oceans, green continents and white clouds" loading="lazy" width={1024} height={1024} className="absolute inset-0 h-full w-full rounded-full object-cover" />
+              <img src={earthGlobe} alt="Earth with blue oceans, green continents and white clouds" loading="lazy" width={1024} height={1024} className="earth-rotation absolute inset-0 h-full w-full rounded-full object-cover" />
               <svg viewBox="0 0 200 200" className="globe-spin absolute inset-0 h-full w-full" aria-hidden="true">
                 <g fill="none" className="stroke-navy-foreground/15" strokeWidth="0.4">
                   {[20, 45, 70, 90].map((rx) => <ellipse key={rx} cx="100" cy="100" rx={rx} ry="99" />)}
@@ -267,7 +268,10 @@ function Index() {
                 {[2, 4, 5, 6, 7, 7, 7, 6, 6, 4].reduce<{ rows: string[][]; i: number }>((acc, n) => { acc.rows.push(countries.slice(acc.i, acc.i + n)); acc.i += n; return acc; }, { rows: [], i: 0 }).rows.map((row, r) => (
                   <li key={r} className="flex flex-wrap justify-center gap-x-[1.5%] gap-y-1">
                     {row.map((c) => (
-                      <span key={c} className="rounded-full border border-navy-foreground/25 bg-navy/80 px-[0.5em] py-[0.15em] text-[clamp(0.5rem,1.5vw,0.78rem)] font-medium whitespace-nowrap backdrop-blur-sm">{c}</span>
+                      <span key={c} title={c} aria-label={c} className="earth-location inline-flex min-w-8 items-center justify-center gap-1 rounded-full border border-navy-foreground/25 bg-navy/80 px-1.5 py-0.5 text-[10px] font-semibold whitespace-nowrap backdrop-blur-sm sm:min-w-12 sm:px-2 sm:text-xs">
+                        <span className="earth-marker size-1 shrink-0 rounded-full bg-primary sm:size-1.5" aria-hidden="true" />
+                        {countryCodes[countries.indexOf(c)]}
+                      </span>
                     ))}
                   </li>
                 ))}
