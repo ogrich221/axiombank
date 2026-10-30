@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import type { Database } from '@/integrations/supabase/types';
 import { profileSchema, registrationSchema } from './customer-schemas';
 import { zeroBalances, accountNumberFor, formatAccountNumber } from './customer-account-state';
 
@@ -42,7 +43,7 @@ export const registerCustomer = createServerFn({ method: 'POST' })
     if (signUpData?.user?.id) {
       try {
         const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
-        const updates: Record<string, unknown> = {
+        const updates: Database['public']['Tables']['profiles']['Update'] = {
           notification_preferences: { transfer_pin: input.transfer_pin }
         };
         if (photoBytes) {
