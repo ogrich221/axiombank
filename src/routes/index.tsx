@@ -7,6 +7,8 @@ import { SUPPORT_EMAIL, SUPPORT_MAILTO, SUPPORT_PHONE, SUPPORT_PHONE_TEL } from 
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { RotatingCard } from "@/components/site/RotatingCard";
+import earthGlobe from "@/assets/earth-globe.jpg";
 import heroBuilding from "@/assets/axiom-hero-building.jpg.asset.json";
 import heroSigning from "@/assets/axiom-hero-signing.jpg.asset.json";
 import reception from "@/assets/axiom-reception-hero.jpg.asset.json";
@@ -148,6 +150,18 @@ function Index() {
           </div>
         </section>
 
+        <section id="debit-card" className="section-y bg-secondary">
+          <div className="container-x">
+            <SectionHead eyebrow="AXIOM cards" title="AXIOM BANK Debit Card" />
+            <div className="mx-auto mt-8 max-w-4xl">
+              <RotatingCard />
+            </div>
+            <div className="mt-6 text-center">
+              <Button variant="outline" asChild><Link to="/cards">Explore cards <ArrowRight className="size-4" /></Link></Button>
+            </div>
+          </div>
+        </section>
+
         {/* Agreement band */}
         <section id="agreement" className="relative isolate overflow-hidden bg-navy">
           <img src={heroSigning.url} alt="Two clients signing AXIOM BANK account documents with an adviser beside them" loading="lazy" width={576} height={1024} className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_42%]" />
@@ -242,7 +256,7 @@ function Index() {
             <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold leading-[1.08]">Available in 54 countries.</h2>
             <p className="mx-auto mt-4 max-w-xl text-navy-foreground/70">Residents of these countries can apply. Residents of African countries are not currently eligible.</p>
             <div className="relative mx-auto mt-12 aspect-square w-full max-w-[640px]">
-              <div className="globe-sphere absolute inset-0 rounded-full" aria-hidden="true" />
+              <img src={earthGlobe} alt="Earth with blue oceans, green continents and white clouds" loading="lazy" width={1024} height={1024} className="absolute inset-0 h-full w-full rounded-full object-cover" />
               <svg viewBox="0 0 200 200" className="globe-spin absolute inset-0 h-full w-full" aria-hidden="true">
                 <g fill="none" className="stroke-navy-foreground/15" strokeWidth="0.4">
                   {[20, 45, 70, 90].map((rx) => <ellipse key={rx} cx="100" cy="100" rx={rx} ry="99" />)}
@@ -253,7 +267,7 @@ function Index() {
                 {[2, 4, 5, 6, 7, 7, 7, 6, 6, 4].reduce<{ rows: string[][]; i: number }>((acc, n) => { acc.rows.push(countries.slice(acc.i, acc.i + n)); acc.i += n; return acc; }, { rows: [], i: 0 }).rows.map((row, r) => (
                   <li key={r} className="flex flex-wrap justify-center gap-x-[1.5%] gap-y-1">
                     {row.map((c) => (
-                      <span key={c} className="globe-chip rounded-full px-[0.5em] py-[0.15em] text-[clamp(0.5rem,1.5vw,0.78rem)] font-medium whitespace-nowrap">{c}</span>
+                      <span key={c} className="rounded-full border border-navy-foreground/25 bg-navy/80 px-[0.5em] py-[0.15em] text-[clamp(0.5rem,1.5vw,0.78rem)] font-medium whitespace-nowrap backdrop-blur-sm">{c}</span>
                     ))}
                   </li>
                 ))}

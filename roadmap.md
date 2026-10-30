@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Add the spinning masked AXIOM debit card to the homepage and natural Earth colors to the eligibility globe
+
 - [x] Add supplied Tawk.to chat script and update shared contact displays and dialing links to +1 213 304 6709 (6 contact tests passed; visible phone and links verified)
 - [ ] Verify Tawk.to chat opens (blocked: Tawk.to script is blocked by the browser during preview testing; no chat button rendered)
 
