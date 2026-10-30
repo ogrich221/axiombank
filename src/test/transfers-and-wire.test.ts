@@ -332,10 +332,10 @@ describe('Admin Custom Dates for Crediting and Debiting', () => {
     // Sort descending by date (as used in admin and user ledgers)
     ledger.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    expect(ledger[0].id).toBe('3');
-    expect(ledger[1].id).toBe('1');
-    expect(ledger[2].id).toBe('2');
-    expect(ledger[2].date).toBe(historicalDate);
+    expect(ledger[0]?.id).toBe('3');
+    expect(ledger[1]?.id).toBe('1');
+    expect(ledger[2]?.id).toBe('2');
+    expect(ledger[2]?.date).toBe(historicalDate);
   });
 
   it('validates ISO date conversion from datetime-local strings', () => {
