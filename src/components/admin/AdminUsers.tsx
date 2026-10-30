@@ -236,7 +236,7 @@ export function TransactDialog({
       type,
       amount: val,
       narration: narration.trim(),
-      date: date ? new Date(date).toISOString() : undefined,
+      ...(date ? { date: new Date(date).toISOString() } : {}),
     });
     setBusy(false);
     if (res.ok) {
